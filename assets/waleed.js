@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var KEY = 'waleed-l1-lang';
+  var KEY = 'waleed-lang-ar';   // new key: every visitor starts in Arabic
 
   /* ---------- 1. Language ---------- */
   function apply(lang) {
@@ -72,7 +72,7 @@
   }
 
   function current() {
-    try { return localStorage.getItem(KEY) === 'ar' ? 'ar' : 'en'; } catch (e) { return 'en'; }
+    try { return localStorage.getItem(KEY) === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; }
   }
 
   function init() {
