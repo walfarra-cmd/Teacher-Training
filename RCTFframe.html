@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="RCTF Framework · Waleed 2026" data-ar="إطار RCTF · Waleed 2026">RCTF Framework · Waleed 2026</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link rel="stylesheet" href="assets/waleed.css">
+<style id="hero-robot-layout">
+/* ===== Hero: text column + robot side column ===== */
+.hero .hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(0,.5fr);
+  align-items:center;
+  gap:clamp(24px,5vw,72px);
+}
+.hero .hero-copy{min-width:0}
+.hero .hero-actions{margin-top:32px}
+.hero .hero-art{
+  position:relative; inset:auto; transform:none; margin:0;
+  display:flex; justify-content:center; align-items:center;
+  min-width:0;
+}
+.hero .hero-char{
+  display:block; width:100%; max-width:380px; height:auto;
+  filter:drop-shadow(0 24px 40px rgba(0,0,0,.35));
+  animation:rctf-robot-float 4.5s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes rctf-robot-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+@media (max-width:860px){
+  .hero .hero-grid{grid-template-columns:1fr; text-align:start}
+  .hero .hero-art{order:2; margin-top:8px}
+  .hero .hero-char{max-width:240px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .hero-char{animation:none}
+}
+</style>
+<style id="hero-compact">
+/* تقليص مسافة الواجهة لتطابق صفحة مصمّم الدروس */
+.hero{padding:46px 0 34px}
+.hero .hero-actions{margin-top:26px}
+#main > .sec:first-child{padding-top:0}
+@media (max-width:720px){.hero{padding:36px 0 28px}}
+</style>
+<style id="rctf-layout">
+/* ===== أجزاء الصفحة: شارة الجزء، رقم الخطوة، البطاقات، تبويبات البرومت (مطابقة لصفحة Gamma) ===== */
+.part-tag{display:inline-flex; align-items:center; gap:8px; margin:0 0 16px; padding:6px 16px;
+  border-radius:var(--r-pill); background:var(--brand-lift); color:#fff;
+  font-size:14px; font-weight:700; letter-spacing:.02em}
+.step-no{display:block; margin:0 0 6px; font-family:var(--mono); font-size:13px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)}
+html[dir="rtl"] .step-no{font-family:var(--ar); font-weight:700; letter-spacing:0; font-size:15px}
+.trio{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:4px 0 24px}
+.trio.rctf4{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1280px){.trio.rctf4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.trio > div{background:var(--bg-2); border:1px solid var(--line-soft); border-radius:var(--r-lg); padding:18px 20px}
+.trio i{display:grid; place-items:center; width:36px; height:36px; margin-bottom:10px; border-radius:50%;
+  background:var(--accent); color:var(--brand-lift); font-style:normal; font-weight:800; font-family:var(--mono)}
+.trio b{display:block; color:var(--ink); font-size:18px; margin-bottom:4px}
+.block .trio p{margin:0; font-size:16px; line-height:1.55}
+.howto{margin:0 0 22px; padding:0; list-style:none; counter-reset:h; display:grid; gap:10px}
+.howto li{counter-increment:h; position:relative; padding-inline-start:40px; font-size:17px; font-weight:500; color:var(--ink-2); line-height:1.6}
+.howto li:before{content:counter(h); position:absolute; inset-inline-start:0; top:1px; width:28px; height:28px;
+  border-radius:50%; display:grid; place-items:center; background:var(--surface-2); border:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:13px; font-weight:700; color:var(--brand-lift)}
+.ptabs{display:inline-flex; gap:4px; padding:4px; margin:0 0 16px; border-radius:var(--r-pill);
+  background:var(--surface-2); border:1px solid var(--line-soft)}
+.ptabs button{font:inherit; font-size:15px; font-weight:700; cursor:pointer; border:0; border-radius:var(--r-pill);
+  padding:9px 20px; background:transparent; color:var(--ink-2); transition:background var(--t-fast),color var(--t-fast)}
+.ptabs button[lang="ar"]{font-family:var(--ar)}
+.ptabs button[aria-selected="true"]{background:var(--brand-lift); color:#fff}
+.ptabs button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.ppane[hidden]{display:none}
+.ppane + .prompt-label{margin-top:30px}
+.block .hint{margin-top:22px}
+.block > .apps{margin-top:6px}
+#intro .app h3{margin:0; padding:0; border:0}
+#reverse .pairfig{grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}
+.pairfig img{max-height:640px; width:100%; object-fit:contain}
+@media (max-width:720px){.block{padding:24px 18px}.ptabs{display:flex}.ptabs button{flex:1; padding:9px 10px}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content" data-ar="تخطَّ إلى المحتوى">Skip to content</a>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/waleed-logo.png" alt="Waleed 2026">
+      <span class="brand-tag" data-en="RCTF Framework" data-ar="إطار RCTF">RCTF Framework</span>
+    </div>
+    <div class="topbar-actions">
+     <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Home page" data-ar="الرئيسية">Home page</span></a>   
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <i class="orb orb-1" aria-hidden="true"></i><i class="orb orb-2" aria-hidden="true"></i>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <!--a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to home page" data-ar="العودة إلى الصفحة الرئيسية">Back to home page</span></a-->
+    <p class="eyebrow" data-en="Tools: ChatGPT · Gemini · Claude" data-ar="الأدوات: ChatGPT · Gemini · Claude">Tools: ChatGPT · Gemini · Claude</p>
+    <h1 class="display" data-en="What is the RCTF framework, and how do we use it?" data-ar="ما هو إطار RCTF؟ وكيف نتعامل معه؟">What is the RCTF framework, and how do we use it?</h1>
+    <p class="lede" data-en="Your real start in writing prompts begins here. Once you master the RCTF framework, you will tell a weak prompt from a strong one at a glance." data-ar="انطلاقتك الحقيقية لكتابة الأوامر تبدأ من هنا. فبعد إتقانك لإطار RCTF ستُفرِّق بين الأمر الضعيف والأمر القوي.">Your real start in writing prompts begins here. Once you master the RCTF framework, you will tell a weak prompt from a strong one at a glance.</p>
+      <div class="hero-actions">
+        <a class="btn btn-outline" href="#rctf"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg><span data-en="Start with the RCTF frame" data-ar="ابدأ بمكوّنات إطار RCTF">Start with the RCTF frame</span></a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><img class="hero-char" src="assets/roboot.png" alt="" width=1122 height=1402></div>
+  </div>
+</div>
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <!-- ---------- STICKY RAIL ---------- -->
+      <aside class="rail">
+        <h2 data-en="Session at a glance" data-ar="محاور المحاضرة">Session at a glance</h2>
+        <p data-en="Six steps, in order." data-ar="ست خطوات بالترتيب.">Six steps, in order.</p>
+        <ol>
+          <li data-go="intro" data-en="Prompt engineering and AI chatbots" data-ar="هندسة الأوامر وروبوتات الذكاء الاصطناعي">Prompt engineering and AI chatbots</li>
+          <li data-go="rctf" data-en="Learn the RCTF frame" data-ar="شرح إطار RCTF">Learn the RCTF frame</li>
+          <li data-go="weak-strong" data-en="Weak prompt vs strong prompt" data-ar="البرومت الضعيف والبرومت القوي">Weak prompt vs strong prompt</li>
+          <li data-go="example" data-en="Practical example: a lesson summary" data-ar="مثال عملي: ملخص الدرس">Practical example: a lesson summary</li>
+          <li data-go="pictures" data-en="RCTF for images" data-ar="إطار RCTF لإنتاج الصور">RCTF for images</li>
+          <li data-go="reverse" data-en="Reverse-engineer a prompt" data-ar="الهندسة العكسية للبرومت">Reverse-engineer a prompt</li>
+        </ol>
+        <p class="rail-hint" data-en="Click a step to jump to it and mark it done." data-ar="اضغط على الخطوة للانتقال إليها وتعليمها كمنجزة.">Click a step to jump to it and mark it done.</p>
+      </aside>
+
+      <!-- ---------- CONTENT ---------- -->
+      <div>
+
+        <!-- ============ STEP 1 · PROMPT ENGINEERING + CHATBOTS ============ -->
+        <div class="block" id="intro">
+          <span class="part-tag" data-en="Part one · Foundations" data-ar="الجزء الأول · الأساسيات">Part one · Foundations</span>
+          <span class="step-no" data-en="Step 01" data-ar="الخطوة ٠١">Step 01</span>
+          <h2 class="display" data-en="Prompt engineering" data-ar="هندسة الأوامر">Prompt engineering</h2>
+          <p class="sub" data-en="Prompt engineering is the art of precisely crafting text inputs to elicit the best possible response from the robot." data-ar="هندسة الأوامر أو التلقين أو المطالبة هي فن صياغة المدخلات النصية بدقة للحصول على أفضل استجابة ممكنة من الروبوت.">Prompt engineering is the art of precisely crafting text inputs to elicit the best possible response from the robot.</p>
+
+          <p data-en="A generative AI tool does not read your mind. It reads your sentence. Two teachers can ask for the same lesson and receive completely different results, and the difference is almost never the tool — it is how the request was written. Prompt engineering is simply the habit of writing a request that carries enough information to be carried out." data-ar="أداة الذكاء الاصطناعي لا تعرف ما يدور في ذهنك، بل تقرأ ما تكتبه فقط. لذلك اكتب لها ما تريده بطريقة احترافية محددة. هذا الطلب هو «البرومت»، والبرومت الاحترافي سنتعلمه من خلال إطار RCTF.">A generative AI tool does not read your mind. It reads your sentence. Two teachers can ask for the same lesson and receive completely different results, and the difference is almost never the tool — it is how the request was written. Prompt engineering is simply the habit of writing a request that carries enough information to be carried out.</p>
+
+          <h3 data-en="The best-known AI chatbots" data-ar="أشهر روبوتات المحادثة المدعومة بالذكاء الاصطناعي">The best-known AI chatbots</h3>
+          <div class="apps">
+            <div class="app">
+              <h3>ChatGPT</h3>
+              <p data-en="A conversational AI assistant from OpenAI. It answers questions, explains concepts, writes and summarises, translates, analyses files and images, and helps with planning and problem-solving. In this session you use it to test prompts and watch how clarity, context and structure change the answer." data-ar="روبوت ذكي للمحادثة من شركة OpenAI. يجيب عن الأسئلة، ويشرح المفاهيم، ويكتب المحتوى ويلخصه، ويترجم، ويحلل الملفات والصور، ويساعد في التخطيط وحل المشكلات. وفي هذه المحاضرة تستخدمه لاختبار الأوامر وملاحظة أثر الوضوح والسياق والهيكل في الإجابة.">A conversational AI assistant from OpenAI. It answers questions, explains concepts, writes and summarises, translates, analyses files and images, and helps with planning and problem-solving. In this session you use it to test prompts and watch how clarity, context and structure change the answer.</p>
+              <p class="app-url">https://chatgpt.com</p>
+              <a class="btn btn-primary" href="https://chatgpt.com" target="_blank" rel="noopener">
+                <span data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <h3>Google Gemini</h3>
+              <p data-en="Google's generative AI assistant. It generates ideas, explains topics, prepares written drafts, summarises, plans tasks, and works with text, images and uploaded files. Use it to run the same prompt in a different system and compare the quality, style and structure of the two answers." data-ar="روبوت الذكاء الاصطناعي التوليدي من Google. يولّد الأفكار، ويشرح الموضوعات، ويعدّ المسودات، ويلخّص، ويخطط للمهام، ويتعامل مع النصوص والصور والملفات المرفوعة. استخدمه لتجربة الأمر نفسه في نظام مختلف، ثم قارن جودة الإجابتين وأسلوبهما وتنظيمهما.">Google's generative AI assistant. It generates ideas, explains topics, prepares written drafts, summarises, plans tasks, and works with text, images and uploaded files. Use it to run the same prompt in a different system and compare the quality, style and structure of the two answers.</p>
+              <p class="app-url">https://gemini.google.com</p>
+              <a class="btn btn-primary" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <span data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <h3>Claude</h3>
+              <p data-en="Claude is an AI assistant developed by Anthropic that can write, analyze, code, answer questions, and assist with various tasks through natural conversation. It is designed to be helpful, honest, and safe in its interactions with people." data-ar="Claude هو مساعد ذكاء اصطناعي طوّرته شركة Anthropic، يستطيع الكتابة والتحليل والبرمجة والإجابة عن الأسئلة والمساعدة في مختلف المهام عبر محادثة طبيعية. صُمّم ليكون مفيدًا وصادقًا وآمنًا في تعامله مع الناس.">Claude is an AI assistant developed by Anthropic that can write, analyze, code, answer questions, and assist with various tasks through natural conversation. It is designed to be helpful, honest, and safe in its interactions with people.</p>
+              <p class="app-url">https://claude.ai</p>
+              <a class="btn btn-primary" href="https://claude.ai/" target="_blank" rel="noopener">
+                <span data-en="Open Claude" data-ar="افتح Claude">Open Claude</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ STEP 2 · RCTF ============ -->
+        <div class="block" id="rctf">
+          <span class="step-no" data-en="Step 02" data-ar="الخطوة ٠٢">Step 02</span>
+          <h2 class="display" data-en="The RCTF frame in one page" data-ar="إطار RCTF باختصار">The RCTF frame in one page</h2>
+          <p class="sub" data-en="Four letters, four questions. Answer them in order and the request writes itself." data-ar="أربعة أحرف وأربعة أسئلة، أجب عنها بالترتيب تصل إلى البرومت المطلوب.">Four letters, four questions. Answer them in order and the request writes itself.</p>
+
+          <div class="trio rctf4">
+            <div><i>R</i><b data-en="Role" data-ar="الدور">Role</b><p data-en="Who should the AI be?" data-ar="من يكون الذكاء الاصطناعي؟">Who should the AI be?</p></div>
+            <div><i>C</i><b data-en="Context" data-ar="السياق">Context</b><p data-en="Why, for whom, and under what conditions?" data-ar="لماذا، ولمن، وفي أي ظروف؟">Why, for whom, and under what conditions?</p></div>
+            <div><i>T</i><b data-en="Task" data-ar="المهمة">Task</b><p data-en="What exactly must it do?" data-ar="ماذا عليه أن يفعل بالضبط؟">What exactly must it do?</p></div>
+            <div><i>F</i><b data-en="Format" data-ar="التنسيق">Format</b><p data-en="What shape should the answer take?" data-ar="ما شكل الإجابة المطلوب؟">What shape should the answer take?</p></div>
+          </div>
+
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th data-en="RCTF" data-ar="الاختصار">RCTF</th>
+                  <th data-en="English" data-ar="بالإنجليزية">English</th>
+                  <th data-en="العربية" data-ar="بالعربية">العربية</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="k">R</td>
+                  <td class="en"><b>Role</b> — Assigned roles or personas, such as giving the AI a specific persona: "act as an educational expert" or "act as a technical expert".</td>
+                  <td class="ar"><b>الدور</b> — الأدوار الاعتبارية أو الشخصية، كإعطاء الذكاء الاصطناعي شخصية اعتبارية، مثلًا: "أجب كخبير تربوي" أو "أجب كخبير تقني".</td>
+                </tr>
+                <tr>
+                  <td class="k">C</td>
+                  <td class="en"><b>Context</b> — The information surrounding the task, which clarifies the "why" and the "how".</td>
+                  <td class="ar"><b>السياق</b> — المعلومات المحيطة بالمهمة، التي توضّح: لماذا؟ وكيف؟</td>
+                </tr>
+                <tr>
+                  <td class="k">T</td>
+                  <td class="en"><b>Task</b> — The specific task required of the AI: exactly what needs to be done.</td>
+                  <td class="ar"><b>المهمة</b> — المهمة المحددة المطلوبة من الذكاء الاصطناعي: ما يجب القيام به بالضبط.</td>
+                </tr>
+                <tr>
+                  <td class="k">F</td>
+                  <td class="en"><b>Format</b> — The shape of the output or desired result, such as an image, a table or an article.</td>
+                  <td class="ar"><b>التنسيق</b> — شكل المخرجات أو النتيجة المطلوبة، كصورة أو جدول أو مقال... إلخ.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 data-en="Why each letter earns its place" data-ar="لماذا كل حرف مهم">Why each letter earns its place</h3>
+          <ul class="ticks">
+            <li data-en="Role sets the expertise and the register. &quot;An experienced Grade 5 science teacher&quot; produces different vocabulary from &quot;a university lecturer&quot;." data-ar="الدور: يحدد الخبرة في مجال معيّن. فعبارة &quot;تصرّف بصفتك معلمًا خبيرًا في مادة الفيزياء للمرحلة الثانوية&quot; تنتج مفردات مختلفة عن &quot;معلم الصف الرابع&quot; أو &quot;أستاذ جامعي&quot;.">Role sets the expertise and the register. "An experienced Grade 5 science teacher" produces different vocabulary from "a university lecturer".</li>
+            <li data-en="Context is the part teachers forget. Class size, lesson length, ability range, language support, available equipment — these are the constraints that make an answer usable in your room rather than in an ideal one." data-ar="السياق: وصف البيئة التعليمية: عدد الطلاب، ومدة الحصة، وتنوع المستويات، والدعم اللغوي، والأدوات المتاحة. هذه هي القيود التي تجعل الإجابة صالحة لفصلك أنت لا لفصل مثالي.">Context is the part teachers forget. Class size, lesson length, ability range, language support, available equipment — these are the constraints that make an answer usable in your room rather than in an ideal one.</li>
+            <li data-en="Task must contain a verb you can assess: explain, sequence, classify, compare, justify. &quot;Make something about the water cycle&quot; is not a task." data-ar="المهمة: يجب أن تحتوي على فعل سلوكي تستطيع قياسه وتقييمه: يصف، يشرح، يرتب، يصنف، يقارن، يبرر. أما &quot;اكتب شيئًا عن الضوء&quot; فليست مهمة.">Task must contain a verb you can assess: explain, sequence, classify, compare, justify. "Make something about the water cycle" is not a task.</li>
+            <li data-en="Format decides whether you can use the answer immediately. A table with named columns can be printed; six paragraphs of prose have to be rewritten first." data-ar="التنسيق: يحدد شكل المخرجات لتستخدمها فورًا: ملف Word أو PDF، أو جدول بأعمدة مسمّاة، أو فقرات... إلخ.">Format decides whether you can use the answer immediately. A table with named columns can be printed; six paragraphs of prose have to be rewritten first.</li>
+          </ul>
+        </div>
+
+        <!-- ============ STEP 3 · WEAK VS STRONG ============ -->
+        <div class="block" id="weak-strong">
+          <span class="part-tag" data-en="Part two · Applying RCTF" data-ar="الجزء الثاني · تطبيق إطار RCTF">Part two · Applying RCTF</span>
+          <span class="step-no" data-en="Step 03" data-ar="الخطوة ٠٣">Step 03</span>
+          <h2 class="display" data-en="A strong prompt, a strong result, exactly as you want it" data-ar="برومت قوي.. نتيجة قوية.. كما تريد">A strong prompt, a strong result, exactly as you want it</h2>
+          <p class="sub" data-en="The same request, asked for twice: once weak, once with RCTF. Copy each one into ChatGPT and compare what comes back." data-ar="الطلب نفسه مرتين: مرة ببرومت ضعيف غير محدد، ومرة ببرومت قوي وفق إطار RCTF. انسخ كلًّا منهما إلى ChatGPT وقارن النتيجتين.">The same request, asked for twice: once weak, once with RCTF. Copy each one into ChatGPT and compare what comes back.</p>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+            <p class="prompt-label is-weak" data-en="The weak prompt" data-ar="البرومت الضعيف">The weak prompt</p>
+            <div class="prompt-tools">
+              <button class="btn btn-ghost" type="button" data-copy="p-weak-ar" data-en="Copy" data-ar="نسخ">Copy</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-short is-ar" id="p-weak-ar" spellcheck="false">اكتب رسالة بريد إلكتروني عن التسويق.</textarea>
+
+            <p class="prompt-label" data-en="The strong RCTF prompt" data-ar="البرومت القوي وفق RCTF">The strong RCTF prompt</p>
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-strong-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-mid is-ar" id="p-strong-ar" spellcheck="false">الدور: تصرّف بصفتك كاتب محتوى تسويقي رفيع المستوى للشركات.
+
+السياق: أعمل على إطلاق أداة أتمتة جديدة توفر الوقت لأصحاب المشاريع الصغيرة المنشغلين بأعمالهم.
+
+المهمة: كتابة رسالة تواصل أولية (Cold Email) تبرز كيف تساهم أداتنا في توفير 5 ساعات من العمل أسبوعياً.
+
+التنسيق: ثلاث فقرات قصيرة، مع عنوان رسالة جذاب ومؤثر، ومكان مخصص لرابط "دعوة لاتخاذ إجراء" (Call-to-Action).</textarea>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+            <p class="prompt-label is-weak" data-en="The weak prompt" data-ar="البرومت الضعيف">The weak prompt</p>
+            <div class="prompt-tools">
+              <button class="btn btn-ghost" type="button" data-copy="p-weak" data-en="Copy" data-ar="نسخ">Copy</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-short" id="p-weak" spellcheck="false">Write a marketing email.</textarea>
+
+            <p class="prompt-label" data-en="The strong RCTF prompt" data-ar="البرومت القوي وفق RCTF">The strong RCTF prompt</p>
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-strong-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-mid" id="p-strong-en" spellcheck="false">Role: You are a senior B2B copywriter.
+
+Context: I am launching a new time-saving automation tool for busy small business owners.
+
+Task: Write a cold outreach email that highlights how our tool saves 5 hours a week.
+
+Format: Three short paragraphs with a punchy subject line and a call-to-action link placeholder.</textarea>
+          </div>
+
+          <h3 data-en="What changed, line by line" data-ar="ما الذي تغيّر، سطرًا بسطر">What changed, line by line</h3>
+          <ul class="ticks">
+            <li data-en="Role: from nobody in particular to a senior B2B copywriter, so the tone and vocabulary are professional." data-ar="الدور: من لا أحد بعينه إلى كاتب محتوى تسويقي محترف للشركات، فتصبح النبرة والمفردات احترافية.">Role: from nobody in particular to a senior B2B copywriter, so the tone and vocabulary are professional.</li>
+            <li data-en="Context: the product and the audience are named — a time-saving tool for busy small business owners." data-ar="السياق: صار المنتج والجمهور محددين: أداة توفّر الوقت لأصحاب المشاريع الصغيرة المنشغلين.">Context: the product and the audience are named — a time-saving tool for busy small business owners.</li>
+            <li data-en="Task: “an email” becomes one specific message with one measurable promise: five hours saved a week." data-ar="المهمة: تحوّلت «رسالة بريد» إلى رسالة محددة بوعد واحد قابل للقياس: توفير خمس ساعات أسبوعيًا.">Task: “an email” becomes one specific message with one measurable promise: five hours saved a week.</li>
+            <li data-en="Format: length, subject line and call-to-action are fixed, so the answer is ready to use without rewriting." data-ar="التنسيق: حُدّد الطول وعنوان الرسالة ومكان الدعوة لاتخاذ إجراء، فتأتي الإجابة جاهزة دون إعادة كتابة.">Format: length, subject line and call-to-action are fixed, so the answer is ready to use without rewriting.</li>
+          </ul>
+        </div>
+
+        <!-- ============ STEP 4 · PRACTICAL EXAMPLE ============ -->
+        <div class="block" id="example">
+          <span class="step-no" data-en="Step 04" data-ar="الخطوة ٠٤">Step 04</span>
+          <h2 class="display" data-en="Practical example: a lesson summary infographic" data-ar="مثال عملي: ملخص الدرس في إنفوجرافيك">Practical example: a lesson summary infographic</h2>
+          <p class="sub" data-en="A complete RCTF prompt that turns a lesson into a hand-drawn whiteboard-style infographic." data-ar="برومت كامل وفق إطار RCTF يحوّل الدرس إلى إنفوجرافيك مرسوم يدويًا بأسلوب السبورة.">A complete RCTF prompt that turns a lesson into a hand-drawn whiteboard-style infographic.</p>
+
+          <ol class="howto">
+            <li data-en="Choose the prompt language, then fill in the teacher details highlighted in green at the top." data-ar="اختر لغة البرومت، ثم عبّئ بيانات المعلم المظللة باللون الأخضر في أعلاه.">Choose the prompt language, then fill in the teacher details highlighted in green at the top.</li>
+            <li data-en="Click “Copy the prompt”, then paste it into ChatGPT; attach the lesson file if you have one." data-ar="اضغط «نسخ البرومت»، ثم الصقه في ChatGPT، وأرفق ملف الدرس إن وُجد.">Click “Copy the prompt”, then paste it into ChatGPT; attach the lesson file if you have one.</li>
+            <li data-en="Check the text plan that comes after the image against your lesson before you use it in class." data-ar="راجع المخطط النصي الذي يأتي بعد الصورة على درسك قبل استخدامها في الصف.">Check the text plan that comes after the image against your lesson before you use it in class.</li>
+          </ol>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p-plan-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p-plan-ar" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall is-ar" id="p-plan-ar" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable lesson summary prompt in Arabic" data-ar-label="برومت ملخص الدرس بالعربية، قابل للتعديل">## بيانات المعلم (عبّئها قبل النسخ)
+- الموضوع: <span class="ph">[ما موضوع الدرس]</span>
+- المادة:<span class="ph"> [مثال: علوم / رياضيات / لغة عربية / اجتماعيات / English]</span>
+- الصف أو المرحلة:<span class="ph"> [مثال: الصف السادس الابتدائي]</span>
+- لغة الإنفوجرافيك: <span class="ph">[العربية | English | ثنائي اللغة (العربية + English)]</span>
+- المصدر: <span class="ph">[ملف مرفق | بدون ملف]</span>
+
+## R — الدور
+أنت خبير تخطيط محتوى تعليمي يناسب المادة والمرحلة المحددتين، ومصمم إنفوجرافيك تعليمي مرسوم يدوياً بأسلوب سبورة الصف، تتقن الكتابة بالعربية (RTL) وبالإنجليزية (LTR). هدفك إنفوجرافيك يعرضه المعلم ويشرح من خلاله أمام الطلاب.
+
+## C — السياق
+- الموضوع والمادة والمرحلة ولغة الإنفوجرافيك: كما في «بيانات المعلم» أعلاه.
+- المصدر:
+  - إن وُجد ملف مرفق: اقرأه كاملاً أولاً، واعتمد عليه وحده في المعلومات والأمثلة والمصطلحات، ولا تضف من خارجه. إن تعذّرت قراءة صفحة فاذكر ذلك ولا تخمّن.
+  - إن لم يوجد ملف: استخدم معلومات دقيقة ومستقرة تناسب المرحلة، ولا تذكر رقماً أو تاريخاً أو اسماً لست متأكداً منه، واذكر ذلك في نهاية الرد.
+- يجب أن يظهر تسلسل تعليمي منطقي يناسب طبيعة الموضوع (مثل: تعريف ← فهم ← تطبيق، أو سبب ← عملية ← نتيجة).
+- كل عنصر يخدم هدفاً تعليمياً واضحاً. لا محتوى تحفيزياً ولا عبارات عامة مثل «لماذا هذا الموضوع مهم».
+
+## T — المهمة
+نفّذ الخطوتين بالترتيب في ردّ واحد:
+
+### الخطوة 1: التخطيط الداخلي (لا تعرضه قبل الصورة)
+1. حدد نوع الموضوع (مفهوم، قاعدة، عملية، حدث، شخصية، مكان، نظام، مهارة...).
+2. اختر من 6 إلى 8 وحدات معرفية مرتبطة مباشرة بالموضوع، ومن نوعها بحسب طبيعته. أمثلة على أنواع الوحدات: التعريف، الخصائص، الأجزاء أو التركيب، الأنواع أو التصنيف، المراحل أو الخطوات، الأسباب والنتائج، التسلسل الزمني، الموقع أو السياق، القوانين أو القواعد، المقارنة، الأمثلة، التطبيقات، الأخطاء الشائعة. لا تفرض وحدة لا تناسب الموضوع.
+3. لكل وحدة:
+   - عنوان من كلمة إلى ثلاث كلمات، تسمية مفاهيمية وليست جملة.
+   - من 3 إلى 5 عناصر حسب الحاجة، دون حشو للوصول إلى 5.
+   - كل عنصر سطر واحد من 3 إلى 10 كلمات: نقطة أو تسمية أو رقم أو مقارنة مختصرة، لا جملة شرح.
+   - المصطلحات والأرقام والتواريخ والرموز والمعادلات والأمثلة تُنقل بدقة تامة كما في المصدر، بما فيها الإملاء (والحركات والهمزات في العربية).
+   - أنسب تمثيل بصري للوحدة (رسم تخطيطي، خط زمني، مخطط تدفق، جدول صغير، مقارنة، مقطع عرضي، رسم بياني، رسم توضيحي مسمّى).
+   - علاقتها بالمركز (سهم + معنى العلاقة في كلمتين أو ثلاث).
+4. حدد تمثيلاً بصرياً مركزياً يلخص الموضوع كاملاً.
+5. تمييز الكلمات المهمة: من مقطع إلى مقطعين في كل عنصر (كلمة أو عبارة حتى 3 كلمات) يوضع بين علامتي ==، ولا يتجاوز المميز ربع العنصر، ويبقى داخل عنصره دون قائمة مصطلحات منفصلة.
+6. لا تكرر المعلومة في أكثر من وحدة، ولا تُنشئ وحدات بعناوين مثل: الملخص، المراجعة، الخاتمة، لماذا هو مهم.
+7. في الوضع الثنائي اللغة: اكتب النص بلغته الأساسية (العربية)، وأضف بين قوسين الترجمة الإنجليزية للمصطلحات المميزة فقط.
+
+### الخطوة 2: رسم الإنفوجرافيك
+انقل المخطط الداخلي كما هو دون تغيير في العناوين والعناصر والأمثلة والعلاقات والأجزاء المميزة، ولا تحوّل العبارات إلى جمل شرح. لا تخترع حقائق أو أمثلة أو وحدات.
+
+**اللغة والاتجاه:**
+- العربية: اتجاه RTL، قراءة من اليمين إلى اليسار ومن الأعلى إلى الأسفل، خط يدوي عربي واضح، والعناوين بخط أعرض وأكبر.
+- English: اتجاه LTR، قراءة من اليسار إلى اليمين ومن الأعلى إلى الأسفل، خط يدوي واضح، والعناوين بأحرف كبيرة (CAPS) عريضة.
+- الثنائي: الاتجاه العام للغة الأساسية، والترجمة بخط أصغر داخل الأقواس.
+
+**التخطيط:**
+1. العنوان المركزي (سطران إلى أربعة): في صندوق مستطيل مرسوم يدوياً بحد أسود وظل جانبي وسفلي برتقالي وداخل أبيض. هذا الأسلوب للعنوان فقط.
+2. التمثيل البصري المركزي أسفل العنوان مباشرة، وهو أكبر رسم في الصفحة.
+3. الوحدات (6–8) حول المركز بترتيب القراءة الخاص بلغة الإنفوجرافيك، دون ترقيم، بمساحات بيضاء واسعة وارتفاعات متفاوتة قليلاً بدل شبكة صارمة.
+4. سهم مرسوم يدوياً (متصل أو منقط أو منحنٍ) يربط كل وحدة بالمركز بمعنى واضح حسب علاقتها، دون خطوط زخرفية أو تقاطعات غير ضرورية.
+5. لكل وحدة: عنوان بخط يدوي عريض وأكبر من بقية النص (يجوز إطار منحنٍ بسيط حوله أو تظليل أصفر)، ثم رسم أو رسمان بسيطان مرتبطان بالمحتوى، ثم العناصر في أسطر قصيرة بنقاط ملونة صغيرة.
+6. إن كانت المعلومة جدولية فجدول بسيط من عمودين بخطوط رفيعة. وإن وُجد اقتباس في المصدر فضعه في فقاعة كلام.
+
+**التنسيق:**
+- النسبة: 9:16 عمودي.
+- الخلفية: أبيض ناصع نظيف، دون خطوط دفتر أو شبكة أو ملمس ورق.
+- الرسم: خطوط سوداء بسيطة كرسم المعلم على السبورة. الأشخاص فقط إن احتاجهم الموضوع، برؤوس دائرية وعيون واضحة وأطراف رفيعة، ولكل شخص علامة مميزة من دوره أو سياقه.
+- الألوان: الأسود للخطوط والنص، والتركوازي والبرتقالي لتعبئة محدودة، والأصفر أو الأحمر الهادئ للتحذير أو التباين فقط. لا تدرجات ولا ظلال واقعية ولا توهج ولا Clip Art ولا شعارات ولا علامات مائية.
+- التمييز: ضربة قلم تحديد شبه شفافة غير منتظمة خلف الأجزاء المميزة، ولا تُظهر علامتي ==. لا تميز نصاً غير محدد.
+- الفواصل: مساحات بيضاء أو خط قصير متموج أو خط منقط. لا تضع الوحدة داخل بطاقة أو إطار مغلق. المغلق فقط: صندوق العنوان، وفقاعات الكلام، والجدول، وإطار عنوان الوحدة المنحني.
+- الكتابة: واضحة مقروءة بلغة الإنفوجرافيك، والإملاء والأرقام والرموز مطابقة تماماً للمخطط. لا نص وهمياً ولا حروفاً مشوهة. إن ضاق المكان فقلّل الرسوم ولا تقلّل دقة النص.
+- لا تضف ملاحظات أو عناوين غير موجودة في المخطط.
+
+## F — المخرجات
+1. الإنفوجرافيك (الصورة) أولاً.
+2. بعده مباشرة: المخطط النصي الذي اعتمدت عليه (العنوان المركزي، ثم كل وحدة بعناصرها مع ==)، ليراجعه المعلم على المصدر.
+3. إن لم يكن هناك ملف مصدر: سطر أخير يذكر أي معلومة لست متأكداً منها.
+4. لا شرح إضافياً ولا مقدمات.</div>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p-plan-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p-plan-en" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p-plan-en" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable lesson summary prompt in English" data-ar-label="برومت ملخص الدرس بالإنجليزية، قابل للتعديل">## TEACHER INPUT (fill in before sending)
+- Topic:  <span class="ph">[write the topic]</span>
+- Subject: <span class="ph"> [e.g., Science / Math / Arabic Language / Social Studies / English]</span>
+- Grade or level: <span class="ph"> [e.g., Grade 6 (Primary)]</span>
+- Infographic language: <span class="ph">[Arabic | English | Bilingual (Arabic + English)]</span>
+- Source:  <span class="ph">[attached file | no file]</span>
+
+## R — ROLE
+You are an expert educational content planner for the specified subject and grade level, and a skilled designer of hand-drawn educational infographics in a classroom-whiteboard style. You write fluently in both Arabic (RTL) and English (LTR). Your goal is an infographic that the teacher can display and teach from in front of students.
+
+## C — CONTEXT
+- Topic, subject, grade level, and infographic language: as given in "TEACHER INPUT" above.
+- Source:
+  - If a file is attached: read it fully first and rely on it alone for information, examples, and terminology. Do not add anything from outside it. If a page cannot be read, say so and do not guess.
+  - If no file is attached: use accurate, well-established information appropriate to the grade level. Do not state any number, date, or name you are not sure about, and list any such uncertainty at the end of your reply.
+- The infographic must show a logical teaching sequence suited to the nature of the topic (e.g., definition → understanding → application, or cause → process → result).
+- Every element must serve a clear educational purpose. No motivational content and no generic statements such as "Why this topic matters."
+
+## T — TASK
+Carry out both steps in order, in a single response:
+
+### Step 1: Internal planning (do not display it before the image)
+1. Identify the topic type (concept, rule, process, event, person, place, system, skill, etc.).
+2. Choose 6 to 8 knowledge units directly related to the topic, of the kinds that suit its nature. Possible unit types: definition, characteristics, parts or structure, types or classification, stages or steps, causes and effects, timeline, location or context, laws or rules, comparison, examples, applications, common mistakes. Do not force a unit type that does not fit the topic.
+3. For each unit, provide:
+   - A title of one to three words: a short conceptual label, not a sentence.
+   - 3 to 5 items as needed. Do not pad to reach 5.
+   - Each item is one line of 3 to 10 words: a point, label, number, or short comparison, never an explanatory sentence.
+   - Terms, numbers, dates, symbols, formulas, and examples must be copied exactly as in the source, including spelling (and, in Arabic, diacritics and hamza forms).
+   - The best visual treatment for the unit (diagram, timeline, flowchart, small table, comparison, cross-section, chart, or labeled illustration).
+   - Its relationship to the center (an arrow plus the meaning of the relationship in two or three words).
+4. Define one central visual that summarizes the whole topic.
+5. Key-term highlighting: one to two highlighted segments per item (a word or a phrase of up to 3 words), wrapped in ==. The highlight must not exceed about a quarter of the item, and it must stay inside its own item, with no separate glossary of terms.
+6. Do not repeat the same information in more than one unit. Do not create units titled Summary, Review, Conclusion, or Why It Matters.
+7. In bilingual mode: write the text in the primary language (Arabic) and add the English translation in parentheses for the highlighted terms only.
+
+### Step 2: Draw the infographic
+Transfer the internal plan exactly as it is, with no changes to titles, items, examples, relationships, or highlighted parts. Do not turn short phrases into explanatory sentences. Do not invent facts, examples, or units.
+
+**Language and direction:**
+- Arabic: RTL, reading right to left and top to bottom, clear Arabic handwriting-style font, with wider and larger titles.
+- English: LTR, reading left to right and top to bottom, clear handwriting-style font, with bold ALL-CAPS titles.
+- Bilingual: overall direction follows the primary language, with the translation in a smaller font inside the parentheses.
+
+**Layout:**
+1. The central title (2 to 4 lines) goes inside a simple hand-drawn rectangular box with a clear black outline and an orange side and bottom shadow, with a white interior. This raised-box style is used for the title only.
+2. The central visual sits directly below the title and is the largest drawing on the page.
+3. Place the 6 to 8 units around the center in the reading order of the infographic language. Do not number them. Use wide white space and slightly varied heights and widths instead of a rigid grid.
+4. Connect each unit to the center with a hand-drawn arrow (solid, dotted, or curved) that has a clear meaning based on its relationship. No decorative lines and no unnecessary crossings.
+5. For each unit: a bold hand-lettered title larger than the body text (a simple curved outline around it or a yellow highlight is allowed), then one or two simple drawings related to the content, then the items as short lines with small colored bullet dots.
+6. If the information is truly tabular, use a simple two-column table with thin hand-drawn lines. If the source contains a quotation, put it in a speech bubble.
+
+**Format:**
+- Aspect ratio: 9:16 portrait.
+- Background: clean, bright white, with no notebook lines, grid, or paper texture.
+- Drawing style: simple black line drawings, like a teacher drawing on a whiteboard. Include people only if the topic needs them, with round heads, clear eyes, thin limbs, and one distinguishing mark per person drawn from their role or context.
+- Colors: black for lines and text; turquoise and orange for limited flat fills; yellow or muted red only for warning or contrast. No gradients, realistic shadows, glow, clip art, logos, or watermarks.
+- Highlighting: a semi-transparent, slightly irregular highlighter stroke behind the marked parts. Do not show the == symbols. Do not highlight any unmarked text.
+- Dividers: white space, a short wavy line, or a dotted line. Never enclose a unit in a card or closed frame. The only closed shapes allowed are the title box, speech bubbles, the table, and the curved frame around a unit title.
+- Writing: clear and legible in the infographic language, with spelling, numbers, and symbols exactly matching the plan. No fake text and no distorted letters. If space is tight, reduce the drawings, never the accuracy of the text.
+- Do not add notes or headings that are not in the plan.
+
+## F — FORMAT OF OUTPUT
+1. The infographic (image) first.
+2. Immediately after it: the text plan you relied on (the central title, then each unit with its items, with the highlighted parts marked by ==), so the teacher can check it against the source.
+3. If there is no source file: one final line naming any information you are not sure about.
+4. No extra explanation and no introductions.</div>
+          </div>
+
+          <div class="pairfig">
+            <figure>
+              <img src="assets/ArabicHamza.png" alt="" data-optional
+                   data-en-label="The image produced by the RCTF lesson summary prompt" data-ar-label="الصورة التي أنتجها برومت ملخص الدرس RCTF">
+              <figcaption data-en-html="<b>The result</b>An infographic summary of the lesson in Arabic, as the prompt requires." data-ar-html="<b>النتيجة</b>ملخص إنفوجرافي للدرس باللغة العربية وفق المطلوب في البرومت."><b>The result</b>An infographic summary of the lesson in Arabic, as the prompt requires.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- ============ STEP 5 · PICTURES ============ -->
+        <div class="block" id="pictures">
+          <span class="step-no" data-en="Step 05" data-ar="الخطوة ٠٥">Step 05</span>
+          <h2 class="display" data-en="The same frame, applied to a picture" data-ar="تجربة إطار RCTF لإخراج صورة من خيالك">The same frame, applied to a picture</h2>
+          <p class="sub" data-en="RCTF does not change when the output is an image. Only the four answers change." data-ar="لا يتغير إطار RCTF عندما يكون المخرج صورة. تتغير الإجابات الأربع فقط.">RCTF does not change when the output is an image. Only the four answers change.</p>
+
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th data-en="RCTF" data-ar="الإطار">RCTF</th>
+                  <th data-en="For a picture, this means" data-ar="في حالة الصورة، يعني هذا">For a picture, this means</th>
+                  <th data-en="في حالة الصورة" data-ar="في حالة الصورة">في حالة الصورة</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="k">R</td>
+                  <td class="en"><b>Role</b> — the artist you are hiring: 3D scene designer, character artist, children's-book illustrator.</td>
+                  <td class="ar"><b>الدور</b> — الفنان الذي توظفه: مصمم مشاهد ثلاثية الأبعاد، أو فنان شخصيات، أو رسام كتب أطفال.</td>
+                </tr>
+                <tr>
+                  <td class="k">C</td>
+                  <td class="en"><b>Context</b> — the world of the picture: the place, the objects in it, who the character is and what they are wearing.</td>
+                  <td class="ar"><b>السياق</b> — عالم الصورة: المكان، والأشياء الموجودة فيه، ومن هي الشخصية وماذا ترتدي.</td>
+                </tr>
+                <tr>
+                  <td class="k">T</td>
+                  <td class="en"><b>Task</b> — the exact moment to draw, the pose, the lighting, and everything that must <em>not</em> appear.</td>
+                  <td class="ar"><b>المهمة</b> — اللحظة المطلوب رسمها بدقة، والوضعية، والإضاءة، وكل ما يجب ألا يظهر.</td>
+                </tr>
+                <tr>
+                  <td class="k">F</td>
+                  <td class="en"><b>Format</b> — orientation, aspect ratio, camera angle, depth of field, style and resolution.</td>
+                  <td class="ar"><b>التنسيق</b> — الاتجاه، ونسبة الأبعاد، وزاوية الكاميرا، وعمق المجال، والأسلوب، والدقة.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="hint">
+            <p style="margin:0" data-en-html="<b>Two habits that separate a usable image prompt from a wish:</b> name what must <em>not</em> appear (text, logos, extra fingers, cropped feet), and describe the same character with the same words every time you mention them. Consistency in your wording is what produces consistency in the picture." data-ar-html="<b>عادتان تفصلان بين أمر صورة صالح للاستخدام ومجرد أمنية:</b> حدِّد ما يجب ألا يظهر (نصوص، شعارات، أصابع زائدة، أقدام مقطوعة)، وصِف الشخصية نفسها بالكلمات نفسها في كل مرة تذكرها. الثبات في صياغتك هو ما ينتج الثبات في الصورة."><b>Two habits that separate a usable image prompt from a wish:</b> name what must <em>not</em> appear (text, logos, extra fingers, cropped feet), and describe the same character with the same words every time you mention them. Consistency in your wording is what produces consistency in the picture.</p>
+          </div>
+
+          <p data-en="Below is one complete RCTF image prompt, followed by the picture it actually produced. Read the prompt first, then look at the picture and find each instruction in it." data-ar="فيما يلي أمر صورة كامل وفق RCTF، تليه الصورة التي أنتجها فعلًا. اقرأ الأمر أولًا، ثم انظر إلى الصورة وابحث عن كل تعليمة فيها.">Below is one complete RCTF image prompt, followed by the picture it actually produced. Read the prompt first, then look at the picture and find each instruction in it.</p>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-img-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-tall is-ar" id="p-img-ar" spellcheck="false">R — الدور
+تصرّف بصفتك خبيراً في تصميم المشاهد السينمائية ثلاثية الأبعاد، وفنانًا متخصصًا في تصميم الشخصيات، ورسّامًا مبدعًا لكتب الأطفال. أنشئ صورة خيالية مصقولة وعالية الدقة تجمع بين الرسوم المتحركة ثلاثية الأبعاد ذات التفاصيل الواقعية ورسومات القصص المصورة الملوّنة.
+
+C — السياق
+يدور المشهد حول طفل عمره 10 سنوات داخل مختبر العلوم في المدرسة، معلّق على جدران المختبر ملصقات مؤطرة مستوحاة من العلماء والقصص المصورة، دون استخدام شخصيات أو علامات تجارية محمية بحقوق النشر. تنتشر كتب العلوم والصفحات المرسومة بصورة طبيعية فوق أرضية خشبية دافئة.
+يوجد في منتصف المختبر دولاب أدوات مختبر مفتوح، ارتفاعه أطول من الطفل. تحتوي ضلفتاه الظاهرتان على ستة أرفف لأدوات مخبرية واضحة ومنفصلة، يعرض الطفل نفسه بتعبيرات وجه مختلفة: السعادة، والدهشة، والحماس، والصدمة، والضحك، والبهجة.
+يخرج طفل مرح، عمره 10 سنوات، بطريقة سحرية من الدولاب المفتوح إلى العالم الحقيقي. يتمتع ببشرة فاتحة، وعينين بنيتين كبيرتين ومعبّرتين، وشعر بني داكن، وابتسامة مبهجة. يرتدي سترة بغطاء رأس باللون الأزرق الزاهي، وبنطال جينز أزرق ضيقًا، وحذاءً رياضيًا قماشيًا داكن اللون بنعل أبيض، وحقيبة كتف بنية صغيرة متقاطعة على جسده.
+
+T — المهمة
+أنشئ اللحظة السحرية الدقيقة التي يخطو فيها الطفل من منتصف الدولاب العملاق إلى العالم الحقيقي.
+- أظهر جسم الطفل كاملًا في مقدمة المشهد.
+- ضع إحدى قدميه بثبات فوق الأرضية الخشبية، بينما تكون القدم الأخرى مرفوعة إلى الأمام في وضعية مشي حيوية.
+- اجعل ذراعيه ممدودتين بصورة طبيعية توحي بالحركة والحماس.
+- ضع دولاب المختبر العملاق المفتوح خلفه مباشرة، بحيث يحيط بجسمه مثل بوابة سحرية.
+- قسّم ضلفتي الدولاب إلى ستة أرفف بها أدوات مخبرية واضحة ومنفصلة.
+- اجعل ضوءًا سحريًا قويًا باللون الأزرق السماوي ينبعث من وسط الدولاب.
+- أضف مسارات من الطاقة الزرقاء، وشرارات برتقالية متوهجة، وجزيئات ضوئية صغيرة حول الطفل والدولاب.
+- أضئ حواف شعر الطفل وسترته وبنطاله بضوء أزرق سحري واضح وطبيعي.
+- أضف كتب علوم مصورة وصفحات متناثرة في مقدمة الصورة لتعزيز الإحساس بالعمق.
+- اجعل خلفية المختبر ضبابية وناعمة حتى يظل الطفل والبوابة السحرية مركز الاهتمام.
+- استخدم إضاءة دافئة داخل المختبر تتباين مع التوهج الأزرق الساطع للبوابة.
+- امنح الصورة أجواءً مبهجة، ومغامِرة، وسحرية، وسينمائية.
+- حافظ على تشريح جسدي دقيق ومناسب لعمر الطفل، وأيدٍ طبيعية، وملامح وجه متناظرة.
+- لا تضف أي نص داخل الصورة.
+- لا تستخدم أسماء علامات تجارية مقروءة، أو شعارات، أو علامات مائية، أو شخصيات أبطال خارقين معروفة ومحمية بحقوق النشر.
+- تجنب تشوه الحروف، والأطراف المكررة، والأصابع الزائدة، والأيدي المشوهة، والأجسام المكررة، وقص الرأس أو القدمين خارج الإطار.
+
+F — الإطار
+- الاتجاه: صورة رأسية.
+- نسبة الأبعاد: 4:5.
+- التكوين: الطفل بكامل جسده في مركز الصورة.
+- زاوية الكاميرا: زاوية منخفضة قليلًا وقريبة من مستوى الأرض.
+- نوع اللقطة: لقطة سينمائية واسعة تُظهر الجسم كاملًا.
+- مقدمة المشهد: كتب علوم مصورة وصفحات متناثرة فوق الأرضية الخشبية.
+- منتصف المشهد: الطفل يخطو بثقة وحماس نحو المشاهد.
+- خلفية المشهد: دولاب أدوات المختبر العملاق المفتوح وغرفة المختبر الضبابية الناعمة.
+- التركيز البصري: تركيز شديد الوضوح على الطفل وبوابة الدولاب.
+- عمق المجال: ضحل، مع ضبابية ناعمة في الخلفية.
+- الإضاءة: إضاءة سينمائية حجمية، وإضاءة حواف زرقاء سماوية، وإضاءة محيطية دافئة، وشرارات برتقالية متوهجة.
+- الألوان: ألوان زاهية ومتوازنة، مع تباين واضح بين الدرجات الدافئة والتوهج الأزرق.
+- الأسلوب: مظهر فاخر مستوحى من أفلام الرسوم المتحركة السينمائية ثلاثية الأبعاد، وممزوج برسومات قصص مصورة تفصيلية وملونة.
+- الخامات: أنسجة واقعية للقماش والورق والخشب.
+- الجودة: تفاصيل فائقة، وألوان نابضة بالحياة، وإخراج مصقول، وإحساس ديناميكي بالحركة، ودقة 4K.
+- التكوين الآمن: يجب أن يظهر رأس الطفل وذراعيه وساقيه وحذاؤه كاملًا داخل الإطار.</textarea>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-img-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-tall" id="p-img-en" spellcheck="false">R — ROLE
+Act as an expert in 3D cinematic scene design, a character design artist, and a creative children's book illustrator. Create a polished, high-resolution, imaginative image that blends realistic 3D animation details with colorful comic-book-style illustration.
+
+C — Context
+The scene features a 10-year-old child inside a school science lab. Framed posters inspired by scientists and comic books hang on the walls (avoiding any copyrighted characters or brands). Science books and hand-drawn pages are scattered naturally across a warm wooden floor.
+In the center of the lab stands an open equipment cabinet that is taller than the child. Its visible doors reveal six shelves holding distinct, clear laboratory instruments. The child is depicted with various facial expressions: happiness, surprise, excitement, shock, laughter, and joy.
+A playful 10-year-old child is magically stepping out of the open cabinet into the real world. He has fair skin, large expressive brown eyes, dark brown hair, and a cheerful smile. He wears a bright blue hoodie, slim-fit blue jeans, dark canvas sneakers with white soles, and a small brown crossbody bag.
+
+T — Task
+Create the precise magical moment where the child steps from the center of the giant cabinet into the real world.
+- Show the child's full body in the foreground of the scene.
+- Position one of his feet firmly on the wooden floor, while the other is raised forward in a lively walking stride.
+- Position his arms naturally, conveying a sense of movement and enthusiasm.
+- Place a large, open laboratory cabinet directly behind him, framing his body like a magical portal.
+- Divide the cabinet into six shelves displaying distinct, clearly visible laboratory equipment.
+- Have a powerful, magical sky-blue light emanate from the center of the cabinet.
+- Add trails of blue energy, glowing orange sparks, and tiny light particles around the child and the cabinet.
+- Highlight the edges of the child's hair, jacket, and trousers with a clear, natural magical blue light.
+- Add illustrated science books and scattered pages in the foreground to enhance the sense of depth.
+- Keep the laboratory background soft and blurred so the child and the magical portal remain the focal point.
+- Use warm lighting within the laboratory to contrast with the portal's bright blue glow.
+- Create an atmosphere that is joyful, adventurous, magical, and cinematic.
+- Ensure accurate, age-appropriate anatomy, natural-looking hands, and symmetrical facial features.
+- Do not include any text within the image.
+- Do not use legible brand names, logos, watermarks, or copyrighted superhero characters.
+- Avoid distorted lettering, duplicated limbs, extra fingers, deformed hands, duplicated bodies, or cropping the head or feet out of the frame.
+
+F — Frame
+- Orientation: Portrait.
+- Aspect ratio: 4:5.
+- Composition: Full-body shot of the child centered in the frame.
+- Camera angle: Slightly low angle, close to ground level.
+- Shot type: Cinematic wide shot showing the full body.
+- Foreground: Illustrated science books and scattered pages on the wooden floor.
+- Midground: The child stepping confidently and enthusiastically toward the viewer.
+- Background: A massive, open laboratory cabinet and a softly blurred laboratory room.
+- Focus: Sharp focus on the child and the cabinet door.
+- Depth of field: Shallow, with soft background blur.
+- Lighting: Cinematic volumetric lighting, sky-blue rim lighting, warm ambient light, and glowing orange sparks.
+- Colors: Vibrant and balanced, with distinct contrast between warm tones and the blue glow.
+- Style: Premium look inspired by 3D animated films, blended with detailed, colorful comic-book art.
+- Textures: Realistic textures for fabric, paper, and wood.
+- Quality: Ultra-detailed, vibrant colors, polished finish, dynamic sense of motion, 4K resolution.
+- Safe composition: The child's head, arms, legs, and shoes must appear fully within the frame.</textarea>
+          </div>
+
+          <div class="pairfig">
+            <figure>
+              <img src="assets/rctf-image-result.jpg" alt="" data-optional
+                   data-en-label="The picture produced by the RCTF image prompt" data-ar-label="الصورة التي أنتجها أمر الصورة وفق RCTF">
+              <figcaption data-en-html="<b>The result</b>The picture produced by the prompt above: the laboratory cabinet and its shelves, the posters, the blue hoodie and jeans, and the magical blue light." data-ar-html="<b>النتيجة</b>الصورة الناتجة عن البرومت أعلاه: دولاب المختبر وأرففه، والملصقات، والسترة الزرقاء والبنطال الجينز، والضوء الأزرق السحري."><b>The result</b>The picture produced by the prompt above: the laboratory cabinet and its shelves, the posters, the blue hoodie and jeans, and the magical blue light.</figcaption>
+            </figure>
+          </div>
+
+          <h3 data-en="Now check the result against the prompt" data-ar="تعليمات هامة عند إنتاج صورة">Now check the result against the prompt</h3>
+          <ul class="ticks is-do">
+            <li data-en="Review every point you asked for in the prompt: was each one carried out?" data-ar="راجع جميع النقاط التي طلبتها في البرومت: هل نُفّذت كلها؟">Review every point you asked for in the prompt: was each one carried out?</li>
+            <li data-en="Never publish an AI picture to learners without checking it for anatomy, stray writing and anything culturally inappropriate." data-ar="راجع محتوى الصورة لتجنب نشر أي محتوى غير مناسب ثقافيًا أو غير ملائم للتربية والتعليم.">Never publish an AI picture to learners without checking it for anatomy, stray writing and anything culturally inappropriate.</li>
+          </ul>
+        </div>
+
+        <!-- ============ STEP 6 · REVERSE PROMPT ============ -->
+        <div class="block" id="reverse">
+          <span class="step-no" data-en="Step 06" data-ar="الخطوة ٠٦">Step 06</span>
+          <h2 class="display" data-en="Reverse-engineer a prompt" data-ar="الهندسة العكسية للبرومت">Reverse-engineer a prompt</h2>
+          <p class="sub" data-en="Get the prompt behind any image you like." data-ar="احصل على البرومت الذي يقف خلف أي صورة أعجبتك.">Get the prompt behind any image you like.</p>
+
+          <p data-en="Writing a picture prompt from an empty page is hard. Reading one out of a finished picture is much easier — and it is the fastest way to learn what a good image prompt contains. Upload any picture you like, ask for its prompt in the RCTF frame, and you receive a written model you can adapt to your needs." data-ar="كتابة برومت صورة من الصفر صعبة، أما استخراجه من صورة جاهزة فأسهل بكثير، وهو أسرع طريقة لتتعلم مكوّنات برومت الصورة الجيد. ارفع أي صورة تعجبك، واطلب برومتها وفق إطار RCTF، فتحصل على نموذج مكتوب تعدّله بما يناسبك.">Writing a picture prompt from an empty page is hard. Reading one out of a finished picture is much easier — and it is the fastest way to learn what a good image prompt contains. Upload any picture you like, ask for its prompt in the RCTF frame, and you receive a written model you can adapt to your needs.</p>
+
+          <ol class="howto">
+            <li data-en="Upload the picture into ChatGPT or Gemini with the plus button." data-ar="ارفع الصورة إلى ChatGPT أو Gemini من زر الإضافة (+).">Upload the picture into ChatGPT or Gemini with the plus button.</li>
+            <li data-en="Copy the reverse request below and send it with the picture." data-ar="انسخ برومت العكس التالي وأرسله مع الصورة.">Copy the reverse request below and send it with the picture.</li>
+            <li data-en="Paste the prompt it returns into a new chat, without the picture, to rebuild the image." data-ar="الصق البرومت الناتج في محادثة جديدة، دون الصورة، لإعادة بناء الصورة.">Paste the prompt it returns into a new chat, without the picture, to rebuild the image.</li>
+          </ol>
+
+          <h3 data-en="The worked example — memory album cover" data-ar="المثال العملي — غلاف ألبوم الذكريات">The worked example — memory album cover</h3>
+          <div class="pairfig">
+            <figure>
+              <img src="assets/walEleen.png" alt="" data-optional
+                   data-en-label="The original picture used for the reverse exercise" data-ar-label="الصورة الأصلية المستخدمة في تمرين العكس">
+              <figcaption data-en-html="<b>The picture we started from</b>No prompt, no settings, no information — only the image itself, uploaded into the chat." data-ar-html="<b>الصورة التي بدأنا منها</b>بلا أمر، وبلا إعدادات، وبلا معلومات — الصورة وحدها مرفوعة داخل المحادثة."><b>The picture we started from</b>No prompt, no settings, no information — only the image itself, uploaded into the chat.</figcaption>
+            </figure>
+            <figure>
+              <img src="assets/reverse-result.jpg" alt="" data-optional
+                   data-en-label="The picture regenerated from the reverse-engineered prompt" data-ar-label="الصورة المعاد توليدها من الأمر المستخرج بالعكس">
+              <figcaption data-en-html="<b>The picture the reverse prompt rebuilt</b>Generated from the written prompt alone, without attaching the original image." data-ar-html="<b>الصورة التي أعاد البرومت العكسي بناءها</b>مولَّدة من البرومت المكتوب وحده، دون إرفاق الصورة الأصلية."><b>The picture the reverse prompt rebuilt</b>Generated from the written prompt alone, without attaching the original image.</figcaption>
+            </figure>
+          </div>
+
+          <p class="prompt-label" data-en="1 · The reverse request (send it with the picture)" data-ar="١ · برومت العكس (يُرسل مع الصورة)">1 · The reverse request (send it with the picture)</p>
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-ask-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-mid is-ar" id="p-ask-ar" spellcheck="false">أنت خبير في التحليل البصري وهندسة البرومتات لأدوات توليد الصور بالذكاء الاصطناعي، ومتخصص في توليد الصور عبر Gemini وChatGPT.
+
+حلّل الصورة المرفقة بدقة، ثم اكتب برومت يعيد إنتاجها بأقرب صورة ممكنة.
+
+الخطوة الأولى — التحليل (نقاط مختصرة):
+- نوع الصورة (فوتوغرافية، رسم توضيحي، تصميم ثلاثي الأبعاد، إنفوجرافيك، شريحة، واجهة تطبيق...)
+- العنصر الرئيس وتفاصيله
+- التكوين وزاوية التصوير والإطار
+- النمط الفني والأسلوب
+- الألوان والإضاءة
+- الخلفية والبيئة المحيطة
+- أي نص ظاهر في الصورة (انقله حرفيًا)
+- الطابع العام والمشاعر
+- نسبة الأبعاد
+صف ما يظهر فعلًا فقط، وإذا كان شيء غير واضح فاذكر ذلك ولا تخمّن.
+
+الخطوة الثانية — برومت إعادة الإنتاج وفق إطار RCTF:
+- الدور (Role): الشخصية الخبيرة التي يتقمصها مولّد الصور
+- السياق (Context): الغرض من الصورة وجمهورها والإطار العام
+- المهمة (Task): وصف دقيق ومفصل للصورة المطلوب توليدها
+- الصيغة (Format): النمط، نسبة الأبعاد، لوحة الألوان، مستوى التفاصيل، وما يجب تجنبه
+
+اكتب البرومت بلغة وصفية طبيعية وواضحة (جمل كاملة لا قوائم كلمات مفتاحية)، واذكر نسبة الأبعاد بالكلمات (مثل: "صورة أفقية عريضة بنسبة 16:9")، لأن Gemini وChatGPT يستجيبان لهذا الأسلوب بشكل أفضل.
+
+الخطوة الثالثة — قدّم البرومت النهائي مرتين، كلٌّ في مربع كود مستقل:
+١. النسخة الإنجليزية
+٢. النسخة العربية: صياغة طبيعية جاهزة للاستخدام، وليست ترجمة حرفية
+
+اجعل كل برومت مكتملًا بذاته، بحيث يمكن لصقه مباشرة في Gemini أو ChatGPT دون تعديل.</textarea>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-ask-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-mid" id="p-ask-en" spellcheck="false">You are an expert visual analyst and prompt engineer for AI image generators, specialising in Gemini and ChatGPT image generation.
+
+Analyse the attached image carefully, then write a prompt that would recreate it as closely as possible.
+
+Step 1 — Analysis (brief bullet points):
+- Image type (photo, illustration, 3D render, infographic, slide, UI, etc.)
+- Main subject(s) and their details
+- Composition and camera angle / framing
+- Visual style and artistic technique
+- Colour palette and lighting
+- Background and environment
+- Any visible text (quote it exactly)
+- Mood and atmosphere
+- Aspect ratio
+Describe only what is actually visible. If something is unclear, say so instead of guessing.
+
+Step 2 — The recreation prompt, structured with the RCTF framework:
+- Role: the expert persona the image generator should adopt
+- Context: the purpose, audience, and setting of the image
+- Task: a precise, detailed description of the image to generate
+- Format: style, aspect ratio, colour palette, level of detail, and anything to avoid
+
+Write the prompt in clear, descriptive natural language (full sentences, not keyword lists), and state the aspect ratio in words (e.g. "wide 16:9 landscape format"), because Gemini and ChatGPT respond best to this style.
+
+Step 3 — Deliver the final prompt twice, each in its own code block:
+1. English version
+2. Arabic version: a natural, ready-to-use prompt, not a literal translation
+
+Make each prompt self-contained, so it can be pasted directly into Gemini or ChatGPT without extra editing.</textarea>
+          </div>
+
+          <p class="prompt-label" data-en="2 · The prompt it returned for this picture" data-ar="٢ · البرومت الذي أعاده الروبوت لهذه الصورة">2 · The prompt it returned for this picture</p>
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-rev-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-tall is-ar" id="p-rev-ar" spellcheck="false">R — الدور
+تصرّف بصفتك مصممًا محترفًا لأغلفة الكتب العتيقة، وفنانًا متخصصًا في تصميم ألبومات الذكريات القديمة، ومصورًا فوتوغرافيًا للتحرير والمجلات، ومصمم خطوط وزخارف كلاسيكية، وخبيرًا في توليد الصور السينمائية عالية الجودة.
+
+أنشئ غلافًا لكتاب ذكريات عائلية بطابع نوستالجي عتيق، يجمع بين ملمس الورق القديم، والتصوير الفوتوغرافي بالسيبيا، والزخارف الفيكتورية الكلاسيكية، والخطوط السيريفية القديمة، وتجليد الكتب اليدوي، والإضاءة السينمائية الناعمة.
+
+يجب أن تبدو النتيجة كأنها ألبوم ذكريات عائلي حقيقي وقديم محفوظ منذ عقود، تم تصويره كمنتج فاخر وقطعة تراثية ثمينة.
+
+C — السياق
+تُظهر الصورة كتابًا قديمًا مصنوعًا يدويًا لحفظ ذكريات العائلة، موضوعًا بشكل رأسي على خلفية بيضاء مائلة إلى العاجي ومضاءة بإضاءة ناعمة.
+
+الكتاب ذو اتجاه رأسي وغلافه سميك مصنوع من ورق أو قماش قديم باللون البيج والعاجي.
+
+يجب أن يحتوي الغلاف على تفاصيل واضحة تدل على القدم والاستعمال، مثل:
+
+تشققات دقيقة في سطح الورق
+تجاعيد وطيّات بسيطة
+بقع بنية باهتة
+حواف مستهلكة وقديمة
+خدوش صغيرة
+ملمس ورق البرشمان القديم
+زوايا أغمق قليلًا
+آثار الزمن والاستخدام اليدوي
+
+على الحافة اليسرى للكتاب يظهر تجليد يدوي باستخدام عدة حلقات وخيوط قطنية أو حبال بلون كريمي، مما يجعل الكتاب يبدو وكأنه ألبوم ذكريات عائلي قديم مصنوع يدويًا.
+
+في الجزء العلوي من الغلاف توجد لوحة زخرفية مستطيلة كبيرة تحتوي على العنوان:
+
+“Family Echoes”
+
+يجب كتابة العنوان بخط Serif كلاسيكي وأنيق باللون البني الداكن أو الزيتوني الباهت، مع وضعه في منتصف اللوحة.
+
+تحيط بالعنوان زخارف كلاسيكية مستوحاة من الطراز الفيكتوري، تتضمن:
+
+لفائف زخرفية
+تماثل هندسي
+زخارف نباتية
+خطوط محفورة
+منحنيات دقيقة
+زخارف ذهبية وبنية قديمة
+
+أسفل العنوان توجد صورة عائلية كبيرة داخل إطار مستطيل مزخرف.
+
+تُظهر الصورة أبًا وابنته الصغيرة في لحظة عائلية دافئة وعاطفية. يكون الأب خلف الطفلة أو بجانبها قليلًا، مع ابتسامة لطيفة، بينما تبتسم الطفلة بشكل طبيعي باتجاه الكاميرا.
+
+شعر الطفلة مصفف في تسريحتي شعر صغيرتين مع شرائط فاتحة اللون.
+
+يجب أن تبدو الصورة وكأنها صورة عائلية قديمة حقيقية، بتدرجات السيبيا الدافئة، وتباين منخفض قليلًا، وحبيبات فيلم قديمة، وملمس فوتوغرافي تاريخي، وعيوب بسيطة طبيعية تعطيها إحساسًا أرشيفيًا أصيلًا.
+
+تحيط بالصورة زخارف كلاسيكية دقيقة، مع إطارات نباتية متناظرة في الزوايا الأربع.
+
+في الجزء السفلي من الغلاف توجد لوحتان زخرفيتان منفصلتان جنبًا إلى جنب.
+
+اللوحة اليسرى تحتوي على:
+
+“Generational Bonds”
+
+واللوحة اليمنى تحتوي على:
+
+“Timeless Memories”
+
+تستخدم اللوحتان خطوطًا Serif كلاسيكية أنيقة، مع إطارات زخرفية متناظرة مستوحاة من الكتب الأوروبية القديمة.
+
+لوحة الألوان الأساسية:
+
+عاجي قديم
+بيج دافئ
+بني سيبيا
+بني داكن باهت
+ذهبي معتّق
+درجات البرشمان القديم
+
+يجب أن تنقل الصورة إحساس:
+
+التراث العائلي، الأجيال، الحب، الذكريات، الحنين، التاريخ، الدفء، واستمرارية الذكريات عبر الزمن.
+
+T — المهمة
+أعد إنشاء الصورة المرجعية بأكبر قدر ممكن من الدقة من حيث:
+
+التكوين، والنسب، وترتيب العناصر، وموقع النصوص، والملمس، والألوان، والإضاءة، والأجواء العاطفية.
+
+أنشئ كتاب ذكريات عائليًا قديمًا بشكل رأسي، واقفًا بشكل شبه مستقيم، مع زاوية تصوير أمامية تقريبًا ومنظور ثلاثي الأبعاد بسيط جدًا.
+
+حافظ على التسلسل البصري التالي:
+
+العنوان “Family Echoes” في الجزء العلوي.
+صورة عائلية كبيرة داخل إطار مزخرف في المنتصف.
+“Generational Bonds” و “Timeless Memories” في لوحتين أسفل الصورة.
+التجليد والخيوط اليدوية واضحة على الحافة اليسرى.
+ملمس البرشمان والورق القديم يغطي الغلاف بالكامل.
+
+اجعل الغلاف واقعيًا للغاية وفائق التفاصيل.
+
+يجب أن تحتوي الخامات على تفاصيل واقعية مثل:
+
+ألياف الورق، تشققات البرشمان، الحبر الباهت، الزخارف المحفورة، الخدوش الدقيقة، البقع القديمة، الحواف المستهلكة، وحبيبات الصور الفوتوغرافية القديمة.
+
+يجب أن تبدو الصورة العائلية وكأنها جزء حقيقي من غلاف الكتاب وليست صورة رقمية ملصقة فوقه.
+
+استخدم إضاءة استوديو ناعمة ودافئة من الجزء العلوي والأمامي، مع ظل خفيف واقعي خلف الكتاب باتجاه الجزء السفلي الأيمن.
+
+اجعل الخلفية بيضاء دافئة ونظيفة مع مساحة فارغة مناسبة حول الكتاب.
+
+يجب أن تبدو الصورة كأنها غلاف ألبوم عائلي أثري فاخر، تم تصويره لصالح مجموعة نشر تاريخية أو متحف للذكريات العائلية.
+
+تعليمات مهمة للنص
+
+اكتب النصوص التالية بالضبط وبشكل واضح ومقروء:
+
+Family Echoes
+
+Generational Bonds
+
+Timeless Memories
+
+لا تستبدل الكلمات، ولا تخطئ في تهجئتها، ولا تشوه الحروف، ولا تضف نصوصًا أخرى.
+
+تجنب:
+
+الخطوط الحديثة
+التصميم الجرافيكي المعاصر
+الألوان الزاهية
+الأسطح البلاستيكية
+اللمعان المفرط
+التصوير الحديث جدًا
+التشبع اللوني العالي
+العناصر المستقبلية
+
+F — الإطار
+نسبة الأبعاد: 2:3 رأسي
+التكوين: كتاب رأسي في منتصف الصورة
+زاوية الكاميرا: أمامية تقريبًا مع منظور جانبي بسيط
+الأسلوب: تصوير فوتوغرافي واقعي للغاية + تصميم ألبوم عائلي عتيق
+الدقة: فائقة الدقة والتفاصيل
+الإضاءة: إضاءة استوديو ناعمة ودافئة
+الألوان: سيبيا باهتة ودرجات البرشمان القديم
+الخلفية: أبيض دافئ / عاجي فاتح
+الخامات: ورق قديم، برشمان متشقق، تجليد يدوي، حواف مستهلكة
+العمق: عمق واقعي وظل طبيعي خفيف
+الخط: Serif كلاسيكي أنيق مع طابع محفور قديم
+المزاج: عاطفي، نوستالجي، دافئ، تاريخي، حميمي، خالد
+النتيجة النهائية: صورة غلاف كتاب فاخرة بجودة تحريرية عالية، خامات واقعية جدًا، تفاصيل دقيقة، وعيوب طبيعية تعزز الإحساس بالعمر والأصالة.</textarea>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+            <div class="prompt-tools">
+              <button class="btn btn-primary" type="button" data-copy="p-rev-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+              <span class="copied" aria-live="polite"></span>
+            </div>
+            <textarea class="prompt-box is-tall" id="p-rev-en" spellcheck="false">R — ROLE
+Act as an expert vintage book-cover designer, antique scrapbook artist, editorial photographer, typography designer, and cinematic image-generation specialist. Create a highly detailed nostalgic family-memory book cover with authentic early-20th-century vintage aesthetics. Combine realistic aged-paper textures, antique decorative typography, sepia photography, handcrafted bookbinding, ornamental Victorian-style frames, and subtle cinematic lighting. The result should look like a real, physically aged family keepsake album photographed as a premium product.
+
+C — CONTEXT
+The image depicts an old handmade family memory book standing vertically against a clean, softly illuminated off-white background.
+
+The book has a portrait orientation and a thick, weathered vintage cover made from aged beige/cream paper or cloth. The surface contains visible:
+
+Fine cracks and wrinkles
+Brownish stains
+Faded edges
+Scratches and imperfections
+Antique parchment texture
+Slightly darkened corners
+Subtle signs of age and handling
+
+The book is bound along the left edge with several visible cream-colored handmade cords/string loops, giving it the appearance of an old handcrafted family scrapbook or memory journal.
+
+At the top center of the cover is a large ornate antique rectangular label containing the exact title:
+
+“Family Echoes”
+
+The title is written in an elegant classic serif typeface, dark muted brown/olive ink, centered inside an elaborate Victorian-inspired ornamental frame. The frame contains symmetrical curls, flourishes, scrollwork, engraved details, and delicate antique decorations.
+
+Below the title is a large central rectangular vintage family photograph surrounded by an elaborate decorative border.
+
+The photograph shows a father and young daughter together in a warm, affectionate family moment. The father is positioned slightly behind/beside the girl, smiling gently toward her. The young girl has her hair styled into two small pigtails/buns with light-colored bows and is smiling naturally toward the camera.
+
+The photograph should look like an authentic old family photograph, rendered in monochromatic warm sepia tones with slightly faded contrast, soft film grain, subtle photographic imperfections, and a nostalgic archival appearance.
+
+The photo is enclosed inside a rectangular antique frame featuring intricate symmetrical floral and scroll decorations in the four corners.
+
+At the bottom of the book cover are two separate ornate decorative labels positioned side by side:
+
+Left label:
+
+“Generational Bonds”
+
+Right label:
+
+“Timeless Memories”
+
+Both labels use elegant antique serif typography and are surrounded by symmetrical Victorian ornamental borders.
+
+The overall color palette is:
+
+Aged ivory
+Warm beige
+Sepia brown
+Muted dark brown
+Faded gold
+Antique parchment tones
+
+The visual style should communicate:
+
+family heritage, generations, love, nostalgia, memories, history, warmth, timelessness, and sentimental storytelling.
+
+The book should appear physically real, with subtle dimensionality, realistic page thickness, slight perspective, soft shadows, and authentic material texture.
+
+T — TASK
+Recreate the reference image as closely as possible in terms of composition, proportions, visual hierarchy, typography placement, textures, and emotional atmosphere.
+
+Create a vertical antique family-memory book standing slightly upright, viewed from a nearly frontal angle with a subtle three-quarter perspective.
+
+Preserve the following hierarchy:
+
+“Family Echoes” as the dominant title near the upper section.
+Large framed sepia family photograph in the center.
+“Generational Bonds” and “Timeless Memories” as two smaller labels beneath the photograph.
+Handmade binding visible along the left edge.
+Aged parchment/book-cover texture throughout.
+
+Make the book cover highly detailed and photorealistic.
+
+The central family photograph should look naturally integrated into the physical cover rather than digitally pasted onto it.
+
+Use realistic paper fibers, cracked parchment, faded ink, embossed ornamental borders, tiny scratches, subtle stains, worn edges, and historical photographic grain.
+
+Use soft studio lighting from the upper/front area with a subtle shadow falling behind and toward the lower-right side of the book.
+
+Maintain a clean off-white background with generous negative space around the book.
+
+The image should feel like a premium museum-quality antique family album photographed for a historical publishing collection.
+
+Important typography instruction
+
+Render the following text exactly and legibly:
+
+Family Echoes
+
+Generational Bonds
+
+Timeless Memories
+
+Do not replace, misspell, distort, or invent words.
+
+Avoid modern fonts, modern graphic design, bright colors, plastic textures, glossy surfaces, contemporary photography, excessive saturation, or futuristic elements.
+
+F — FORMAT
+Aspect ratio: 2:3 portrait
+Composition: centered vertical book
+Camera: front-facing with subtle three-quarter perspective
+Style: photorealistic vintage product photography + antique scrapbook design
+Resolution: ultra-high resolution, extremely detailed
+Lighting: soft warm studio lighting
+Color grading: muted sepia / antique parchment
+Background: clean warm white/off-white
+Texture: highly detailed aged paper, cracked parchment, worn bookbinding
+Depth: realistic physical depth and subtle cast shadow
+Typography: elegant antique serif / Victorian engraved lettering
+Overall mood: nostalgic, emotional, timeless, intimate, historical
+Output: premium editorial-quality book-cover photograph, realistic materials, sharp details, natural imperfections</textarea>
+          </div>
+        </div>
+
+        <!-- Pager -->
+        <nav class="pager">
+          <a class="btn btn-outline" href="index.html#sessions">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Back to home page" data-ar="العودة إلى الرئيسية">Back to home page</span>
+          </a>
+          <a class="btn btn-primary" href="LessonPlan.html">
+            <span data-en="Next: Lesson planning" data-ar="التالي: إعداد خطة الدرس">Next: Lesson planning</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/waleed-logo.png" alt="Waleed 2026">
+    <p data-en="Prompt engineering — AI Classes for Teachers." data-ar="هندسة الأوامر — التطوير للمعلمين بالذكاء الاصطناعي.">Prompt engineering — AI Classes for Teachers.</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<!-- ============ EXPLANATION POPUP ============ -->
+<dialog class="pop" id="pop">
+  <div class="pop-card">
+    <button class="pop-close" type="button" data-pop-close data-en-label="Close" data-ar-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="pop-body"></div>
+  </div>
+</dialog>
+
+<div id="pop-sources" hidden>
+<div id="pop-newchat">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="New chat" data-ar="محادثة جديدة">New chat</h3>
+  <p data-en="Start a new conversation when you move to a different topic, when you do not need anything from the previous chat, or simply to keep your work organised." data-ar="ابدأ محادثة جديدة عندما تنتقل إلى موضوع مختلف، أو عندما لا تحتاج شيئًا من المحادثة السابقة، أو لمجرد تنظيم عملك.">Start a new conversation when you move to a different topic, when you do not need anything from the previous chat, or simply to keep your work organised.</p>
+  <p data-en="Select New chat, choose Chat or Work, type your request, then press the arrow to send it." data-ar="اختر محادثة جديدة، ثم اختر المحادثة أو العمل، واكتب طلبك، ثم اضغط السهم لإرساله.">Select New chat, choose Chat or Work, type your request, then press the arrow to send it.</p>
+</div>
+<div id="pop-library">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Library" data-ar="المكتبة">Library</h3>
+  <p data-en="Where the files and creative materials from your work are collected. Use it to find something you created, reopen it, and ask for it to be revised, summarised, reused or improved." data-ar="المكان الذي تُجمع فيه الملفات والمواد الإبداعية الناتجة عن عملك. استخدمها للعثور على شيء أنشأته، وإعادة فتحه، وطلب مراجعته أو تلخيصه أو إعادة استخدامه أو تحسينه.">Where the files and creative materials from your work are collected. Use it to find something you created, reopen it, and ask for it to be revised, summarised, reused or improved.</p>
+  <p data-en="For example: “Open my previous lesson worksheet and add five differentiated questions.”" data-ar="مثال: «افتح ورقة عمل الدرس السابقة وأضف خمسة أسئلة متمايزة.»">For example: “Open my previous lesson worksheet and add five differentiated questions.”</p>
+</div>
+<div id="pop-scheduled">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Scheduled" data-ar="المهام المجدولة">Scheduled</h3>
+  <p data-en="Tasks that run later or repeatedly: daily reminders, weekly reports, recurring research, regular lesson-planning support." data-ar="مهام تعمل لاحقًا أو بصورة متكررة: تذكيرات يومية، وتقارير أسبوعية، وبحث دوري، ودعم منتظم لتخطيط الدروس.">Tasks that run later or repeatedly: daily reminders, weekly reports, recurring research, regular lesson-planning support.</p>
+  <p data-en="Open Scheduled, create a task, describe exactly what should happen, choose the date, time and repetition, check your time zone, then save. You can also see upcoming tasks, review completed runs, pause, edit or delete." data-ar="افتح المهام المجدولة، وأنشئ مهمة، وصِف بدقة ما ينبغي حدوثه، واختر التاريخ والوقت والتكرار، وتحقق من المنطقة الزمنية، ثم احفظ. ويمكنك أيضًا رؤية المهام القادمة، ومراجعة التشغيلات المنتهية، والإيقاف المؤقت، والتعديل، والحذف.">Open Scheduled, create a task, describe exactly what should happen, choose the date, time and repetition, check your time zone, then save. You can also see upcoming tasks, review completed runs, pause, edit or delete.</p>
+  <p data-en="Test the instruction once in a normal chat before you schedule it." data-ar="وجرِّب التعليمة مرة واحدة في محادثة عادية قبل جدولتها.">Test the instruction once in a normal chat before you schedule it.</p>
+</div>
+<div id="pop-plugins">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Plugins" data-ar="الإضافات">Plugins</h3>
+  <p data-en="Connections to outside tools and services such as Google Drive, Gmail, Google Calendar, Canva, Slack, Notion, Outlook and SharePoint." data-ar="اتصالات بأدوات وخدمات خارجية مثل Google Drive وGmail وGoogle Calendar وCanva وSlack وNotion وOutlook وSharePoint.">Connections to outside tools and services such as Google Drive, Gmail, Google Calendar, Canva, Slack, Notion, Outlook and SharePoint.</p>
+  <p data-en="Select Plugins, search for the one you need, open its page, install it, sign in if asked, review the permissions carefully, then start a new conversation and ask ChatGPT to use it. You can also type @ in the prompt box and choose an installed plugin." data-ar="اختر الإضافات، وابحث عما تحتاجه، وافتح صفحته، وثبِّته، وسجِّل الدخول إن طُلب منك، وراجع الأذونات بعناية، ثم ابدأ محادثة جديدة واطلب من ChatGPT استخدامه. ويمكنك أيضًا كتابة الرمز @ في صندوق الأمر واختيار إضافة مثبَّتة.">Select Plugins, search for the one you need, open its page, install it, sign in if asked, review the permissions carefully, then start a new conversation and ask ChatGPT to use it. You can also type @ in the prompt box and choose an installed plugin.</p>
+  <p data-en="Connect only trusted plugins, and review any action before you allow it to send, publish, delete or share anything." data-ar="لا تربط سوى الإضافات الموثوقة، وراجع أي إجراء قبل السماح له بالإرسال أو النشر أو الحذف أو المشاركة.">Connect only trusted plugins, and review any action before you allow it to send, publish, delete or share anything.</p>
+</div>
+<div id="pop-more">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="More" data-ar="المزيد">More</h3>
+  <p data-en="Additional features that do not fit in the sidebar. What appears here differs according to your plan, your device, your organisation's settings, and the features currently available to your account." data-ar="مزايا إضافية لا تتسع لها مساحة الشريط الجانبي. وما يظهر هنا يختلف حسب باقتك، وجهازك، وإعدادات مؤسستك، والمزايا المتاحة حاليًا لحسابك.">Additional features that do not fit in the sidebar. What appears here differs according to your plan, your device, your organisation's settings, and the features currently available to your account.</p>
+</div>
+<div id="pop-pinned">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Pinned" data-ar="المثبَّتة">Pinned</h3>
+  <p data-en="Chats you want to reach immediately: important ongoing work, prompt templates you reuse, the current lesson project." data-ar="محادثات تريد الوصول إليها فورًا: عمل مهم جارٍ، أو قوالب أوامر تعيد استخدامها، أو مشروع الدرس الحالي.">Chats you want to reach immediately: important ongoing work, prompt templates you reuse, the current lesson project.</p>
+  <p data-en="Find the chat in the sidebar, open its menu — usually three dots — and select Pin." data-ar="ابحث عن المحادثة في الشريط الجانبي، وافتح قائمتها — وهي عادةً ثلاث نقاط — واختر التثبيت.">Find the chat in the sidebar, open its menu — usually three dots — and select Pin.</p>
+</div>
+<div id="pop-projects">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Projects" data-ar="المشاريع">Projects</h3>
+  <p data-en="A dedicated workspace for one continuing subject, keeping its chats, files, sources and instructions together — for example Stage 6 English, or the AI Teacher Course." data-ar="مساحة عمل مخصصة لموضوع واحد مستمر، تجمع محادثاته وملفاته ومصادره وتعليماته معًا — مثل «اللغة الإنجليزية للمرحلة السادسة» أو «دورة المعلم في الذكاء الاصطناعي».">A dedicated workspace for one continuing subject, keeping its chats, files, sources and instructions together — for example Stage 6 English, or the AI Teacher Course.</p>
+  <p data-en="Find Projects in the sidebar, select the plus button, name it clearly, add project instructions, upload the files that belong to it, then start a new Chat or Work task inside it." data-ar="ابحث عن المشاريع في الشريط الجانبي، واختر زر الإضافة، وسمِّ المشروع تسمية واضحة، وأضف تعليمات المشروع، وارفع الملفات الخاصة به، ثم ابدأ داخله محادثة أو مهمة عمل جديدة.">Find Projects in the sidebar, select the plus button, name it clearly, add project instructions, upload the files that belong to it, then start a new Chat or Work task inside it.</p>
+  <p data-en="Use a separate chat inside the project for each major output: one for the lesson plan, another for the presentation." data-ar="واستخدم محادثة منفصلة داخل المشروع لكل مخرج رئيسي: واحدة لخطة الدرس وأخرى للعرض التقديمي.">Use a separate chat inside the project for each major output: one for the lesson plan, another for the presentation.</p>
+</div>
+<div id="pop-chats">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Chats" data-ar="المحادثات">Chats</h3>
+  <p data-en="Your previous conversations. Select a title to reopen one and continue from where you stopped; you can rename it, pin it, move it into a project, archive it or delete it." data-ar="محادثاتك السابقة. اختر عنوانًا لإعادة فتحه ومتابعة العمل من حيث توقفت؛ ويمكنك إعادة تسميته أو تثبيته أو نقله إلى مشروع أو أرشفته أو حذفه.">Your previous conversations. Select a title to reopen one and continue from where you stopped; you can rename it, pin it, move it into a project, archive it or delete it.</p>
+  <p data-en="Give them clear names such as “Stage 6 Flashback Presentation” or “Weekly Report – August”." data-ar="وسمِّها تسميات واضحة مثل «عرض الفلاش باك للمرحلة السادسة» أو «التقرير الأسبوعي – أغسطس».">Give them clear names such as “Stage 6 Flashback Presentation” or “Weekly Report – August”.</p>
+</div>
+<div id="pop-settings">
+  <p class="pop-eyebrow" data-en="Sidebar" data-ar="الشريط الجانبي">Sidebar</p>
+  <h3 data-en="Settings" data-ar="الإعدادات">Settings</h3>
+  <p data-en="The small gear icon at the bottom left. It manages your account and profile, appearance, notifications, personalisation, memory, archived chats, security and login, connected services, data and privacy, keyboard shortcuts and language." data-ar="أيقونة الترس الصغيرة في أسفل اليسار. تدير حسابك وملفك الشخصي، والمظهر، والإشعارات، والتخصيص، والذاكرة، والمحادثات المؤرشفة، والأمان وتسجيل الدخول، والخدمات المتصلة، والبيانات والخصوصية، واختصارات لوحة المفاتيح، واللغة.">The small gear icon at the bottom left. It manages your account and profile, appearance, notifications, personalisation, memory, archived chats, security and login, connected services, data and privacy, keyboard shortcuts and language.</p>
+  <p data-en="Be especially careful with privacy settings, connected accounts, plugin permissions, memory, and security and login options. Some of these may be controlled by your organisation." data-ar="وكن حذرًا بوجه خاص مع إعدادات الخصوصية، والحسابات المتصلة، وأذونات الإضافات، والذاكرة، وخيارات الأمان وتسجيل الدخول. وقد تكون بعض هذه الخيارات خاضعة لتحكم مؤسستك.">Be especially careful with privacy settings, connected accounts, plugin permissions, memory, and security and login options. Some of these may be controlled by your organisation.</p>
+</div>
+<div id="pop-chat">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="Chat" data-ar="المحادثة">Chat</h3>
+  <p data-en="Use Chat for quick conversations and simple tasks: asking a question, checking grammar, translating a passage, brainstorming, writing a short email, explaining a topic, drafting a simple prompt." data-ar="استخدم المحادثة للحوارات السريعة والمهام البسيطة: طرح سؤال، أو مراجعة قواعد، أو ترجمة نص، أو توليد أفكار، أو كتابة رسالة قصيرة، أو شرح موضوع، أو صياغة أمر بسيط.">Use Chat for quick conversations and simple tasks: asking a question, checking grammar, translating a passage, brainstorming, writing a short email, explaining a topic, drafting a simple prompt.</p>
+  <p data-en="Example: “Explain the past simple tense to a Stage 6 learner.”" data-ar="مثال: «اشرح زمن الماضي البسيط لمتعلم في المرحلة السادسة.»">Example: “Explain the past simple tense to a Stage 6 learner.”</p>
+</div>
+<div id="pop-work">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="Work" data-ar="العمل">Work</h3>
+  <p data-en="Use Work when you want a larger task completed, or something you can actually use: a presentation, a lesson plan, a document or spreadsheet, an interactive activity, an analysis of several files, research, images, or a task that runs on a schedule." data-ar="استخدم العمل عندما تريد إنجاز مهمة أكبر، أو إنتاج شيء تستخدمه فعلًا: عرض تقديمي، أو خطة درس، أو مستند أو جدول بيانات، أو نشاط تفاعلي، أو تحليل عدة ملفات، أو بحث، أو صور، أو مهمة تعمل وفق جدول زمني.">Use Work when you want a larger task completed, or something you can actually use: a presentation, a lesson plan, a document or spreadsheet, an interactive activity, an analysis of several files, research, images, or a task that runs on a schedule.</p>
+  <p data-en="You can follow the progress, answer its questions, add instructions and review the result." data-ar="ويمكنك متابعة التقدم، والإجابة عن أسئلته، وإضافة تعليمات، ومراجعة النتيجة.">You can follow the progress, answer its questions, add instructions and review the result.</p>
+  <p data-en="A simple rule: use Chat when you need an answer, and Work when you need a finished result." data-ar="قاعدة بسيطة: استخدم المحادثة حين تحتاج إجابة، والعمل حين تحتاج نتيجة نهائية.">A simple rule: use Chat when you need an answer, and Work when you need a finished result.</p>
+</div>
+<div id="pop-promptbox">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="The prompt box" data-ar="صندوق الأمر">The prompt box</h3>
+  <p data-en="The large box in the centre is where you describe what you want. A clear request names the task, the audience, the source material, the required format, and any important conditions — the same four questions as the RCTF frame in Part 1." data-ar="الصندوق الكبير في المنتصف هو المكان الذي تصف فيه ما تريده. الطلب الواضح يسمّي المهمة، والجمهور، والمادة المصدر، والتنسيق المطلوب، وأي شروط مهمة — وهي الأسئلة الأربعة نفسها في إطار RCTF في الجزء الأول.">The large box in the centre is where you describe what you want. A clear request names the task, the audience, the source material, the required format, and any important conditions — the same four questions as the RCTF frame in Part 1.</p>
+  <p data-en="For example: “Create a 10-slide presentation about the past simple tense for 12-year-old Stage 6 learners. Include examples, practice questions, answers, and colourful educational visuals.”" data-ar="مثال: «أنشئ عرضًا من عشر شرائح عن زمن الماضي البسيط لمتعلمين في سن الثانية عشرة بالمرحلة السادسة. أضف أمثلة وأسئلة تدريب وإجابات ومرئيات تعليمية ملوّنة.»">For example: “Create a 10-slide presentation about the past simple tense for 12-year-old Stage 6 learners. Include examples, practice questions, answers, and colourful educational visuals.”</p>
+</div>
+<div id="pop-plus">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="The plus button" data-ar="زر الإضافة">The plus button</h3>
+  <p data-en="Attach material: images, PDFs, Word documents, presentations, spreadsheets and text files. After attaching, always say what you want done with it." data-ar="أرفق موادك: صورًا، وملفات PDF، ومستندات Word، وعروضًا تقديمية، وجداول بيانات، وملفات نصية. وبعد الإرفاق قل دائمًا ما تريد فعله بها.">Attach material: images, PDFs, Word documents, presentations, spreadsheets and text files. After attaching, always say what you want done with it.</p>
+  <p data-en="For example: “Read the attached lesson plan and create a presentation based only on its content.” This is the button you use for the prompt-in-reverse exercise in Part 4." data-ar="مثال: «اقرأ خطة الدرس المرفقة وأنشئ عرضًا تقديميًا من محتواها وحده.» وهذا هو الزر الذي تستخدمه في تمرين الأمر العكسي في الجزء الرابع.">For example: “Read the attached lesson plan and create a presentation based only on its content.” This is the button you use for the prompt-in-reverse exercise in Part 4.</p>
+</div>
+<div id="pop-model">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="The model selector" data-ar="محدِّد النموذج">The model selector</h3>
+  <p data-en="The model name appears near the microphone. Select it to choose another available model or working style." data-ar="يظهر اسم النموذج بجوار الميكروفون. اختره لتحديد نموذج آخر متاح أو أسلوب عمل مختلف.">The model name appears near the microphone. Select it to choose another available model or working style.</p>
+  <p data-en="For most everyday teaching tasks the default model is the right one." data-ar="وفي معظم المهام التدريسية اليومية يكون النموذج الافتراضي هو الخيار الصحيح.">For most everyday teaching tasks the default model is the right one.</p>
+</div>
+<div id="pop-mic">
+  <p class="pop-eyebrow" data-en="Working area" data-ar="مساحة العمل">Working area</p>
+  <h3 data-en="The microphone" data-ar="الميكروفون">The microphone</h3>
+  <p data-en="Speak instead of typing. Speak clearly, then read the written text before you send it — dictation makes mistakes with names and technical terms." data-ar="تحدَّث بدلًا من الكتابة. تحدَّث بوضوح، ثم اقرأ النص المكتوب قبل إرساله — فالإملاء الصوتي يخطئ في الأسماء والمصطلحات.">Speak instead of typing. Speak clearly, then read the written text before you send it — dictation makes mistakes with names and technical terms.</p>
+</div>
+</div>
+
+<script src="assets/waleed.js"></script>
+<script src="assets/upgrade.js"></script>
+<script>
+/* تبويبات لغة البرومت: تتبع لغة الصفحة عند التحميل وعند تبديلها، ويمكن اختيارها يدويًا */
+(function () {
+  function show(tabs, lang) {
+    tabs.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.setAttribute('aria-selected', String(b.getAttribute('data-tab') === lang));
+    });
+    var pane = tabs.nextElementSibling;
+    while (pane && pane.classList.contains('ppane')) {
+      pane.hidden = pane.getAttribute('data-pane') !== lang;
+      pane = pane.nextElementSibling;
+    }
+  }
+  var all = document.querySelectorAll('.ptabs');
+  var pageLang = function () { return document.documentElement.getAttribute('dir') === 'rtl' ? 'ar' : 'en'; };
+  all.forEach(function (tabs) {
+    show(tabs, pageLang());
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]');
+      if (b) show(tabs, b.getAttribute('data-tab'));
+    });
+  });
+  new MutationObserver(function () { all.forEach(function (t) { show(t, pageLang()); }); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['dir'] });
+})();
+</script>
+</body>
+</html>

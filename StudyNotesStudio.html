@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Study Notes Studio · مصمّم مذكرات الأسئلة</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Anton&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120c47;--bg-2:#170f55;--surface:#1b1464;--surface-2:#251c80;--line:#3a31a0;--line-soft:#2d2590;--ink:#fff;--ink-2:#d6dcf5;--muted:#a3b5b2;--cyan:#29bfe8;--lime:#8bdd28;--navy:#1b1464;--r:12px;--ar:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--ar);min-height:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--lime);color:var(--navy)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.topbar{background:rgba(27,20,100,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft);position:sticky;top:0;z-index:8}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;direction:ltr}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:Anton,Impact,sans-serif;letter-spacing:.04em;color:var(--lime);font-size:19px}
+.brand img{height:42px;width:auto;display:block}
+.brand small{font:500 12px var(--mono);color:var(--cyan);margin-inline-start:10px;letter-spacing:.1em}
+.acts{display:flex;gap:8px;align-items:center}
+.acts .btn{margin:0;white-space:nowrap}
+.acts svg{width:17px;height:17px;flex:none}
+a.btn{text-decoration:none;color:inherit}
+html[lang=en] .hero h1,html[lang=en] .phead h2{font-family:Anton,Impact,sans-serif;font-weight:400}
+@media(max-width:700px){.brand small{display:none}}
+.hero{position:relative;overflow:hidden;padding:46px 0 34px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none}
+.o1{width:300px;height:300px;background:var(--cyan);top:-120px;inset-inline-start:-60px}
+.o2{width:260px;height:260px;background:var(--lime);opacity:.22;bottom:-130px;inset-inline-end:8%}
+.eyebrow{font:500 13px var(--mono);letter-spacing:.14em;color:var(--cyan);margin:0 0 10px}
+html[dir=rtl] .eyebrow{font-family:var(--ar);letter-spacing:0;font-weight:700;font-size:15px}
+.hero h1{position:relative;margin:0 0 12px;font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.35;color:var(--lime)}
+.hero p.lede{position:relative;margin:0;max-width:64ch;color:var(--ink-2);font-size:18px}
+.flow{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.flow span{border:1px solid var(--line);background:var(--bg-2);border-radius:999px;padding:6px 14px;font-size:13.5px;color:var(--ink-2)}
+.flow span.e{background:var(--lime);color:var(--navy);border-color:var(--lime);font-weight:700}
+.steps{display:flex;gap:6px;padding:8px;background:rgba(27,20,100,.88);border:1px solid var(--line-soft);border-radius:18px;margin-bottom:22px}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 12px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;color:var(--ink-2);font-weight:700}
+.step .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--mono);background:var(--surface-2);color:var(--lime);flex:none}
+.step.on{background:rgba(139,221,40,.12);border-color:var(--line);color:var(--ink)}
+.step.on .n{background:var(--lime);color:var(--navy)}
+.panel{background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:34px;margin-bottom:60px}
+.panel[hidden]{display:none}
+.phead h2{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);color:var(--lime);line-height:1.4}
+.phead p{margin:0 0 6px;color:var(--ink-2)}
+h3.sec{margin:30px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line-soft);font-size:16px;color:var(--cyan)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px 16px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}.f.w{grid-column:1/-1}
+label{font-size:13px;font-weight:600;color:var(--ink-2)}
+.h{font-weight:400;color:var(--muted);font-size:12px}
+input[type=text],input[type=number],select,textarea{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 13px;width:100%;min-height:44px;font-size:15px}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+select option,select optgroup{background:#1b1464;color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg-2);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px}
+.chip:has(input:checked){border-color:var(--lime);color:var(--lime);background:rgba(139,221,40,.1)}
+.chip input{accent-color:var(--lime);width:16px;height:16px}
+.row{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}.row.end{justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 20px;border-radius:12px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:700;transition:transform .16s,box-shadow .16s,background .16s}
+.btn:hover{box-shadow:0 8px 22px rgba(41,191,232,.3);transform:translateY(-1px)}
+.btn.p{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+.btn.sm{min-height:38px;padding:6px 14px;font-size:14px}
+.btn.c{border-color:var(--cyan);color:var(--cyan);min-height:34px;padding:4px 13px;font-size:13px}
+.blk{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:var(--surface-2);border-bottom:1px solid var(--line-soft)}
+.bh b{font-size:14px;color:var(--lime)}
+.ba{display:flex;gap:6px;flex-wrap:wrap}
+.bf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
+.dl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px;padding-top:20px;border-top:1px solid var(--line-soft)}
+pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font:13.5px/1.9 var(--ar);color:var(--ink-2);max-height:460px;overflow:auto}
+pre.rtl{direction:rtl;text-align:right}pre.ltr{direction:ltr;text-align:left;font-family:var(--mono);font-size:12.5px}
+.note{background:var(--bg-2);border:1px solid var(--line-soft);border-inline-start:4px solid var(--cyan);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--ink-2);margin:0 0 12px}
+.note[hidden]{display:none}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;background:var(--lime);color:var(--navy);font-weight:700;padding:10px 22px;border-radius:999px;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;z-index:20}
+.toast.on{opacity:1;transform:none}
+@media(max-width:700px){.panel{padding:22px}.step .t{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+<a class="brand" href="index.html"><img src="assets/waleed1-logo.png" alt="Waleed 2026" onerror="this.style.display='none'"><span>NOTES STUDIO<small>PROMPT CONSOLE</small></span></a>
+<div class="acts"><a class="btn sm" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span data-en="Home page">الرئيسية</span></a><button class="btn sm" id="ui" type="button" title="English / العربية">English</button></div>
+</div></header>
+
+<div class="hero"><i class="orb o1"></i><i class="orb o2"></i><div class="wrap">
+<p class="eyebrow" id="eb">الخطوة 1 — بيانات الغلاف</p>
+<h1 data-en="Practice Question Notes Designer">مصمّم مذكرات الأسئلة الذكي</h1>
+<p class="lede" data-en="Enter the details once to get an RCTF prompt in Arabic and English. Attach the textbook pages and ChatGPT returns a multi-page PDF: a cover, then varied practice questions for exam revision that never leave the attached pages.">أدخل البيانات مرة واحدة، فتحصل على برومت RCTF بالعربية والإنجليزية. أرفق صفحات الكتاب، فيعيد لك ChatGPT ملف PDF متعدد الصفحات: غلاف، ثم أسئلة متنوعة للتدريب قبل الاختبارات، لا تخرج عن الصفحات المرفقة.</p>
+<div class="flow"><span data-en="Textbook pages (PDF / JPG)">صفحات الكتاب (PDF / JPG)</span><span data-en="Varied questions">أسئلة متنوعة</span><span data-en="Answer key">مفتاح الإجابات</span><span data-en="Cover">الغلاف</span><span class="e" data-en="Ready PDF">PDF جاهز</span></div>
+</div></div>
+
+<main class="wrap">
+<nav class="steps">
+<button class="step on" data-go="0"><span class="n">1</span><span class="t" data-en="Cover details">بيانات الغلاف</span></button>
+<button class="step" data-go="1"><span class="n">2</span><span class="t" data-en="Questions and look">الأسئلة والمظهر</span></button>
+<button class="step" data-go="2"><span class="n">3</span><span class="t" data-en="The prompt">البرومت</span></button>
+</nav>
+
+<!-- Step 1 -->
+<section class="panel" id="p0">
+<div class="phead"><h2 data-en="Cover details">بيانات الغلاف</h2><p data-en="These details appear on the cover and in the page header.">تظهر هذه البيانات على الغلاف وفي ترويسة الصفحات.</p></div>
+<h3 class="sec" data-en="Cover fields">حقول الغلاف</h3>
+<div class="g">
+<div class="f"><label for="t" data-en="Teacher name">اسم المعلم</label><input type="text" id="t"></div>
+<div class="f"><label for="s" data-en="School name">اسم المدرسة</label><input type="text" id="s"></div>
+<div class="f"><label for="g" data-en="Grade">الصف</label><input type="text" id="g" placeholder="الصف السادس الابتدائي" data-en-ph="Grade 6"></div>
+<div class="f"><label for="sub" data-en="Subject">المادة</label><input type="text" id="sub" placeholder="لغتي الجميلة · العلوم · الرياضيات" data-en-ph="Arabic · Science · Math"></div>
+<div class="f w"><label for="top" data-en="Notes topic">موضوع المذكرة</label><input type="text" id="top" placeholder="مثال: الوحدة الثالثة - الضرب" data-en-ph="e.g. Unit 3 - Multiplication"></div>
+</div>
+<h3 class="sec" data-en="The source">المصدر</h3>
+<div class="g">
+<div class="f"><label for="cur" data-en="Curriculum">المنهج</label><select id="cur">
+<option value="" data-en="Choose the curriculum">اختر المنهج</option>
+<option data-en="Saudi National Curriculum">المنهج الوطني السعودي</option>
+<option data-en="Kuwaiti National Curriculum">المنهج الوطني الكويتي</option>
+<option data-en="Qatari National Curriculum">المنهج الوطني القطري</option>
+<option data-en="UAE Ministry of Education Curriculum">منهج وزارة التربية والتعليم الإماراتية</option>
+<option data-en="Egyptian National Curriculum">المنهج الوطني المصري</option>
+<option data-en="Jordanian National Curriculum">المنهج الوطني الأردني</option>
+<option data-en="Omani National Curriculum">المنهج الوطني العُماني</option>
+<option data-en="Bahraini National Curriculum">المنهج الوطني البحريني</option>
+<option data-en="Cambridge">كامبريدج</option>
+<option data-en="Other curriculum">منهج آخر</option></select></div>
+<div class="f"><label for="src" data-en="Attachment type">نوع المرفق</label><select id="src"><option value="pdf" data-en="A PDF excerpt of the textbook">جزء من الكتاب بصيغة PDF</option><option value="img" data-en="Photos of textbook pages (JPG)">صور لصفحات الكتاب (JPG)</option></select></div>
+<div class="f"><label for="yr"><span data-en="School year">العام الدراسي</span> <span class="h" data-en="optional">اختياري</span></label><input type="text" id="yr" placeholder="1448هـ / 2026م" data-en-ph="2026–2027"></div>
+<div class="f w"><span class="chips"><label class="chip"><input type="checkbox" id="logo"><span data-en="I will attach the school logo">سأرفق شعار المدرسة</span></label><label class="chip"><input type="checkbox" id="font"><span data-en="I will attach an Arabic font file (Cairo.ttf)">سأرفق ملف خط عربي (Cairo.ttf)</span></label></span></div>
+</div>
+<div class="row end"><button class="btn p" data-go="1" data-en="Next: Questions and look">التالي: الأسئلة والمظهر</button></div>
+</section>
+
+<!-- Step 2 -->
+<section class="panel" id="p1" hidden>
+<div class="phead"><h2 data-en="Questions and look">الأسئلة والمظهر</h2><p data-en="The notes hold questions only: no summary, no contents page and no textbook page references.">المذكرة أسئلة فقط: بلا ملخص، وبلا صفحة محتويات، وبلا إحالات إلى صفحات الكتاب.</p></div>
+<h3 class="sec" data-en="Question types">أنواع الأسئلة <span class="h" data-en="choose the types">اختر الأنواع</span></h3>
+<div class="chips" id="ty"></div>
+<div class="g" style="margin-top:16px">
+<div class="f"><label for="qn" data-en="Questions per type">عدد الأسئلة لكل نوع</label><input type="number" id="qn" value="5" min="1" max="20"></div>
+<div class="f"><label for="mix" data-en="Difficulty mix">توزيع المستويات</label><select id="mix"><option value="b" data-en="balanced: 40% remember, 30% understand, 20% apply, 10% higher-order">متوازن: 40% تذكّر، 30% فهم، 20% تطبيق، 10% مهارات عليا</option><option value="e" data-en="foundational: 60% remember, 30% understand, 10% apply">تأسيسي: 60% تذكّر، 30% فهم، 10% تطبيق</option><option value="a" data-en="advanced: 20% remember, 30% understand, 30% apply, 20% higher-order">متقدّم: 20% تذكّر، 30% فهم، 30% تطبيق، 20% مهارات عليا</option></select></div>
+<div class="f"><label for="key" data-en="Answer key">مفتاح الإجابات</label><select id="key"><option value="end" data-en="Separate pages at the end of the notes">صفحات منفصلة في آخر المذكرة</option><option value="file" data-en="A separate PDF file for the teacher">ملف PDF منفصل للمعلم</option><option value="none" data-en="No answer key">بدون مفتاح</option></select></div>
+<div class="f"><label for="np"><span data-en="Approximate pages">عدد الصفحات التقريبي</span> <span class="h" data-en="with the cover">مع الغلاف</span></label><input type="number" id="np" value="6" min="2" max="40"></div>
+<div class="f"><label for="lang" data-en="Notes language">لغة المذكرة</label><select id="lang"><option value="ar" data-en="Arabic">العربية</option><option value="en" data-en="English">English</option><option value="both" data-en="Bilingual">ثنائي اللغة</option></select></div>
+<div class="f"><label for="tash" data-en="Diacritics (tashkeel)">التشكيل</label><select id="tash"><option value="part" data-en="Partial (ambiguous words only)">جزئي للكلمات الملتبسة</option><option value="full" data-en="Full">كامل</option><option value="none" data-en="None">بدون</option></select></div>
+<div class="f w"><span class="chips"><label class="chip"><input type="checkbox" id="sc"><span data-en="A score box for each section">خانة درجة لكل قسم</span></label><label class="chip"><input type="checkbox" id="sn" checked><span data-en="Student name field">خانة اسم الطالب</span></label><label class="chip"><input type="checkbox" id="rv"><span data-en="Show me the questions before building the file">اعرض الأسئلة عليّ قبل بناء الملف</span></label></span></div>
+</div>
+<h3 class="sec" data-en="Cover fields and editing">حقول الغلاف والتعديل</h3>
+<div class="g">
+<div class="f w"><label for="fm" data-en="How the cover data is written">طريقة كتابة بيانات الغلاف</label><select id="fm"><option value="fixed" data-en="Fixed text drawn correctly (reliable) + a Word copy for editing">نص ثابت مرسوم بدقة (مضمون) + نسخة Word للتعديل</option><option value="form" data-en="Fillable fields inside the PDF (open in Adobe Acrobat Reader)">حقول قابلة للتعبئة داخل PDF (تُفتح في Adobe Acrobat Reader)</option></select></div>
+<p class="note f w" id="fmn" data-en="Recommended: PDF viewers do not join Arabic letters inside fillable fields, so the names come out split and reversed. Fixed text always prints correctly, and you edit the names in the Word copy.">المُوصى به: برامج عرض PDF لا تشكّل الحروف العربية داخل الحقول القابلة للتعبئة، فتظهر الأسماء مقطّعة ومعكوسة. النص الثابت يُطبع صحيحًا دائمًا، وتعدّل الأسماء من نسخة Word.</p>
+</div>
+<h3 class="sec" data-en="The look">المظهر</h3>
+<div class="g">
+<div class="f"><label for="pal" data-en="Color identity">الهوية اللونية</label><select id="pal"><option data-en="navy, cyan and lime">كحلي وسماوي وليموني</option><option data-en="green and gold (calm and formal)">أخضر وذهبي (هادئ ورسمي)</option><option data-en="warm vivid colors (orange, yellow, blue)">ألوان زاهية دافئة (برتقالي وأصفر وأزرق)</option><option data-en="calm pastel colors (mint, peach, lilac)">ألوان باستيل هادئة (نعناعي وخوخي وليلكي)</option><option data-en="black and white, printer friendly">أبيض وأسود صديق للطباعة</option></select></div>
+<div class="f"><label for="fs" data-en="Question text size">حجم خط الأسئلة</label><select id="fs"><option value="13">13 pt</option><option value="14" selected>14 pt</option><option value="16">16 pt</option></select></div>
+<div class="f w"><label for="ex"><span data-en="Special additions">إضافات خاصة</span> <span class="h" data-en="optional">اختياري</span></label><textarea id="ex"></textarea></div>
+</div>
+<div class="row"><button class="btn" data-go="0" data-en="Back">رجوع</button><button class="btn p" data-go="2" data-en="Next: The prompt">التالي: البرومت</button></div>
+</section>
+
+<!-- Step 3 -->
+<section class="panel" id="p2" hidden>
+<div class="phead"><h2 data-en="The prompt">البرومت</h2><p data-en="Copy the prompt, open ChatGPT, paste it and attach the textbook pages in the same message.">انسخ البرومت وافتح ChatGPT، ثم الصقه وأرفق صفحات الكتاب في الرسالة نفسها.</p></div>
+<p class="note" data-en="Attach the textbook pages (PDF or JPG), and the school logo if you want it, in the same message. Files and pictures cannot travel inside the text.">أرفق صفحات الكتاب (PDF أو JPG) وشعار المدرسة إن رغبت في الرسالة نفسها؛ فالملفات والصور لا تنتقل داخل النص.</p>
+<p class="note" data-en="If any Arabic letters still come out split or as boxes, attach an Arabic font file such as Cairo.ttf and ask again.">إن ظهرت أي حروف عربية مقطّعة أو مربعات، فأرفق ملف خط عربي مثل Cairo.ttf وأعد الطلب.</p>
+<p class="note" id="fmw" hidden data-en="With fillable fields, open the PDF in Adobe Acrobat Reader; browsers and image previews may show the names split and reversed.">مع الحقول القابلة للتعبئة افتح الملف في Adobe Acrobat Reader؛ فالمتصفحات ومعاينة الصور قد تعرض الأسماء مقطّعة ومعكوسة.</p>
+<div id="out" style="margin-top:18px"></div>
+<div class="dl" id="dall"></div>
+<div class="row"><button class="btn" data-go="1" data-en="Back">رجوع</button></div>
+</section>
+</main>
+<div class="toast" id="tt"></div>
+
+<script>
+const $=i=>document.getElementById(i),V=i=>($(i).value||'').trim(),C=i=>$(i).checked;
+let UI='ar',CUR=0;
+const TY=[['اختر الإجابة الصحيحة','Multiple choice'],['ضع علامة (✓) أو (✗) مع تصويب الخطأ','True or false, correcting the false ones'],['أكمل الفراغ','Fill in the blank'],['صِل العمود (أ) بما يناسبه في (ب)','Matching (column A to column B)'],['أجب بإيجاز','Short answer'],['عرّف المصطلح','Define the term'],['علّل','Give a reason'],['قارن','Compare'],['استخرج من النص','Extract from the text'],['حلّ المسألة','Solve the problem'],['سؤال تفكير ناقد','Critical-thinking question']];
+const BOTS=[['ChatGPT','https://chatgpt.com/'],['Claude','https://claude.ai/new']];
+const EB=[['الخطوة 1 — بيانات الغلاف','Step 1 — Cover details'],['الخطوة 2 — الأسئلة والمظهر','Step 2 — Questions and look'],['الخطوة 3 — البرومت','Step 3 — The prompt']];
+const MSG={need:['اكتب المادة والموضوع أولًا','Please enter the subject and topic first'],cp:['تم النسخ','Copied']};
+const tr=a=>a[UI=='ar'?0:1];
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const toast=m=>{const t=$('tt');t.textContent=m;t.className='toast on';setTimeout(()=>t.className='toast',1500)};
+const v=x=>x||'—';
+const so=(id,L)=>{const o=$(id).selectedOptions[0];return L=='ar'?o.dataset.ar:o.dataset.en};
+
+function chips(){const c=[...document.querySelectorAll('#ty input')].map(x=>x.checked);
+$('ty').innerHTML=TY.map((x,i)=>`<label class="chip"><input type="checkbox" value="${i}" ${(c.length?c[i]:[0,1,2,3,4].includes(i))?'checked':''}>${x[UI=='ar'?0:1]}</label>`).join('')}
+
+function D(){return{t:V('t'),s:V('s'),g:V('g'),sub:V('sub'),top:V('top'),yr:V('yr'),src:V('src'),lang:V('lang'),np:V('np')||'6',qn:V('qn')||'5',tash:V('tash'),fs:V('fs'),key:V('key'),ex:V('ex'),fm:V('fm'),
+ty:[...document.querySelectorAll('#ty input:checked')].map(x=>+x.value),logo:C('logo'),font:C('font'),sc:C('sc'),sn:C('sn'),rv:C('rv')}}
+
+const H={ar:['## الدور (Role)','## السياق (Context)','## المهمة (Task)','## الصيغة (Format)'],en:['## Role','## Context','## Task','## Format']};
+
+function build(d,L){
+const a=L=='ar',h=H[L],ty=(d.ty.length?d.ty:[0,1,2,3,4]).map(i=>TY[i][a?0:1]),cur=$('cur').value?so('cur',L):(a?'المنهج المعتمد':'the adopted curriculum');
+const ar=d.lang!='en',fx=d.fm=='fixed';
+const lang=a?{ar:'العربية الفصحى المبسّطة',en:'الإنجليزية',both:'ثنائي اللغة (العربية أولًا ثم الإنجليزية)'}[d.lang]:{ar:'simplified Modern Standard Arabic',en:'English',both:'bilingual (Arabic first, then English)'}[d.lang];
+const tash=a?{full:'كامل',part:'جزئي للكلمات الملتبسة فقط',none:'بدون'}[d.tash]:{full:'full',part:'partial, ambiguous words only',none:'none'}[d.tash];
+const src=a?(d.src=='pdf'?'جزء من الكتاب المدرسي بصيغة PDF':'صور لصفحات الكتاب المدرسي بصيغة JPG'):(d.src=='pdf'?'a PDF excerpt of the textbook':'JPG photos of textbook pages');
+const fn=(d.top||(a?'مذكرة':'notes')).replace(/[\\\/:*?"<>|]+/g,'').replace(/\s+/g,'-').slice(0,40);
+const fld='teacher, school, grade, subject, topic'+(d.sn?', student':'');
+
+if(a){
+const role=`أنت فريق متكامل في شخص واحد:
+- معلم خبير في بناء بنوك الأسئلة والاختبارات لطلاب ${v(d.g)} في مادة ${v(d.sub)} وفق ${cur}.
+- مصمّم مطبوعات تعليمية يُخرج مذكرات أسئلة أنيقة واضحة تصلح للطباعة.
+- مطوّر Python يتقن بناء ملفات PDF${ar?' عربية سليمة':''} (reportlab${ar?' وarabic_reshaper وpython-bidi':''})${fx?' وملفات Word (python-docx)':' وحقول النماذج (AcroForm) وpypdf'}.
+- مدقق لغوي دقيق في الإملاء والنحو والمصطلح العلمي.`;
+const ctx=[['المعلم',d.t],['المدرسة',d.s],['الصف',d.g],['المادة',d.sub],['موضوع المذكرة',d.top],['المنهج',cur],['العام الدراسي',d.yr]].filter(x=>x[0]!='العام الدراسي'||x[1]).map(x=>`- ${x[0]}: ${v(x[1])}`).join('\n')+`
+- المرفق: ${src}، وهو المصدر الوحيد والحصري للأسئلة.${d.src=='img'?'\n- رتّب الصور حسب رقم الصفحة الظاهر فيها، لا حسب ترتيب الرفع.':''}${d.logo?'\n- شعار المدرسة مرفق كصورة؛ استخدمه كما هو دون إعادة رسمه.':''}${d.font?'\n- ملف خط عربي مرفق؛ سجّله واستخدمه في كل نصوص الملف.':''}
+- الغرض: مذكرة أسئلة متنوعة لتدريب الطلاب قبل الاختبارات.
+- الهوية اللونية: ${so('pal',L)}.
+- لغة المذكرة: ${lang}${ar?`، والتشكيل: ${tash}`:''}.`;
+const task=`${d.rv?'نفّذ المراحل 1 إلى 4، ثم اعرض الأسئلة ومفتاحها في المحادثة وتوقف حتى أكتب «ابنِ الملف»، ثم نفّذ المرحلتين 5 و6.':'نفّذ المراحل كلها في ردّ واحد دون أن تسألني أو تنتظر موافقتي؛ اتخذ القرار الأنسب وأكمل.'}
+
+1) القراءة (داخليًا، لا تُطبع):
+- اقرأ كل صفحة مرفقة كاملة${d.src=='img'?' (استخرج النص من الصور بدقة)':''}، بما فيها العناوين والتعريفات والقواعد والأمثلة والأشكال والجداول والتدريبات.
+- استخرج قائمة الموضوعات والمفاهيم لتوزّع الأسئلة عليها، وإن تعذّرت قراءة جزء فلا تخمّنه؛ سجّله لتذكره في نهاية الرد.
+
+2) الأسئلة:
+- المذكرة أسئلة فقط: لا ملخص، ولا شرح للدرس، ولا صفحة محتويات، ولا إحالات إلى صفحات الكتاب مثل «كتاب الطالب ص...».
+- الأقسام بالترتيب: ${ty.join('، ')}، وفي كل قسم ${d.qn} أسئلة، ولكل قسم عنوان بصيغة أمر واضحة مثل «السؤال الأول: اختر الإجابة الصحيحة فيما يأتي».${d.sc?'\n- ضع بجانب عنوان كل قسم خانة درجة فارغة بالشكل: ( ____ / عدد أسئلة القسم ).':''}
+- التوزيع: ${so('mix',L)}.
+- كل سؤال مبني على معلومة صريحة في الصفحات المرفقة، ولا يخرج عن موضوعاتها، وتغطي الأسئلة الموضوعات كلها بتوازن، ولا يتكرر سؤال بصيغة أخرى.
+- أسئلة الاختيار بأربعة بدائل (أ، ب، ج، د) ومشتتات منطقية، ونوّع موضع الإجابة الصحيحة.
+- اترك تحت كل سؤال مقالي أسطرًا كافية للإجابة، وارسم جداول التوصيل بعمودين واضحين يزيد فيهما العمود (ب) بندًا واحدًا.
+
+3) مفتاح الإجابات: ${{end:'في صفحات منفصلة بآخر المذكرة بعنوان «مفتاح الإجابات (للمعلم)»، مرتبًا بالأقسام وأرقام الأسئلة.',file:'في ملف PDF منفصل للمعلم، مرتبًا بالأقسام وأرقام الأسئلة.',none:'لا تُعدّ مفتاحًا، لكن تحقّق داخليًا أن لكل سؤال إجابة واحدة صحيحة من المرفق.'}[d.key]}
+
+4) الغلاف: صمّمه بالكود داخل الملف نفسه (لا تستخدم أداة توليد الصور):
+- عبارة «مذكرة أسئلة للتدريب» ثم موضوع المذكرة بخط كبير لا يقل عن 34 نقطة.
+- المادة والصف واسم المعلم واسم المدرسة${d.yr?' والعام الدراسي':''}${d.logo?'، وشعار المدرسة المرفق في أعلى الغلاف':''}${d.sn?'، وخانة «اسم الطالب» فارغة للكتابة':''}.
+- إطار مزخرف وأشرطة وأشكال هندسية أو رموز بسيطة تعبّر عن المادة، مرسومة بالكود وبالهوية اللونية المحددة.
+- ${fx?`بيانات الغلاف نص ثابت مرسوم داخل خانات مزخرفة، مثل بقية نصوص المذكرة. يُمنع استخدام حقول نماذج PDF (AcroForm) في أي مكان؛ لأن برامج العرض لا تشكّل الحروف العربية داخل الحقول فتظهر مقطّعة ومعكوسة.`:`بيانات الغلاف حقول نماذج PDF (AcroForm) قابلة للكتابة بهذه الأسماء: ${fld}، معبّأة مسبقًا بالقيم أعلاه${d.sn?' (وخانة الطالب فارغة)':''}، وفق قواعد الحقول العربية في المرحلة 5.`}
+
+5) بناء الملف:
+- PDF بمقاس A4 عمودي، ونحو ${d.np} صفحات (تزيد أو تنقص حسب عدد الأسئلة، بلا حشو).
+- التسلسل: الغلاف، ثم أقسام الأسئلة${d.key=='end'?'، ثم مفتاح الإجابات':''}.
+- ترويسة باسم المادة والموضوع، وتذييل باسم المدرسة والمعلم وترقيم «صفحة ن من م».
+- عناوين الأقسام 18 نقطة فأكثر، ونص الأسئلة ${d.fs} نقطة، وتباعد مريح، ولا ينقسم سؤال أو بدائله بين صفحتين، ولا يبقى عنوان قسم وحده أسفل صفحة.${ar?`
+- قواعد العربية في النص المرسوم (إلزامية):
+  أ. خط يدعم العربية: ${d.font?'الخط المرفق':'ابحث بالأمر fc-list :lang=ar واختر Cairo أو Amiri أو Noto Naskh Arabic، وإن لم يوجد خط عربي فتوقف واطلب مني رفع ملف خط'}. استخدم الخط نفسه في كل الصفحات بما فيها الغلاف.
+  ب. مرّر كل نص عربي مرسوم على arabic_reshaper ثم python-bidi قبل الرسم، بلا استثناء للغلاف أو الترويسة أو التذييل، مع محاذاة لليمين.
+  ج. تأكد أن الخط يحوي كل رمز مستخدم (كالشرطة الطويلة — وعلامات الترقيم والأقواس)، وإلا فاستبدله برمز يحويه الخط حتى لا يظهر مربع □.
+  د. لا حروف منفصلة أو معكوسة، ولا مسافة داخل الكلمة، والأرقام بترتيب صحيح.`:''}${fx?`
+- نسخة Word: ابنِ من المحتوى نفسه ملف .docx قابلًا للتحرير الكامل بالغلاف والأسئلة${d.key=='end'?' والمفتاح':''}، بفقرات من اليمين لليسار (bidi) وخاصية rtl للنص، وبخط عربي، ليعدّل المعلم بيانات الغلاف منه.`:`
+- قواعد الحقول العربية (إلزامية):
+  أ. احفظ قيمة كل حقل بترتيبها المنطقي الأصلي كما كُتبت في السياق، ولا تمرّرها أبدًا على arabic_reshaper أو python-bidi؛ فهذان للنص المرسوم فقط.
+  ب. ضمّن الخط العربي في الملف واجعله خط الحقول في DA، ومحاذاة يمين (Q=2)، واضبط NeedAppearances على true، ولا تولّد مظهرًا للحقول بخط Helvetica أو أي خط لا يدعم العربية.
+  ج. تحقق بـ pypdf أن قيمة كل حقل تطابق النص الأصلي حرفًا بحرف. وإن عجزت عن ضمان ذلك فارجع إلى كتابة بيانات الغلاف نصًا ثابتًا مرسومًا، وأخبرني.`}
+
+6) الفحص قبل التسليم:
+- حوّل كل صفحة إلى صورة PNG وافحصها بنفسك، وابدأ بالغلاف مكبّرًا: كل كلمة متصلة الحروف ومقروءة من اليمين، ولا مربعات □، ولا نص مقطوع أو متداخل أو خارج الهوامش.
+- طابق كل سؤال وإجابته مع المرفق، واحذف أو صحّح ما لا أصل له.
+- أصلح أي خلل وأعد البناء، ثم سلّم.${d.ex?'\n\nإضافات المعلم: '+d.ex:''}`;
+const fmt=`- ملف PDF جاهز للتنزيل باسم: مذكرة-${fn}.pdf${d.key=='file'?`\n- ملف PDF للمعلم باسم: مفتاح-${fn}.pdf`:''}${fx?`\n- نسخة Word قابلة للتعديل باسم: مذكرة-${fn}.docx`:''}
+- بعد الروابط: جدول تحقق مختصر بأعمدة: القسم | عدد الأسئلة | الموضوعات التي يغطيها.
+- سطر أخير يذكر أي جزء تعذّرت قراءته، أو «قُرئت الصفحات كاملة».
+- لا تعرض الكود ولا شرح الخطوات.`;
+return `${h[0]}\n${role}\n\n${h[1]}\n${ctx}\n\n${h[2]}\n${task}\n\n${h[3]}\n${fmt}`;
+}
+
+const role=`You are a complete team in one person:
+- An expert teacher who builds question banks and tests for ${v(d.g)} students in ${v(d.sub)} according to ${cur}.
+- An educational print designer who produces clean, elegant, print-ready question booklets.
+- A Python developer skilled at building PDF files${ar?' with correct Arabic':''} (reportlab${ar?', arabic_reshaper, python-bidi':''})${fx?' and Word files (python-docx)':', PDF form fields (AcroForm) and pypdf'}.
+- A meticulous proofreader of spelling, grammar and subject terminology.`;
+const ctx=[['Teacher',d.t],['School',d.s],['Grade',d.g],['Subject',d.sub],['Notes topic',d.top],['Curriculum',cur],['School year',d.yr]].filter(x=>x[0]!='School year'||x[1]).map(x=>`- ${x[0]}: ${v(x[1])}`).join('\n')+`
+- Attachment: ${src}. It is the one and only source for the questions.${d.src=='img'?'\n- Order the photos by the page number printed on them, not by upload order.':''}${d.logo?'\n- The school logo is attached as an image; use it as is, without redrawing it.':''}${d.font?'\n- An Arabic font file is attached; register it and use it for all text in the file.':''}
+- Purpose: a booklet of varied questions for students to practise before exams.
+- Color identity: ${so('pal',L)}.
+- Notes language: ${lang}${ar?`; diacritics (tashkeel): ${tash}`:''}.`;
+const task=`${d.rv?'Run stages 1 to 4, then show the questions and their key in the chat and stop until I type “build the file”; then run stages 5 and 6.':'Run every stage in one reply without asking me questions or waiting for my approval; make the best decision and continue.'}
+
+1) Reading (internal, not printed):
+- Read every attached page in full${d.src=='img'?' (extract the text from the photos accurately)':''}, including headings, definitions, rules, examples, figures, tables and exercises.
+- List the topics and concepts to spread the questions across them; if any part cannot be read, do not guess it; record it to report at the end of your reply.
+
+2) Questions:
+- The booklet holds questions only: no summary, no lesson explanation, no contents page and no textbook page references such as “Student Book p. ...”.
+- Sections, in this order: ${ty.join(', ')}, with ${d.qn} questions per section, each section headed by a clear instruction such as “Question 1: Choose the correct answer”.${d.sc?'\n- Beside each section heading, put an empty score box in the form ( ____ / number of questions in the section ).':''}
+- Difficulty mix: ${so('mix',L)}.
+- Every question rests on an explicit fact in the attached pages, never leaves their topics; the questions cover all topics evenly and no question repeats another in different words.
+- Multiple-choice questions have four options (a, b, c, d) with plausible distractors and a varied position for the correct answer.
+- Leave enough answer lines under every open question, and draw matching tables with two clear columns, column B holding one extra item.
+
+3) Answer key: ${{end:'on separate pages at the end of the booklet titled “Answer key (for the teacher)”, ordered by section and question number.',file:'in a separate PDF for the teacher, ordered by section and question number.',none:'do not produce one, but check internally that every question has exactly one correct answer in the attachment.'}[d.key]}
+
+4) Cover: design it in code inside the same file (do not use the image-generation tool):
+- The words “Practice Questions”, then the notes topic in large type, at least 34 pt.
+- Subject, grade, teacher name and school name${d.yr?', and the school year':''}${d.logo?', with the attached school logo at the top':''}${d.sn?', and an empty “Student name” box for writing':''}.
+- A decorative frame, ribbons and geometric shapes or simple symbols of the subject, drawn in code in the chosen color identity.
+- ${fx?'The cover data is fixed text drawn inside decorated boxes, like the rest of the booklet. Do not use PDF form fields (AcroForm) anywhere; PDF viewers do not join Arabic letters inside fields, so they come out split and reversed.':`The cover data is fillable PDF form fields (AcroForm) named ${fld}, prefilled with the values above${d.sn?' (the student field left empty)':''}, following the Arabic field rules in stage 5.`}
+
+5) Building the file:
+- A4 portrait PDF, about ${d.np} pages (more or fewer depending on the number of questions, with no filler).
+- Order: cover, then the question sections${d.key=='end'?', then the answer key':''}.
+- A header with the subject and topic, and a footer with the school and teacher and “page n of m” numbering.
+- Section headings 18 pt or larger, question text ${d.fs} pt, comfortable spacing; no question or its options split across two pages, and no section heading stranded at the foot of a page.${ar?`
+- Arabic rules for drawn text (mandatory):
+  a. A font that supports Arabic: ${d.font?'the attached font':'search with fc-list :lang=ar and choose Cairo, Amiri or Noto Naskh Arabic; if no Arabic font exists, stop and ask me to upload a font file'}. Use the same font on every page, the cover included.
+  b. Pass every drawn Arabic string through arabic_reshaper and then python-bidi before drawing, with no exception for the cover, header or footer, right-aligned.
+  c. Make sure the font contains every symbol used (the long dash —, punctuation, brackets); otherwise replace it with one the font has, so no box □ appears.
+  d. No split or reversed letters, no space inside a word, numbers in the correct order.`:''}${fx?`
+- Word copy: build from the same content a fully editable .docx with the cover and the questions${d.key=='end'?' and the key':''}, with right-to-left paragraphs (bidi), the rtl text property and an Arabic font, so the teacher can edit the cover data there.`:`
+- Arabic field rules (mandatory):
+  a. Store each field value in its original logical order exactly as written in the context, and never pass it through arabic_reshaper or python-bidi; those are for drawn text only.
+  b. Embed the Arabic font in the file and set it as the fields' font in DA, right alignment (Q=2), NeedAppearances set to true, and never generate field appearances with Helvetica or any font without Arabic.
+  c. Verify with pypdf that each field value matches the original text character for character. If you cannot guarantee this, fall back to drawing the cover data as fixed text, and tell me.`}
+
+6) Check before delivery:
+- Render every page to a PNG and inspect it yourself, starting with the cover zoomed in: every word has connected letters and reads from the right, no boxes □, no clipped, overlapping or out-of-margin text.
+- Match every question and its answer against the attachment, and remove or fix anything with no source.
+- Fix any problem, rebuild, then deliver.${d.ex?'\n\nTeacher additions: '+d.ex:''}`;
+const fmt=`- One PDF ready to download, named: notes-${fn}.pdf${d.key=='file'?`\n- A PDF for the teacher, named: key-${fn}.pdf`:''}${fx?`\n- An editable Word copy, named: notes-${fn}.docx`:''}
+- After the links: a short check table with columns: section | number of questions | topics covered.
+- A final line naming any part that could not be read, or “All pages were read in full”.
+- Do not show the code or explain the steps.`;
+return `${h[0]}\n${role}\n\n${h[1]}\n${ctx}\n\n${h[2]}\n${task}\n\n${h[3]}\n${fmt}`;
+}
+
+/* ---- cards, copy, download ---- */
+const store={};let k=0;
+function card(title,tx,L){const i=++k,e=UI=='en';store[i]=[title,tx,L];
+return `<div class="blk"><div class="bh"><b>${title}</b><span class="ba"><button class="btn sm" data-c="${i}">${e?'Copy':'نسخ'}</button><button class="btn sm" data-d="${i}" data-x="txt">.txt</button><button class="btn sm" data-d="${i}" data-x="md">.md</button></span></div><pre class="${L=='ar'?'rtl':'ltr'}">${esc(tx)}</pre><div class="bf"><span>${e?'Copy and open:':'انسخ وافتح:'}</span>${BOTS.map(b=>`<button class="btn sm c" data-o="${i}" data-u="${b[1]}">${b[0]}</button>`).join('')}<span>${e?'then paste (Ctrl+V) and attach the textbook pages':'ثم الصق (Ctrl+V) وأرفق صفحات الكتاب'}</span></div></div>`}
+function cp(t){const done=()=>toast(MSG.cp[0]+' · '+MSG.cp[1]);const legacy=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();done()};
+if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(done,legacy);else legacy()}
+function dl(name,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([(type=='text/plain'?'﻿':'')+txt],{type:type+';charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const fname=()=>(V('top')||'question-notes').replace(/[\\\/:*?"<>|\s]+/g,'-').slice(0,40);
+function R(){const d=D();k=0;
+$('out').innerHTML=card('برومت مذكرة الأسئلة · عربي',build(d,'ar'),'ar')+card('Question booklet prompt · English',build(d,'en'),'en');
+const e=UI=='en';$('dall').innerHTML=`<b>${e?'Download both prompts in one file:':'حمّل البرومتين في ملف واحد:'}</b><button class="btn sm" data-da="txt">${e?'Plain text (.txt)':'نص عادي (.txt)'}</button><button class="btn sm" data-da="md">${e?'Markdown (.md)':'ملف (.md)'}</button>`}
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-c],button[data-d],button[data-o],button[data-da]');if(!b)return;const d=b.dataset;
+if(d.c)cp(store[d.c][1]);
+else if(d.o){cp(store[d.o][1]);window.open(d.u,'_blank','noopener')}
+else if(d.d){const [h,tx,L]=store[d.d],m=d.x=='md';dl(`${fname()}-prompt-${L}.${d.x}`,m?`# ${h}\n\n${tx}\n`:`${h}\n${'='.repeat(h.length)}\n\n${tx}\n`,m?'text/markdown':'text/plain')}
+else{const m=d.da=='md',A=Object.values(store);dl(`${fname()}-prompts.${d.da}`,m?A.map(x=>`# ${x[0]}\n\n${x[1]}`).join('\n\n---\n\n'):A.map(x=>`${x[0]}\n${'='.repeat(x[0].length)}\n\n${x[1]}`).join('\n\n\n'),m?'text/markdown':'text/plain')}});
+
+/* ---- steps ---- */
+function fmUI(){const f=V('fm')=='form';$('fmn').hidden=f;$('fmw').hidden=!f}
+function go(i){if(i>0&&!(V('sub')&&V('top'))){toast(tr(MSG.need));i=0}
+[0,1,2].forEach(j=>{$('p'+j).hidden=j!=i;document.querySelector(`.step[data-go="${j}"]`).classList.toggle('on',j==i)});
+CUR=i;$('eb').textContent=tr(EB[i]);fmUI();if(i==2)R();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+['input','change'].forEach(ev=>document.querySelector('main').addEventListener(ev,()=>{fmUI();if(CUR==2)R()}));
+
+/* ---- interface language ---- */
+document.querySelectorAll('[data-en]').forEach(e=>e.dataset.ar=e.textContent);
+document.querySelectorAll('[data-en-ph]').forEach(e=>e.dataset.arPh=e.getAttribute('placeholder'));
+document.querySelectorAll('option:not([data-en])').forEach(o=>{o.dataset.ar=o.textContent;o.dataset.en=o.textContent});
+function setUI(l){UI=l;const r=document.documentElement;r.lang=l;r.dir=l=='ar'?'rtl':'ltr';
+document.querySelectorAll('[data-en]').forEach(e=>e.textContent=l=='en'?e.dataset.en:e.dataset.ar);
+document.querySelectorAll('[data-en-ph]').forEach(e=>e.setAttribute('placeholder',l=='en'?e.dataset.enPh:e.dataset.arPh));
+$('ui').textContent=l=='ar'?'English':'العربية';$('eb').textContent=tr(EB[CUR]);chips();if(CUR==2)R();
+try{localStorage.setItem('ls-lang',l)}catch(e){}}
+$('ui').onclick=()=>setUI(UI=='ar'?'en':'ar');
+chips();fmUI();
+try{if(localStorage.getItem('ls-lang')=='en')setUI('en')}catch(e){}
+</script>
+</body>
+</html>

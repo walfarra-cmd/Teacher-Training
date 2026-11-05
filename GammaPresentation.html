@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Creating Educational Presentations Using Gamma" data-ar="إنشاء العروض التعليمية باستخدام Gamma">Creating Educational Presentations Using Gamma</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link rel="stylesheet" href="assets/waleed.css">
+<style id="hero-side-art">
+/* ===== Hero: text column + side artwork (Lesson plan) ===== */
+.hero .hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(0,.5fr);
+  align-items:center;
+  gap:clamp(24px,5vw,72px);
+}
+.hero .hero-copy{min-width:0}
+.hero .hero-art{
+  position:relative; inset:auto; transform:none; margin:0;
+  display:flex; justify-content:center; align-items:center;
+  min-width:0;
+}
+.hero .hero-char{
+  display:block; width:100%; max-width:400px; height:auto;
+  filter:drop-shadow(0 22px 36px rgba(0,0,0,.30));
+  animation:hero-art-float 4.5s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes hero-art-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+@media (max-width:860px){
+  .hero .hero-grid{grid-template-columns:1fr}
+  .hero .hero-art{order:2; margin-top:8px}
+  .hero .hero-char{max-width:260px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .hero-char{animation:none}
+}
+</style>
+<style id="hero-compact">
+/* تقليص مسافة الواجهة لتطابق صفحة مصمّم الدروس */
+.hero{padding:46px 0 34px}
+.hero .hero-actions{margin-top:26px}
+#main > .sec:first-child{padding-top:0}
+@media (max-width:720px){.hero{padding:36px 0 28px}}
+</style>
+<style id="gamma-layout">
+/* ===== أجزاء الصفحة: شارة الجزء، رقم الخطوة، المكوّنات الثلاثة، تبويبات البرومت ===== */
+.part-tag{display:inline-flex; align-items:center; gap:8px; margin:0 0 16px; padding:6px 16px;
+  border-radius:var(--r-pill); background:var(--brand-lift); color:#fff;
+  font-size:14px; font-weight:700; letter-spacing:.02em}
+.step-no{display:block; margin:0 0 6px; font-family:var(--mono); font-size:13px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)}
+html[dir="rtl"] .step-no{font-family:var(--ar); font-weight:700; letter-spacing:0; font-size:15px}
+.trio{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:4px 0 24px}
+.trio > div{background:var(--bg-2); border:1px solid var(--line-soft); border-radius:var(--r-lg); padding:18px 20px}
+.trio i{display:grid; place-items:center; width:36px; height:36px; margin-bottom:10px; border-radius:50%;
+  background:var(--accent); color:var(--brand-lift); font-style:normal; font-weight:800; font-family:var(--mono)}
+.trio b{display:block; color:var(--ink); font-size:18px; margin-bottom:4px}
+.block .trio p{margin:0; font-size:16px; line-height:1.55}
+.howto{margin:0 0 22px; padding:0; list-style:none; counter-reset:h; display:grid; gap:10px}
+.howto li{counter-increment:h; position:relative; padding-inline-start:40px; font-size:17px; font-weight:500; color:var(--ink-2); line-height:1.6}
+.howto li:before{content:counter(h); position:absolute; inset-inline-start:0; top:1px; width:28px; height:28px;
+  border-radius:50%; display:grid; place-items:center; background:var(--surface-2); border:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:13px; font-weight:700; color:var(--brand-lift)}
+.ptabs{display:inline-flex; gap:4px; padding:4px; margin:0 0 16px; border-radius:var(--r-pill);
+  background:var(--surface-2); border:1px solid var(--line-soft)}
+.ptabs button{font:inherit; font-size:15px; font-weight:700; cursor:pointer; border:0; border-radius:var(--r-pill);
+  padding:9px 20px; background:transparent; color:var(--ink-2); transition:background var(--t-fast),color var(--t-fast)}
+.ptabs button[lang="ar"]{font-family:var(--ar)}
+.ptabs button[aria-selected="true"]{background:var(--brand-lift); color:#fff}
+.ptabs button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.ppane[hidden]{display:none}
+.block .hint{margin-top:22px}
+#apps .app-badge{color:#fff; background:rgba(0,0,0,.22); border-color:rgba(255,255,255,.55); font-weight:700}
+@media (max-width:720px){.block{padding:24px 18px}.ptabs{display:flex}.ptabs button{flex:1; padding:9px 10px}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content" data-ar="تخطَّ إلى المحتوى">Skip to content</a>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/waleed-logo.png" alt="Waleed 2026">
+      <span class="brand-tag" data-en="Creating presentations using Gamma" data-ar="إنشاء العروض التقديمية باستخدام Gamma">Creating presentations using Gamma</span>
+    </div>
+    <div class="topbar-actions">
+     <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Home page" data-ar="الرئيسية">Home page</span></a>   
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+    <!--a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to home page" data-ar="العودة إلى الصفحة الرئيسية">Back to home page</span></a-->
+    <p class="eyebrow" data-en="Tools: Gamma · ChatGPT · Gemini · Google AI Studio · Claude" data-ar="الأدوات: Gamma · ChatGPT · Gemini · Google AI Studio · Claude">Tools: Gamma · ChatGPT · Gemini · Google AI Studio · Claude</p>
+    <h1 class="display" data-en="Creating a lesson presentation using the Gamma app and whiteboard animation-style graphics" data-ar="إعداد عرض تقديمي للدرس باستخدام تطبيق Gamma وإنشاء أفلام الوايت بورد أنيميشن">Creating a lesson presentation using the Gamma app and whiteboard animation-style graphics</h1>
+    <p class="lede" data-en="The page has two parts. First, a lesson presentation in Gamma built from three things: a strong prompt, your lesson plan and the textbook pages. Second, a whiteboard animation video: a narration script, its audio, then the animated film." data-ar="تتكوّن الصفحة من جزأين. الأول: عرض تقديمي للدرس في Gamma نبنيه من ثلاثة أشياء: برومت قوي، وخطة الدرس، وصفحات الكتاب. والثاني: فيلم وايت بورد أنيميشن: سيناريو الشرح الصوتي، ثم الصوت، ثم الفيلم المتحرك.">The page has two parts. First, a lesson presentation in Gamma built from three things: a strong prompt, your lesson plan and the textbook pages. Second, a whiteboard animation video: a narration script, its audio, then the animated film.</p>
+    <div class="hero-actions">
+      <a class="btn btn-outline" href="#prompt"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg><span data-en="Directly to the prompt" data-ar="إلى البرومت مباشرة">Directly to the prompt</span></a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true"><img class="hero-char" src="assets/Gamma-AI.png" alt="" width="958" height="958"></div>
+  </div>
+</div>
+
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <!-- ---------- STICKY RAIL ---------- -->
+      <aside class="rail">
+        <h2 data-en="Work Steps" data-ar="خطوات العمل">Work Steps</h2>
+        <p data-en="We will follow the following steps in order." data-ar="سنتبع الخطوات التالية بالترتيب.">We will follow the following steps in order.</p>
+        <ol>
+          <li data-go="ingredients" data-en="Prepare the three things we need to produce the presentation." data-ar="جهِّز الأشياء الثلاثة التي نحتاجها لإخراج العرض التقديمي">Prepare the three things we need to produce the presentation.</li>
+          <li data-go="prompt" data-en="Build the presentation prompt" data-ar="ابنِ برومبت العرض التقديمي">Build the presentation prompt</li>
+          <li data-go="prompt-script" data-en="Write the narration script for the lesson" data-ar="اكتب سيناريو الشرح الصوتي للدرس">Write the narration script for the lesson</li>
+          <li data-go="prompt-whiteboard" data-en="Turn the narration into a whiteboard animation video" data-ar="حوّل الشرح الصوتي إلى فيديو سبورة بيضاء متحركة">Turn the narration into a whiteboard animation video</li>
+          <li data-go="apps" data-en="Open the apps used in this session" data-ar="افتح التطبيقات المستخدمة في المحاضرة">Open the apps used in this session</li>
+        </ol>
+        <p class="rail-hint" data-en="Click a step to jump to it and mark it done." data-ar="اضغط على الخطوة للانتقال إليها وتعليمها كمنجزة.">Click a step to jump to it and mark it done.</p>
+      </aside>
+
+      <!-- ---------- CONTENT ---------- -->
+      <div>
+
+        <!-- ============ PART 1 · STEP 1 · THE THREE INGREDIENTS ============ -->
+        <div class="block" id="ingredients">
+          <span class="part-tag" data-en="Part one · Lesson presentation in Gamma" data-ar="الجزء الأول · عرض الدرس في Gamma">Part one · Lesson presentation in Gamma</span>
+          <span class="step-no" data-en="Step 01" data-ar="الخطوة ٠١">Step 01</span>
+          <h2 class="display" data-en="Prepare the three ingredients" data-ar="جهِّز المكوّنات الثلاثة">Prepare the three ingredients</h2>
+          <p class="sub" data-en="A prompt, a lesson plan and textbook pages. Nothing else, and none of them is optional." data-ar="برومت، وخطة الدرس، وصفحات الكتاب. لا شيء غيرها، ولا واحد منها اختياري.">A prompt, a lesson plan and textbook pages. Nothing else, and none of them is optional.</p>
+
+          <div class="trio">
+            <div><i>1</i><b data-en="The prompt" data-ar="البرومت">The prompt</b><p data-en="Tells the bot how to behave and what format to return." data-ar="يخبر الروبوت كيف يتصرف وبأي صيغة يُجيب.">Tells the bot how to behave and what format to return.</p></div>
+            <div><i>2</i><b data-en="The lesson plan" data-ar="خطة الدرس">The lesson plan</b><p data-en="Sets the teaching order, stages and timings." data-ar="تحدد ترتيب التدريس ومراحله وأوقاته.">Sets the teaching order, stages and timings.</p></div>
+            <div><i>3</i><b data-en="The textbook pages" data-ar="صفحات الكتاب">The textbook pages</b><p data-en="Decide what the slides may say and show." data-ar="تحدد ما يُسمح أن تقوله الشرائح وتعرضه.">Decide what the slides may say and show.</p></div>
+          </div>
+
+          <p data-en="Send all three to the bot in a single message: paste the prompt and attach the plan and the pages." data-ar="أرسل الثلاثة إلى الروبوت في رسالة واحدة: الصق البرومت وأرفق الخطة والصفحات.">Send all three to the bot in a single message: paste the prompt and attach the plan and the pages.</p>
+
+          <div class="hint">
+            <p style="margin:0" data-en-html="<b>Book page specifications.</b> One page per photograph, taken from directly above, with the whole page in the frame and no shadow across the text. Name the files by page number before you upload them — <b>page-5.jpg</b>, <b>page-6.jpg</b> — and write those same page numbers in the prompt." data-ar-html="<b>مواصفات صفحات الكتاب.</b> صفحة واحدة في كل صورة، من أعلى مباشرة، والصفحة كاملة في الإطار، وبلا ظل على النص. وسمِّ الملفات بأرقام الصفحات قبل رفعها — <b>page-5.jpg</b> و<b>page-6.jpg</b> — واكتب أرقام الصفحات نفسها في البرومت."><b>Book page specifications.</b> One page per photograph, taken from directly above, with the whole page in the frame and no shadow across the text. Name the files by page number before you upload them — <b>page-5.jpg</b>, <b>page-6.jpg</b> — and write those same page numbers in the prompt.</p>
+          </div>
+        </div>
+
+        <!-- ============ PART 1 · STEP 2 · THE PRESENTATION PROMPT ============ -->
+        <div class="block" id="prompt">
+          <span class="step-no" data-en="Step 02" data-ar="الخطوة ٠٢">Step 02</span>
+          <h2 class="display" data-en="Build the presentation prompt" data-ar="ابنِ برومت العرض التقديمي">Build the presentation prompt</h2>
+          <p class="sub" data-en="Edit only the fields highlighted in green; everything else stays as it is." data-ar="عدّل الحقول المظللة باللون الأخضر فقط، واترك الباقي كما هو.">Edit only the fields highlighted in green; everything else stays as it is.</p>
+
+          <ol class="howto">
+            <li data-en="Choose the prompt language. Click a green field to select it, then type your own details over it." data-ar="اختر لغة البرومت. اضغط على أي حقل أخضر لتحديده، ثم اكتب بياناتك مكانه.">Choose the prompt language. Click a green field to select it, then type your own details over it.</li>
+            <li data-en="Click “Copy the prompt”, then paste it into ChatGPT or Gemini with the lesson plan and book pages attached." data-ar="اضغط «نسخ البرومت»، ثم الصقه في ChatGPT أو Gemini مع إرفاق خطة الدرس وصفحات الكتاب.">Click “Copy the prompt”, then paste it into ChatGPT or Gemini with the lesson plan and book pages attached.</li>
+            <li data-en="Paste the bot's reply into Gamma (Create → Paste in text), check the outline, then generate." data-ar="الصق ردّ الروبوت في Gamma من خيار Paste in text، وراجع المخطط، ثم أنشئ العرض.">Paste the bot's reply into Gamma (Create → Paste in text), check the outline, then generate.</li>
+          </ol>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p5-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p5-ar" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall is-ar" id="p5-ar" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable presentation master prompt in Arabic" data-ar-label="الأمر الرئيسي للعرض التقديمي بالعربية، قابل للتعديل">## R — الدور
+
+تصرَّف بصفتك خبيرًا في تصميم العروض التعليمية، ومصممًا تعليميًا، وراويًا تربويًا بصريًا. ابنِ عرضًا يستطيع المعلم أن يُدرِّس منه، لا شرائح جميلة الشكل فحسب. سيُلصق جوابك مباشرة في Gamma، فليكن نظيفًا كاملًا وبالصيغة المطلوبة في آخره بالضبط.
+
+---
+
+## C — السياق
+
+- المعلم: <span class="ph">[[تعديل: اسم المعلم]]</span>
+- المادة: <span class="ph">[[تعديل: المادة]]</span>
+- الصف أو المرحلة: <span class="ph">[[تعديل: الصف أو المرحلة]]</span>
+- المستوى أو المعيار: <span class="ph">[[تعديل: المستوى أو المعيار، أو اكتب «لا شيء»]]</span>
+- عنوان الدرس: <span class="ph">[[تعديل: عنوان الدرس]]</span>
+- الحاضرون: <span class="ph">[[تعديل: من الحاضرون]]</span>
+- مدة الدرس: <span class="ph">[[تعديل: مدة الدرس — مثل: 30 دقيقة / 35 دقيقة / 40 دقيقة]]</span> دقيقة
+- عدد الشرائح: <span class="ph">[[تعديل: عدد الشرائح — مثل: ٦ شرائح — درس قصير / ٨ شرائح / ١٠ شرائح — تناسب إنشاءً مجانيًا في Gamma]]</span>
+- لغة العرض: <span class="ph">[[تعديل: لغة العرض — مثل: الإنجليزية / العربية / ثنائي اللغة — عربي وإنجليزي]]</span>
+- النبرة: <span class="ph">[[تعديل: النبرة — مثل: ودّية ومشجِّعة / دافئة ومرحة / هادئة وواضحة]]</span>
+
+### ملفان مرفقان (PDF أو JPG)
+
+١. **خطة درسي — <span class="ph">[[تعديل: اسم ملف خطة الدرس التي أرفقتها]]</span>.** هي العمود الفقري للعرض: اتبع مراحلها وترتيبها وأوقاتها.
+٢. **صفحات الكتاب — <span class="ph">[[تعديل: صفحات الكتاب التي أرفقتها — أسماء الملفات أو أرقام الصفحات]]</span>.** هي المصدر الوحيد للمحتوى: المفردات والأمثلة والنصوص والتدريبات.
+
+إن كانت صفحة غير مقروءة أو غير واضحة أو ناقصة، فاذكرها تحت **أسئلة إلى المعلم**. ولا تخمّن محتواها أبدًا.
+
+### ضبط المصادر — إلزامي
+
+- اتبع خطتي **مرحلةً مرحلةً**: لا إعادة ترتيب، ولا دمج مرحلتين في شريحة، ولا إضافة مرحلة.
+- خُذ كل معلومة وكلمة وقاعدة ومثال وتدريب من صفحات الكتاب. وما لم يوجد فيها فاكتب `[على المعلم إضافته]`.
+- لا تختلق إحصاءات ولا اقتباسات ولا بحوثًا ولا رموز مناهج ولا أرقام صفحات.
+- ضع على كل شريحة وقت مرحلتها كما في خطتي.
+- إن اختلفت الخطة مع الكتاب فاتبع الخطة، وأبلغ عن ذلك تحت **أسئلة إلى المعلم**.
+
+---
+
+## T — المهمة
+
+### ١. اربط أولًا
+اكتب جدولًا: كل مرحلة من الخطة، ودقائقها، وأرقام شرائحها. وقارن المجموع بعدد الشرائح المطلوب. وإن لم يتوافق فغيِّر عدد الشرائح لكل مرحلة، لا الترتيب، ولا تحذف مرحلة.
+
+### ٢. المراحل التي يجب أن يحتويها العرض
+<span class="ph">[[تعديل: أبقِ المراحل الموجودة فعلًا في خطة درسك فقط]]</span>
+
+- تهيئة تُنشِّط المعرفة السابقة
+- شريحة أهداف بأفعال خطتي
+- شرح في قطع صغيرة، ومثال قبل كل قاعدة
+- تدريب موجَّه معي: مثال محلول وإجابات متوقعة
+- نشاط فردي: تعليمات ووقت ومعيار نجاح
+- نشاط جماعي: أدوار ومنتج ووقت
+- تدريب حر على مثال جديد، لا نسخة من الموجَّه
+- تحقُّق سريع من الفهم مرتبط بالهدف
+- واجب منزلي يوسّع الدرس ولا يكرره
+- تأمُّل ختامي أو بطاقة خروج
+
+لا تضف نشاطًا ليس في خطتي.
+
+### ٣. كل شريحة تحمل
+- **العنوان** — حتى ثماني كلمات.
+- **النقاط** — من ٣ إلى ٥، فكرة لكل نقطة، حتى ١٢ كلمة، بلا نقطة ختامية.
+- **ملاحظات المُقدِّم** — جملة أو جملتان تقولان ما أقوله فعلًا، وتنتهيان بجملة تنقل إلى الشريحة التالية.
+- **العنصر البصري** — عنصر واحد محدَّد (صورة فوتوغرافية، رسم تعليمي، مخطط، خط زمني، مخطط تدفُّق، مجموعة أيقونات، جدول مقارنة، خريطة، إنفوجرافيك، رسم بياني، مشهد صفّي): ماذا يُظهر، ومن فيه، وإلى أي شيء ينظر المتعلم. ولا تكتب «أضف صورة» أبدًا.
+- **التخطيط** — تعليمة عملية واحدة (صورة جانبية ونص مقابل، عنصر بعرض الشريحة مع لوحة نص، مقارنة في عمودين، مخطط كبير في الوسط، ثلاث بطاقات، خط زمني، عنوان أعلى ولوحة نشاط أسفل).
+- **المرحلة والوقت.**
+- **لوحة النشاط (شرائح الأنشطة وحدها)** — الاسم، والتعليمات، والوقت، والمواد، وما يُنتجه الطالب، ومعيار نجاح يتحقق منه بنفسه.
+
+### ٤. البيانات والرسوم البيانية
+حيث تحتوي صفحات الكتاب أرقامًا تستحق العرض، حدِّد نوع الرسم (أعمدة للمقارنة، خطوط للتغير عبر الزمن، دائرة أو حلقة لنسبة بسيطة فقط، خط زمني للتسلسل، تدفُّق للعمليات، جدول للقيم الدقيقة)، وقل ماذا يُظهر، واترك موضعًا له. لا تختلق بيانات.
+
+### ٥. التصميم — غنيّ وملوّن ومقروء عند الطباعة
+- لوحة الألوان: <span class="ph">[[تعديل: لوحة الألوان — مثل: قوس قزح باستيلي — لون لكل مرحلة / باستيل بارد — نعناعي وسماوي وليلكي / باستيل دافئ — خوخي ومشمشي وكريمي]]</span>
+- الخطوط: <span class="ph">[[تعديل: الخطوط — مثل: واضحة — عناوين مستديرة ونص بسيط / خط حديث واحد / عناوين مذنَّبة ونص بلا زوائد]]</span>
+- الشعار: <span class="ph">[[تعديل: الشعار — مثل: أعلى اليمين، كل شريحة / أعلى اليسار، كل شريحة / أسفل اليمين، كل شريحة]]</span>
+- الأسلوب البصري: <span class="ph">[[تعديل: الأسلوب البصري — مثل: غنيّ وملوّن — لوحات باستيلية / نظيف وبسيط / مرح ومناسب للأطفال]]</span>
+- أسلوب الصور: <span class="ph">[[تعديل: أسلوب الصور — مثل: صور فوتوغرافية حقيقية / رسم متجهي مسطَّح / رسم يدوي قصصي]]</span>
+- الجداول والإطارات: <span class="ph">[[تعديل: الجداول والإطارات — مثل: تعبئة باستيلية بإطار كامل / رأس باستيلي وإطار خارجي كامل / خلايا بيضاء بإطار كامل]]</span>
+
+**النظام اللوني:** أعطِ كل مرحلة درجتها الخاصة، واستخدمها وحدها للوحة المرحلة وخط عنوانها ولسانها ورأس جدولها، ليعرف المتعلم من اللون أين هو. اذكر الألوان، لكل منها اسم، في قسم مستقل في آخر الإخراج.
+**التباين:** حبر غامق على تعبئة باستيلية. لا نص أبيض على باستيل. لا نص مباشرة فوق صورة مزدحمة؛ ضعه على لوحة مصمتة أو خفيفة التلوين.
+**الجداول** (للمحتوى الجدولي حقًّا فقط): حدٌّ على كل جانب من كل خلية، ورأس معبَّأ بدرجة أغمق، وصفوف باستيلية متبادلة، وحشو سخيّ، وحتى ٥ أعمدة، وتعليق من سطر واحد فوق الجدول. لا جدول بلا حدود، ولا جدول لمجرد محاذاة النص.
+**اللوحات والصناديق** (النشاط، التعريف، «تحقَّق بنفسك»): تعبئة باستيلية، وحدٌّ كامل على الجوانب الأربعة، وزوايا مستديرة، ويُعرف كلٌّ منها بلونه.
+**للـ PDF والطباعة:** تعبئات مصمتة لا متدرِّجة، وحدود لا تقل عن نقطة، ولا نص فاتح على أرضية فاتحة، ولا شيء يحتاج تمرير مؤشر أو حركة.
+
+**اقرأ هذا فقط إذا كانت لغة العرض هي العربية أو العربية والإنجليزية؛ وإلا فتجاوزه. هذا القسم يحل مكان كل تعليمة أخرى عن الخط والاتجاه والأرقام والتخطيط والتصدير.**
+
+### الخط العربي والتصدير — متطلبات إلزامية
+- استخدم خط Arial فقط: Arial Bold للعناوين وArial Regular للنصوص، وطبِّقه على خط العناوين وخط النص داخل Theme
+- لا تستخدم Arial Abjadhaus أو Noto Sans Arabic أو أي خط زخرفي أو غير متوفر في PowerPoint، ولا تخلط أكثر من عائلة خطوط
+- اجعل اتجاه كل النصوص العربية RTL، والمحاذاة إلى اليمين للنصوص والقوائم والجداول
+- حافظ على اتصال الحروف العربية وترتيب الكلمات الصحيح
+- استخدم الأرقام العربية الهندية فقط: ٠، ١، ٢، ٣، ٤، ٥، ٦، ٧، ٨، ٩
+- تجنب مزج الكلمات الإنجليزية والعربية في السطر نفسه
+- لا تستخدم تأثيرات أو تدرجات على النصوص العربية
+- لا تحوِّل المحتوى العربي إلى Timeline أو Smart Diagram، ولا تستخدم مخططات Gamma الذكية؛ استخدم صناديق نص وبطاقات وجداول عادية فقط
+- تأكد من ظهور النص العربي متصلًا في PDF وPowerPoint، وراجع شريحة تجريبية بعد التصدير قبل تصدير العرض كاملًا
+
+### ٦. سهولة القراءة
+تدرُّج بصري واضح، وخط كبير، وتباين عالٍ، وشرائح غير مزدحمة، وعناصر بصرية تحمل معنى. الشرح الطويل في ملاحظات المُقدِّم لا على الشريحة. ويجب أن يُقرأ العرض على شاشة هاتف.
+
+### ٧. ما يجب أن يظهر
+<span class="ph">[[تعديل: معلومة أو تعريف أو قائمة مفردات أو نقطة من المنهج يجب أن تظهر — أو «لا شيء»]]</span>
+
+### ٨. النظرية، في ملاحظات المُقدِّم وحدها
+<span class="ph">[[تعديل: المفكرون الذين تريد ذكرهم في ملاحظات المُقدِّم، أو اكتب «لا شيء»]]</span>
+
+حيث تفعل خطتي شيئًا يعرفه أحد هؤلاء المفكرين، أضف في **ملاحظات المُقدِّم** سطرًا قصيرًا يسمّيه ويقول لماذا تنجح الخطوة. لا تضعه على الشريحة، ولا تتكلَّفه.
+
+---
+
+## F — الصيغة
+
+أعِد Markdown عاديًا بهذا الترتيب بالضبط ولا شيء غيره: بلا تحية، وبلا شرح قبله، وبلا تعليق بعده.
+
+```
+===MAP===
+| مرحلة خطة الدرس | الدقائق | الشرائح |
+| --- | --- | --- |
+| ... | ... | ... |
+
+===OUTLINE===
+١. [عنوان الشريحة — الهدف في ست كلمات]
+(أكمل حتى تُدرِج كل الشرائح)
+
+===SLIDES===
+
+### الشريحة ١ — [العنوان]
+**المرحلة:** [مرحلة من خطتي] · **الوقت:** [الدقائق]
+**النقاط:**
+- [نقطة]
+- [نقطة]
+- [نقطة]
+**ملاحظات المُقدِّم:** [جملة أو جملتان تنتهيان بالانتقال]
+**العنصر البصري:** [وصف محدَّد]
+**التخطيط:** [تعليمة التخطيط]
+**النشاط:** [الاسم · التعليمات · الوقت · المواد · منتج الطالب · معيار النجاح]
+
+(البنية نفسها لكل شريحة)
+
+===COLOUR SYSTEM===
+- [المرحلة] — [اسم اللون + رمزه]
+
+===QUESTIONS FOR THE TEACHER===
+- [أي شيء ناقص أو غير مقروء أو متعارض]
+```
+
+---
+
+## قبل أن تُجيب — تحقَّق بصمت، ثم أصلِح ما يفشل
+
+١. كل مرحلة من خطتي في `===MAP===` بترتيبها الأصلي.
+٢. عدد الشرائح يطابق المطلوب.
+٣. مجموع دقائق الشرائح = مدة الدرس.
+٤. فكرة واحدة لكل شريحة، ولا نقطة فوق ١٢ كلمة.
+٥. لكل شريحة ملاحظات مُقدِّم وعنصر بصري موصوف.
+٦. لا شيء خارج صفحات الكتاب؛ والناقص عليه `[على المعلم إضافته]`؛ ولا بيانات أو اقتباسات أو بحوث أو رموز مناهج مختلقة.
+٧. التدريب الموجَّه ← النشاط الفردي ← التدريب الحر، بهذا الترتيب.
+٨. الشريحة الأخيرة تعطي خطوة تالية واحدة واضحة: <span class="ph">[[تعديل: الخطوة التالية التي تريد أن يتخذها الفصل بالضبط]]</span>
+
+الآن ابنِ العرض التقديمي.</div>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p5-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p5-en" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p5-en" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable presentation master prompt in English" data-ar-label="الأمر الرئيسي للعرض التقديمي بالإنجليزية، قابل للتعديل">## R — ROLE
+
+Act as an expert educational presentation designer, instructional designer and storyteller. Build a deck a teacher can teach from, not slides that only look good. Your answer is pasted straight into Gamma, so it must be clean, complete and in the exact format at the end.
+
+---
+
+## C — CONTEXT
+
+- Teacher: <span class="ph">[[EDIT: Teacher name]]</span>
+- Subject: <span class="ph">[[EDIT: Subject]]</span>
+- Grade or stage: <span class="ph">[[EDIT: Grade or stage]]</span>
+- Level or standard: <span class="ph">[[EDIT: Level or standard, or write “none”]]</span>
+- Lesson title: <span class="ph">[[EDIT: Lesson title]]</span>
+- Who is in the room: <span class="ph">[[EDIT: Who is in the room]]</span>
+- Lesson length: <span class="ph">[[EDIT: Lesson length — e.g. 30 minutes / 35 minutes / 40 minutes]]</span> minutes
+- Number of slides: <span class="ph">[[EDIT: Number of slides — e.g. 6 slides — a short input lesson / 8 slides / 10 slides — fits a free Gamma generation]]</span>
+- Language of the presentation: <span class="ph">[[EDIT: Language of the presentation — e.g. English / Arabic / Bilingual — Arabic and English]]</span>
+- Tone: <span class="ph">[[EDIT: Tone — e.g. Friendly and encouraging / Warm and playful / Calm and clear]]</span>
+
+### Two attachments (PDF or JPG)
+
+1. **My lesson plan — <span class="ph">[[EDIT: File name of the lesson plan you attached]]</span>.** The spine of the deck: follow its stages, order and timings.
+2. **Book pages — <span class="ph">[[EDIT: Book pages you attached — file names or page numbers]]</span>.** The only source of content: vocabulary, examples, texts, exercises.
+
+If a page is unreadable, blurred or missing, name it under **Questions for the teacher**. Never guess its content.
+
+### Source control — absolute
+
+- Follow my plan **stage by stage**: no reordering, no merging two stages into one slide, no added stages.
+- Take every fact, word, rule, example and exercise from the book pages. If something is missing, write `[TEACHER TO ADD]`.
+- Never invent statistics, quotations, research, curriculum codes or page numbers.
+- Put each stage's time from my plan on its slide.
+- If plan and book disagree, follow the plan and flag it under **Questions for the teacher**.
+
+---
+
+## T — TASK
+
+### 1. Map first
+Write a table: every plan stage, its minutes, its slide numbers. Check the total against the slide count. If it does not fit, change how many slides a stage gets — never the order, never drop a stage.
+
+### 2. Stages the deck must contain
+<span class="ph">[[EDIT: Keep only the stages your lesson plan actually contains]]</span>
+
+- warm-up activating prior knowledge
+- learning objectives, using my plan's verbs
+- explanation in small pieces, an example before every rule
+- guided practice with me: a worked example and expected answers
+- individual task: instructions, time, success criterion
+- group task: roles, product, time
+- free practice on a new example, not a copy of the guided one
+- quick check of understanding tied to the objective
+- homework that extends the lesson
+- closing reflection or exit ticket
+
+Add no activity my plan lacks.
+
+### 3. Every slide carries
+- **Title** — max 8 words.
+- **Bullets** — 3–5, one idea each, max 12 words, sentence case, no full stop.
+- **Speaker notes** — 1–2 sentences of what I should say, ending with a lead-in to the next slide.
+- **Visual** — one specific visual (photograph, educational illustration, diagram, timeline, flowchart, icon set, comparison table, map, infographic, chart, classroom scene): what it shows, who is in it, what learners look at. Never "add an image".
+- **Layout** — one practical instruction (image left/text right, full-width visual with text panel, two-column comparison, one central diagram, three cards, timeline, title on top with activity panel below).
+- **Stage and time.**
+- **Activity block (activity slides only)** — name, instructions, time, materials, student product, a success criterion learners can self-check.
+
+### 4. Data and charts
+Where the book pages hold numbers worth showing, name the chart type (bar = comparison, line = change over time, pie/donut = simple proportion only, timeline = sequence, flowchart = process, table = exact values), say what it must show, and leave a placeholder. Never invent data.
+
+### 5. Design — colourful, readable, print-safe
+- Colour palette: <span class="ph">[[EDIT: Colour palette — e.g. Pastel rainbow — a tint per section / Cool pastels — mint, sky, lilac / Warm pastels — peach, apricot, cream]]</span>
+- Fonts: <span class="ph">[[EDIT: Fonts — e.g. Accessible — rounded headings, plain body / One clean modern sans / Serif headings, sans body]]</span>
+- Logo: <span class="ph">[[EDIT: Logo — e.g. Top-right, every slide / Top-left, every slide / Bottom-right, every slide]]</span>
+- Visual style: <span class="ph">[[EDIT: Visual style — e.g. Rich and colourful — pastel panels / Clean and minimal / Playful and child-friendly]]</span>
+- Image style: <span class="ph">[[EDIT: Image style — e.g. Real photographs / Flat vector illustration / Hand-drawn storybook]]</span>
+- Tables and frames: <span class="ph">[[EDIT: Tables and frames — e.g. Pastel fill, full frame border / Pastel header, full outer frame / White cells, full frame border]]</span>
+
+**Colour system:** give each plan stage its own tint and use it for that stage's panel fill, heading rule, section tab and table header, so colour alone tells learners where they are. List the colours, each named, at the end of the deck text.
+**Contrast:** dark ink on pastel fill. Never white text on pastel. Never text directly over a busy photo; use a solid or lightly tinted panel.
+**Tables** (only for genuinely tabular content): full border on every cell, filled header in a deeper tint, alternating pastel rows, generous padding, max 5 columns, one-line caption above. Never borderless, never used just to align text.
+**Panels, boxes, callouts** (activity, definition, "check yourself"): pastel fill, full four-side border, rounded corners, recognisable by colour.
+**PDF/print:** solid fills, no gradients, borders at least 1 pt, no pale-on-pale text, nothing that needs hover or animation.
+
+**Read only if the language above is Arabic or bilingual; otherwise ignore. This block overrides every other font, direction, numeral, layout and export instruction in this prompt.**
+
+### الخط العربي والتصدير — متطلبات إلزامية
+- استخدم خط Arial فقط: Arial Bold للعناوين وArial Regular للنصوص، وطبّقه على خط العناوين وخط النص داخل Theme
+- لا تستخدم Arial Abjadhaus أو Noto Sans Arabic أو أي خط زخرفي أو غير متوفر في PowerPoint، ولا تخلط أكثر من عائلة خطوط
+- اجعل اتجاه كل النصوص العربية RTL، والمحاذاة إلى اليمين للنصوص والقوائم والجداول
+- حافظ على اتصال الحروف وترتيب الكلمات الصحيح
+- استخدم الأرقام العربية الهندية فقط: ٠، ١، ٢، ٣، ٤، ٥، ٦، ٧، ٨، ٩
+- تجنب مزج الكلمات الإنجليزية والعربية في السطر نفسه
+- لا تطبّق تأثيرات أو تدرجات على النصوص العربية
+- لا تحوّل المحتوى العربي إلى Timeline أو Smart Diagram، ولا تستخدم مخططات Gamma الذكية؛ استخدم صناديق نص وبطاقات وجداول عادية فقط
+- تأكد من ظهور النص العربي متصلًا في PDF وPowerPoint، وراجع شريحة تجريبية بعد التصدير قبل تصدير العرض كاملًا
+
+### 6. Accessibility
+Strong hierarchy, large type, high contrast, uncrowded slides, visuals that carry meaning. Long explanations go in speaker notes, never on the slide. It must read on a phone.
+
+### 7. Must include
+<span class="ph">[[EDIT: A fact, definition, word list or curriculum point that must appear — or “none”]]</span>
+
+### 8. Theory, in speaker notes only
+<span class="ph">[[EDIT: Thinkers to reference in the speaker notes, or write “none”]]</span>
+
+Where my plan already does something one of these thinkers would recognise, add one short speaker-note line naming it and why the step works. Never on the slide, never forced.
+
+---
+
+## F — FORMAT
+
+Return plain Markdown in exactly this order and nothing else: no greeting, no preamble, no closing comment.
+
+```
+===MAP===
+| Lesson plan stage | Minutes | Slides |
+| --- | --- | --- |
+| ... | ... | ... |
+
+===OUTLINE===
+1. [Slide title — purpose in six words]
+(continue until every slide is listed)
+
+===SLIDES===
+
+### Slide 1 — [Title]
+**Stage:** [plan stage] · **Time:** [minutes]
+**Bullets:**
+- [bullet]
+- [bullet]
+- [bullet]
+**Speaker notes:** [1–2 sentences, ending with the transition]
+**Visual:** [specific description]
+**Layout:** [layout instruction]
+**Activity:** [name · instructions · time · materials · student product · success criterion]
+
+(same structure for every slide)
+
+===COLOUR SYSTEM===
+- [stage] — [colour name + hex]
+
+===QUESTIONS FOR THE TEACHER===
+- [anything missing, unreadable or conflicting]
+```
+
+---
+
+## BEFORE YOU ANSWER — check silently, fix what fails
+
+1. Every plan stage is in `===MAP===`, in original order.
+2. Slide count matches the number above.
+3. Slide minutes add up to the lesson length.
+4. One idea per slide; no bullet over twelve words.
+5. Every slide has speaker notes and a described visual.
+6. Nothing outside the book pages; gaps marked `[TEACHER TO ADD]`; no invented data, quotations, research or codes.
+7. Guided practice → individual task → free practice, in that order.
+8. The final slide gives one clear next step: <span class="ph">[[EDIT: The exact next step you want the class to take]]</span>
+
+Now build the presentation.</div>
+          </div>
+        </div>
+
+        <!-- ============ PART 2 · STEP 3 · THE NARRATION SCRIPT PROMPT ============ -->
+        <div class="block" id="prompt-script">
+          <span class="part-tag" data-en="Part two · Whiteboard animation video" data-ar="الجزء الثاني · فيلم الوايت بورد أنيميشن">Part two · Whiteboard animation video</span>
+          <span class="step-no" data-en="Step 03" data-ar="الخطوة ٠٣">Step 03</span>
+          <h2 class="display" data-en="Write the narration script for the lesson" data-ar="اكتب سيناريو الشرح الصوتي للدرس">Write the narration script for the lesson</h2>
+          <p class="sub" data-en="Edit the fields highlighted in green, attach the lesson file, then paste the resulting script into the text-to-speech tool." data-ar="عدّل الحقول المظللة باللون الأخضر، وأرفق ملف الدرس، ثم الصق السيناريو الناتج في أداة تحويل النص إلى كلام.">Edit the fields highlighted in green, attach the lesson file, then paste the resulting script into the text-to-speech tool.</p>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p6-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p6-ar" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall is-ar" id="p6-ar" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable narration script prompt in Arabic" data-ar-label="برومت سيناريو الشرح الصوتي بالعربية، قابل للتعديل">## R — الدور
+
+أنت كاتب سيناريوهات تعليمية صوتية محترف، ومعلّم خبير في <span class="ph">[[تعديل: نوع المادة الدراسية]]</span>، وتتقن لغة <span class="ph">[[تعديل: لغة التدريس]]</span> إتقاناً تاماً. تكتب نصوصاً مخصصة للقراءة الصوتية بصوت راوٍ واحد هادئ وعميق، وتعرف كيف تجعل الشرح مفهوماً وممتعاً عند الاستماع دون أي دعم بصري.
+
+---
+
+## C — السياق
+
+- لغة التدريس: <span class="ph">[[تعديل: العربية / الإنجليزية]]</span>
+- نوع المادة الدراسية: <span class="ph">[[تعديل: مثال: علوم / رياضيات / لغة عربية / تاريخ / لغة إنجليزية]]</span>
+- موضوع الدرس: <span class="ph">[[تعديل: عنوان الدرس]]</span>
+- المرحلة أو المستوى: <span class="ph">[[تعديل: مثال: الصف السادس الابتدائي]]</span>
+- مدة السرد المطلوبة: <span class="ph">[[تعديل: مثال: 5 دقائق ≈ 700 كلمة]]</span>
+- مصدر المحتوى: ملف الدرس المرفق، وهو المرجع الوحيد للمعلومات.
+
+سيُلصق النص الناتج مباشرة في أداة تحويل النص إلى كلام (TTS) بصوت راوٍ واحد بنبرة هادئة عميقة، وسيُقرأ حرفياً كما هو.
+
+---
+
+## T — المهمة
+
+اكتب سيناريو سردياً كاملاً للدرس المرفق، بلغة التدريس المحددة أعلاه فقط، وفق الآتي:
+
+1. اعتمد على ملف الدرس وحده. لا تُضِف معلومة غير موجودة فيه، وإن كان في الملف غموض فاختر أبسط قراءة صحيحة ولا تخترع.
+2. رتّب السيناريو هكذا: افتتاحية جاذبة بسؤال أو مشهد قصير، فتمهيد بالأهداف بعبارات بسيطة، ثم شرح متدرج لأفكار الدرس بأمثلة من حياة المتعلم، ثم تلخيص، ثم سؤالان أو ثلاثة للتفكير، ثم خاتمة قصيرة مشجعة.
+3. عرّف كل مصطلح قبل استخدامه، وكرّر الفكرة المحورية بصياغة مختلفة مرة واحدة على الأقل.
+4. اجعل الجمل قصيرة (حتى 18 كلمة تقريباً)، وبأسلوب حواري دافئ يخاطب المتعلم مباشرة.
+5. اجعله مناسباً للأذن لا للعين:
+   - اكتب الأرقام والرموز والنسب بالحروف (مثل: «ثلاثة أرباع»، لا «3/4»).
+   - استخدم علامات الترقيم لتوليد الوقفات الطبيعية: الفاصلة والنقطة وعلامة الاستفهام. وتجنّب الأقواس والشرطات والرموز.
+   - لا تكتب أسماء المتحدثين ولا إرشادات إخراجية مثل [موسيقى] أو (وقفة) ولا وصف مؤثرات صوتية.
+6. إن كانت اللغة عربية فطبّق قواعد التشكيل التالية على كل كلمة في النص بلا استثناء:
+   - اللغة العربية الفصحى المعاصرة السليمة، دون عامية.
+   - شكّل كل حرف تشكيلاً كاملاً (فتحة، ضمة، كسرة، سكون، شدة، تنوين) مع إعراب أواخر الكلمات إعراباً صحيحاً داخل الجملة.
+   - ضع الشدة مع حركتها في مواضعها، وميّز بين الهمزة المقطوعة والهمزة الموصولة.
+   - اضبط الكلمات التي قد تُقرأ بأكثر من وجه (مثل: عَلِمَ / عِلْم / عَلَّمَ) بحسب المعنى في السياق.
+   - اجعل الوقف على آخر الجملة بالسكون عند الحاجة لتبدو القراءة طبيعية.
+   - اكتب الأعلام والمصطلحات الأجنبية بحروف عربية مشكولة، ولا تتركها بالحروف اللاتينية.
+   أما إن كانت اللغة إنجليزية فاكتب إنجليزية واضحة بنطق قياسي، دون تشكيل.
+7. راجع النص قبل التسليم: تحقق من خلوّه من أي معلومة خارج الملف، ومن اكتمال التشكيل، ومن مطابقة الطول للمدة المطلوبة.
+
+---
+
+## F — الصيغة
+
+- أخرج نص السيناريو وحده، داخل كتلة واحدة متصلة، دون عناوين ولا ترقيم ولا نقاط ولا رموز Markdown ولا مقدمة ولا تعليق ختامي.
+- افصل بين الفقرات بسطر فارغ واحد فقط.
+- لا تكتب أي شيء قبل النص أو بعده، فكل حرف فيه سيُقرأ صوتياً.
+- اجعل الطول متناسباً مع المدة المحددة (حوالي 140 كلمة لكل دقيقة).</div>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p6-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p6-en" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p6-en" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable narration script prompt in English" data-ar-label="برومت سيناريو الشرح الصوتي بالإنجليزية، قابل للتعديل">## R — ROLE
+
+You are a professional educational audio-script writer and an expert teacher of <span class="ph">[[EDIT: Subject type]]</span>, fluent in <span class="ph">[[EDIT: Teaching language]]</span>. You write scripts meant to be read aloud by a single calm, deep-voiced narrator, and you know how to make an explanation clear and engaging for listeners who have no visuals to rely on.
+
+---
+
+## C — CONTEXT
+
+- Teaching language: <span class="ph">[[EDIT: Arabic / English]]</span>
+- Subject type: <span class="ph">[[EDIT: e.g. Science / Mathematics / Arabic Language / History / English Language]]</span>
+- Lesson topic: <span class="ph">[[EDIT: Lesson title]]</span>
+- Grade or level: <span class="ph">[[EDIT: e.g. Grade 6]]</span>
+- Target narration length: <span class="ph">[[EDIT: e.g. 5 minutes ≈ 700 words]]</span>
+- Content source: the attached lesson file, which is the only reference for facts.
+
+The finished script will be pasted directly into a text-to-speech (TTS) tool with one narrator in a calm, deep tone, and it will be read exactly as written.
+
+---
+
+## T — TASK
+
+Write a complete narrated script for the attached lesson, in the teaching language above only, following these rules:
+
+1. Use the lesson file as your only source. Add no information that is not in it. If the file is ambiguous, choose the simplest correct reading rather than inventing details.
+2. Structure the script in this order: an engaging opening (a short question or scene), a brief preview of the learning goals in simple words, a step-by-step explanation of the lesson's ideas with examples from the learner's everyday life, a recap, two or three reflection questions, and a short encouraging closing.
+3. Define every term before using it, and restate the central idea in different words at least once.
+4. Keep sentences short (about 18 words or fewer) and use a warm, conversational tone that speaks directly to the learner.
+5. Write for the ear, not the eye:
+   - Spell out numbers, symbols and percentages in words (for example, "three quarters", not "3/4").
+   - Use punctuation to create natural pauses: commas, periods and question marks. Avoid parentheses, dashes and symbols.
+   - Do not write speaker labels, stage directions such as [music] or (pause), or descriptions of sound effects.
+6. If the teaching language is Arabic, apply these rules to every word of the script, with no exceptions:
+   - Use correct Modern Standard Arabic, with no colloquial forms.
+   - Add full diacritics (fatha, damma, kasra, sukun, shadda, tanween) on every letter, with grammatically correct case endings.
+   - Place shadda and its vowel correctly, and distinguish hamzat al-qat' from hamzat al-wasl.
+   - Disambiguate words that can be read in more than one way (such as عَلِمَ / عِلْم / عَلَّمَ) according to context.
+   - End sentences with a natural pausal form (sukun on the final letter where appropriate) so the reading sounds smooth.
+   - Write names and foreign terms in fully vowelled Arabic script, never in Latin letters.
+   If the teaching language is English, write clear English with standard pronunciation and no diacritics.
+7. Review before delivering: check that nothing outside the file has been added, that Arabic diacritics are complete (if applicable), and that the length matches the requested duration.
+
+---
+
+## F — FORMAT
+
+- Output only the script text, as one continuous block, with no headings, numbering, bullet points, Markdown symbols, introduction or closing comment.
+- Separate paragraphs with a single blank line only.
+- Write nothing before or after the script, because every character in it will be spoken aloud.
+- Match the length to the requested duration (about 140 words per minute).</div>
+          </div>
+
+          <div class="hint">
+            <p style="margin:0" data-en-html="<b>Turning the script into audio in Google AI Studio.</b> <br>1. Open Google AI Studio, then <b>Playground</b>.<br>2. Choose <b>Gemini 3 Flash Preview</b>, then the <b>Audio</b> tab.<br>3. Choose <b>Gemini 3.8 Flash TTS</b>, then <b>Create new dialog</b>.<br>4. Paste the script into the text box.<br>5. Under <b>Style</b>, choose the calm, deep tone. For an Arabic script, add: ‘Speak in Modern Standard Arabic (Fusha) in a calm, deep tone.’<br>6. Under <b>Speaker settings</b>, choose <b>Storyteller</b>, then the voice <b>Enzo</b>.<br>7. Press <b>Run</b> (<b>Ctrl+Enter</b>), and download the audio when it finishes." data-ar-html="<b>تحويل السيناريو إلى صوت في Google AI Studio.</b> <br>١. افتح Google AI Studio ثم <b>Playground</b>.<br>٢. اختر النموذج <b>Gemini 3 Flash Preview</b> ثم تبويب <b>Audio</b>.<br>٣. اختر <b>Gemini 3.8 Flash TTS</b> ثم <b>Create new dialog</b>.<br>٤. الصق السيناريو في خانة النص.<br>٥. من <b>Style</b> اختر النغمة الهادئة العميقة. وإن كان السيناريو عربياً فأضف: «تحدّث بالعربية الفصحى بنبرة هادئة وعميقة».<br>٦. من <b>Speaker settings</b> اختر <b>Storyteller</b> ثم الصوت <b>Enzo</b>.<br>٧. اضغط <b>Run</b> (<b>Ctrl+Enter</b>)، وبعد انتهاء التوليد حمّل الملف الصوتي."><b>Turning the script into audio in Google AI Studio.</b> <br>1. Open Google AI Studio, then <b>Playground</b>.<br>2. Choose <b>Gemini 3 Flash Preview</b>, then the <b>Audio</b> tab.<br>3. Choose <b>Gemini 3.8 Flash TTS</b>, then <b>Create new dialog</b>.<br>4. Paste the script into the text box.<br>5. Under <b>Style</b>, choose the calm, deep tone. For an Arabic script, add: ‘Speak in Modern Standard Arabic (Fusha) in a calm, deep tone.’<br>6. Under <b>Speaker settings</b>, choose <b>Storyteller</b>, then the voice <b>Enzo</b>.<br>7. Press <b>Run</b> (<b>Ctrl+Enter</b>), and download the audio when it finishes.</p>
+          </div>
+        </div>
+
+        <!-- ============ PART 2 · STEP 4 · THE WHITEBOARD ANIMATION PROMPT ============ -->
+        <div class="block" id="prompt-whiteboard">
+          <span class="step-no" data-en="Step 04" data-ar="الخطوة ٠٤">Step 04</span>
+          <h2 class="display" data-en="Turn the narration into a whiteboard animation video" data-ar="حوّل الشرح الصوتي إلى فيديو سبورة بيضاء متحركة">Turn the narration into a whiteboard animation video</h2>
+          <p class="sub" data-en="Attach the audio file, its timed transcript and a reference image, edit the fields highlighted in green, then send everything to Claude." data-ar="أرفق الملف الصوتي وتفريغه بالتوقيت وصورة مرجعية، وعدّل الحقول المظللة باللون الأخضر، ثم أرسل ذلك كله إلى Claude.">Attach the audio file, its timed transcript and a reference image, edit the fields highlighted in green, then send everything to Claude.</p>
+
+          <ol class="howto">
+            <li data-en="The audio file: downloaded from Google AI Studio in step 03." data-ar="الملف الصوتي: الذي حمّلته من Google AI Studio في الخطوة ٠٣.">The audio file: downloaded from Google AI Studio in step 03.</li>
+            <li data-en="The timed transcript: upload the audio to Gemini and ask: “Transcribe this audio as an SRT file with start and end times for every sentence.”" data-ar="التفريغ بالتوقيت: ارفع الملف الصوتي إلى Gemini واطلب: «فرّغ هذا الصوت في ملف SRT مع وقت البداية والنهاية لكل جملة».">The timed transcript: upload the audio to Gemini and ask: “Transcribe this audio as an SRT file with start and end times for every sentence.”</li>
+            <li data-en="A reference image showing the drawing style you want (whiteboard, hand, doodle characters)." data-ar="صورة مرجعية توضح أسلوب الرسم المطلوب (سبورة، يد، شخصيات Doodle).">A reference image showing the drawing style you want (whiteboard, hand, doodle characters).</li>
+          </ol>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p7-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p7-ar" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall is-ar" id="p7-ar" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable whiteboard animation prompt in Arabic" data-ar-label="برومت فيديو السبورة البيضاء المتحركة بالعربية، قابل للتعديل">## R — الدور
+
+تصرّف كفريق إنتاج متكامل: مخرج سينمائي محترف، ورسام كرتون بأسلوب Doodle، ومصمم Motion Graphics متخصص في فيديوهات Hand-Drawn Whiteboard Animation، ومطوّر ويب يتقن HTML وCSS وJavaScript وSVG. وأنت أيضاً معلّم خبير في <span class="ph">[[تعديل: نوع المادة الدراسية]]</span> يحوّل الشرح الصوتي إلى مشاهد تعليمية مرسومة تُفهم دون الحاجة إلى القراءة.
+
+---
+
+## C — السياق
+
+أقدّم لك الملفات التالية، فتحقق من وجودها أولاً قبل أي عمل:
+
+1. الملف الصوتي للتعليق (سيُستخدم كما هو دون تعديل).
+2. التفريغ النصي للصوت مع التوقيت (SRT أو JSON أو جدول: بداية، نهاية، نص كل جملة).
+3. صورة مرجعية توضح أسلوب الرسم المطلوب.
+4. ملف الدرس (اختياري، للتحقق من صحة المعلومات).
+
+### بيانات المشروع
+
+- لغة التعليق والكتابة على السبورة: <span class="ph">[[تعديل: العربية / الإنجليزية / ثنائي اللغة]]</span>
+- المادة: <span class="ph">[[تعديل: نوع المادة الدراسية]]</span>
+- عنوان الدرس: <span class="ph">[[تعديل: عنوان الدرس]]</span>
+- المرحلة أو الفئة العمرية: <span class="ph">[[تعديل: مثال: الصف الخامس]]</span>
+- مدة الفيديو: <span class="ph">[[تعديل: تُؤخذ من مدة الملف الصوتي]]</span>
+- ألوان الرسم: <span class="ph">[[تعديل: مثال: أسود، بيج، أخضر داكن]]</span>
+- محتوى حسّاس: <span class="ph">[[تعديل: اذكر قيود الدرس إن وجدت، مثل: لا يُجسَّد الأنبياء ولا يُختلق نص ديني — أو اكتب «لا شيء»]]</span>
+
+### الهوية البصرية (حسب الصورة المرجعية)
+
+- خلفية سبورة بلون الورق الكريمي الفاتح، وليست بيضاء ناصعة.
+- يد يمنى بشرية واقعية تمسك قلماً وترسم وتكتب.
+- شخصيات كرتونية بخطوط سوداء رفيعة بأسلوب Doodle، بتعبيرات وجه واضحة.
+- لوحة ألوان محدودة، وثبات تام في أسلوب الرسم وأشكال الشخصيات طوال الفيلم.
+
+---
+
+## T — المهمة
+
+أنتج فيلم Whiteboard Animation تعليمياً متكاملاً يُشغَّل بالتزامن مع الصوت الأصلي، وليس عرض شرائح ولا صوراً ثابتة، وفق المراحل التالية بالترتيب:
+
+### المرحلة 1 — تحليل المحتوى
+- اعتمد على التفريغ المؤقّت. أنت لا تسمع الصوت، فلا تدّعِ أنك حللته. فإن لم يصلك التفريغ بالتوقيت فاطلبه مني. وإن لم يتوفر فاطلب مدة الملف الصوتي فقط، ووزّع المشاهد بحسب عدد الكلمات، وأضف في الواجهة أداة ضبط يدوي للتوقيت.
+- استخرج الأفكار الرئيسية والمصطلحات الأساسية، وحوّل كل فكرة إلى مشهد بصري يحكي المعنى بدلاً من كتابته فقط.
+
+### المرحلة 2 — Storyboard (اعرضه عليّ قبل التنفيذ)
+جدول لكل مشهد يتضمن: رقم المشهد، البداية والنهاية بالثواني، الجملة المنطوقة، وصف الرسوم والشخصيات، الكلمات التي ستُكتب، حركة اليد، نوع اللقطة (قريبة / واسعة)، ونوع الانتقال. ثم انتظر موافقتي أو تعديلاتي قبل المرحلة 3.
+
+### المرحلة 3 — الرسم والكتابة بحركة اليد
+- ترسم اليد الشخصيات والعناصر خطاً بعد خط، من نقطة البداية إلى النهاية، ولا تظهر الرسوم فجأة ولا بتأثير Fade In وحده.
+- الكتابة المتزامنة مع النطق: تُكتب كل كلمة على السبورة تدريجياً في اللحظة التي تُنطق فيها، بحسب توقيتها في التفريغ. يتقدم القلم مع الحروف، من اليمين إلى اليسار في العربية ومن اليسار إلى اليمين في الإنجليزية، وتتحرك اليد مع طرف القلم، بحيث يكتمل كتابة الكلمة تقريباً عند انتهاء نطقها.
+- في الكتابة العربية حافظ على اتصال الحروف وشكلها الصحيح وعلى التشكيل إن وُجد، ولا تفكّك الكلمة إلى حروف منفصلة. وفي المحتوى ثنائي اللغة اكتب كل لغة بخط واتجاه مناسبين.
+- اكتب فقط الكلمات المفتاحية والمصطلحات، لا الجملة كاملة، حتى لا تزدحم السبورة.
+- بعد اكتمال الرسم تتحرك الشخصيات حركات بسيطة (يد، رأس، تعبير وجه). وتُستخدم الشخبطة الفنية (أسهم، دوائر، تسطير) للتأكيد.
+- استغل وقفات الصوت لإكمال الرسم، ولا تترك الشاشة ثابتة لفترة طويلة.
+
+### المرحلة 4 — الإخراج
+- تكوين متوازن مع مساحات فارغة، وتنويع بين اللقطات القريبة والواسعة.
+- انتقالات متنوعة: انتقال اليد إلى منطقة جديدة، أو مسح جزء من الرسم، أو تحريك الكاميرا فوق الورقة. وتجنب تكرار حركة اليد أو شكل المشهد.
+
+### المرحلة 5 — التنفيذ التقني
+- أنشئ مشروعاً تفاعلياً بملف HTML واحد مكتفٍ بذاته، بنسبة 16:9 وبدقة تصميم 1920×1080، ثم انشره كـ Artifact.
+- استخدم SVG Path Animation (stroke-dasharray / stroke-dashoffset) لرسم الخطوط، وتتبّع اليد المسار الفعلي للقلم.
+- للنص: اكشف النص تدريجياً بقناع (clipPath أو mask) يتقدم باتجاه الكتابة، وتتبع اليد حافة الكشف.
+- اجعل التوقيت كله مبنياً على بيانات التفريغ (JSON داخل الملف) وعلى الوقت الحالي للمشغّل الصوتي، ليبقى كل شيء متزامناً حتى عند التقديم والتأخير.
+- أضف: مشغّل صوت، شريطاً زمنياً، قفزاً بين المشاهد، معاينة المشاهد، وأداة ضبط يدوي لتوقيت كل مشهد.
+- التصدير: أضف زر «تحميل الفيديو» باستخدام Canvas وMediaRecorder مع دمج مسار الصوت ليُنتج ملف WebM. وإن لم يسمح المتصفح أو بيئة العرض بالتسجيل فأخبرني بذلك صراحة، واقترح بديلاً (مثل تسجيل الشاشة)، ولا تدّعِ أن التصدير نجح دون اختباره.
+
+### قيود الجودة
+- لا شرائح، ولا صور ثابتة، ولا شخصيات تظهر دون أن تُرسم، ولا كلمات فقط فوق خلفية.
+- تحقق من صحة النصوص المكتوبة على السبورة (الإملاء والتشكيل). وإن كان الدرس يتضمن نصوصاً دينية أو اقتباسات فلا تختلقها، وتقيّد بما في ملف الدرس أو بما أزوّدك به.
+- التزم بقيود المحتوى الحسّاس المذكورة أعلاه.
+
+---
+
+## F — الصيغة
+
+1. أولاً: ملخص من سطرين لما فهمته من المشروع، وقائمة بأي ملف ناقص أو أي معلومة تحتاجها مني.
+2. ثانياً: جدول Storyboard بالأعمدة المذكورة، ثم توقف وانتظر موافقتي.
+3. بعد الموافقة: الـ Artifact الكامل، ثم ملاحظات قصيرة تذكر بوضوح ما تم اختباره وما لم يُختبر (خاصة تزامن الصوت والتصدير).
+4. اكتب بلغة بسيطة، ولا تُطل الشرح خارج الجدول والـ Artifact.</div>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p7-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p7-en" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p7-en" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable whiteboard animation prompt in English" data-ar-label="برومت فيديو السبورة البيضاء المتحركة بالإنجليزية، قابل للتعديل">## R — ROLE
+
+Act as a complete production team: a professional film director, a doodle-style cartoon illustrator, a motion graphics designer specializing in Hand-Drawn Whiteboard Animation, and a web developer fluent in HTML, CSS, JavaScript and SVG. You are also an expert teacher of <span class="ph">[[EDIT: Subject type]]</span> who turns spoken explanations into hand-drawn teaching scenes that can be understood without reading.
+
+---
+
+## C — CONTEXT
+
+I am providing the following files. Check that they are all present before doing any work:
+
+1. The narration audio file (it will be used exactly as it is, unedited).
+2. A timed transcript of the audio (SRT, JSON, or a table with start time, end time, and the text of each sentence).
+3. A reference image showing the drawing style I want.
+4. The lesson file (optional, for fact-checking).
+
+### Project details
+
+- Narration and whiteboard writing language: <span class="ph">[[EDIT: Arabic / English / Bilingual]]</span>
+- Subject: <span class="ph">[[EDIT: Subject type]]</span>
+- Lesson title: <span class="ph">[[EDIT: Lesson title]]</span>
+- Grade or age group: <span class="ph">[[EDIT: e.g. Grade 5]]</span>
+- Video length: <span class="ph">[[EDIT: taken from the audio file's duration]]</span>
+- Drawing colors: <span class="ph">[[EDIT: e.g. black, beige, dark green]]</span>
+- Sensitive content: <span class="ph">[[EDIT: State any lesson restrictions, e.g. no depiction of prophets and no invented religious texts — or write “none”]]</span>
+
+### Visual identity (follow the reference image)
+
+- A whiteboard background in a light cream paper color, not bright white.
+- A realistic human right hand holding a pen, drawing and writing.
+- Cartoon characters in thin black lines, doodle style, with clear facial expressions.
+- A limited color palette, and a completely consistent drawing style and character design throughout the film.
+
+---
+
+## T — TASK
+
+Produce a complete educational Whiteboard Animation film that plays in sync with the original audio. It must not be a slideshow or a set of still images. Work through these stages in order:
+
+### Stage 1 — Content analysis
+- Rely on the timed transcript. You cannot hear audio, so do not claim you analyzed it. If the timed transcript is missing, ask me for it. If it is unavailable, ask only for the audio duration, distribute the scenes by word count, and add a manual timing adjustment tool to the interface.
+- Extract the main ideas and key terms, and turn each idea into a visual scene that tells the meaning instead of only writing it.
+
+### Stage 2 — Storyboard (show it to me before building)
+A table with one row per scene: scene number, start and end in seconds, the spoken sentence, description of drawings and characters, the words to be written, hand movement, shot type (close-up / wide), and transition type. Then stop and wait for my approval or edits before Stage 3.
+
+### Stage 3 — Drawing and writing with the hand
+- The hand draws characters and elements stroke by stroke, from start point to end point. Drawings must never appear suddenly or with a Fade In alone.
+- Writing synchronized with speech: each word is written progressively on the board at the moment it is spoken, according to its timing in the transcript. The pen advances with the letters, right to left in Arabic and left to right in English, and the hand follows the pen tip, so that a word is almost fully written by the time its pronunciation ends.
+- For Arabic writing, keep the letters connected in their correct forms and keep diacritics if present. Do not break a word into separate letters. For bilingual content, write each language in a suitable font and direction.
+- Write only key words and terms, not whole sentences, so the board does not get crowded.
+- After a drawing is complete, characters make simple movements (hands, head, facial expression). Use doodle emphasis (arrows, circles, underlines) to highlight important elements.
+- Use pauses in the audio to finish drawings, and never leave the screen static for long.
+
+### Stage 4 — Direction
+- Balanced composition with empty space, alternating between close-up and wide shots.
+- Varied transitions: the hand moving to a new area, erasing part of the drawing, or the camera panning across the paper. Avoid repeating the same hand movement or scene layout.
+
+### Stage 5 — Technical implementation
+- Build an interactive project as a single self-contained HTML file, 16:9, at a design resolution of 1920×1080, and publish it as an Artifact.
+- Use SVG Path Animation (stroke-dasharray / stroke-dashoffset) for line drawing, and make the hand follow the actual pen path.
+- For text: reveal it progressively with a mask (clipPath or mask) that advances in the writing direction, and the hand follows the reveal edge.
+- Base all timing on the transcript data (JSON inside the file) and on the audio player's current time, so everything stays in sync when seeking forward or back.
+- Include: an audio player, a timeline bar, jumping between scenes, scene preview, and a manual timing adjustment tool for each scene.
+- Export: add a “Download video” button using Canvas and MediaRecorder with the audio track merged, producing a WebM file. If the browser or the viewing environment does not allow recording, tell me so explicitly and suggest an alternative (such as screen recording). Do not claim export worked unless it was tested.
+
+### Quality constraints
+- No slides, no still images, no characters that appear without being drawn, and no words alone on a background.
+- Verify the correctness of all text written on the board (spelling and diacritics). If the lesson includes religious texts or quotations, do not invent them; stay within what the lesson file or I provide.
+- Follow the sensitive-content restrictions stated above.
+
+---
+
+## F — FORMAT
+
+1. First: a two-line summary of what you understood about the project, and a list of any missing file or information you need from me.
+2. Second: the Storyboard table with the columns listed above, then stop and wait for my approval.
+3. After approval: the full Artifact, followed by short notes that state clearly what was tested and what was not (especially audio sync and export).
+4. Write in simple language, and keep explanations outside the table and the Artifact brief.</div>
+          </div>
+        </div>
+
+        <!-- ============ APPS ============ -->
+        <div class="block" id="apps">
+          <span class="step-no" data-en="Step 05" data-ar="الخطوة ٠٥">Step 05</span>
+          <h2 class="display" data-en="Apps used in this session" data-ar="التطبيقات المستخدمة في هذه المحاضرة">Apps used in this session</h2>
+          <p class="sub" data-en="Each one opens in a new tab." data-ar="يُفتح كل تطبيق في تبويب جديد.">Each one opens in a new tab.</p>
+
+          <div class="apps">
+
+            <div class="app">
+              <span class="app-badge" data-en="Steps 01–02" data-ar="الخطوتان ٠١–٠٢">Steps 01–02</span>
+              <h3>Gamma</h3>
+              <p data-en="Where the deck is built. Paste in the text your AI wrote, read the outline before it generates, choose a theme, and edit any card in place. It also exports to PowerPoint and PDF." data-ar="حيث يُبنى العرض. الصق النص الذي كتبه ذكاؤك الاصطناعي، واقرأ المخطط قبل الإنشاء، واختر تصميمًا، وعدِّل أي بطاقة في موضعها. ويصدّر كذلك إلى PowerPoint وPDF.">Where the deck is built. Paste in the text your AI wrote, read the outline before it generates, choose a theme, and edit any card in place. It also exports to PowerPoint and PDF.</p>
+              <p class="app-url">https://gamma.app</p>
+              <a class="btn btn-primary" href="https://gamma.app" target="_blank" rel="noopener">
+                <span data-en="Open Gamma" data-ar="افتح Gamma">Open Gamma</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <span class="app-badge" data-en="Step 02" data-ar="الخطوة ٠٢">Step 02</span>
+              <h3>ChatGPT</h3>
+              <p data-en="Where the deck text is written. Attach the master prompt, your lesson plan and your book pages in one message. Connect the Gamma app to your account and it can also create the presentation in Gamma without leaving the conversation." data-ar="حيث يُكتب نص العرض. أرفق الأمر الرئيسي وخطة درسك وصفحات كتابك في رسالة واحدة. واربط تطبيق Gamma بحسابك فيستطيع كذلك أن ينشئ العرض في Gamma دون أن يخرج من المحادثة.">Where the deck text is written. Attach the master prompt, your lesson plan and your book pages in one message. Connect the Gamma app to your account and it can also create the presentation in Gamma without leaving the conversation.</p>
+              <p class="app-url">https://chatgpt.com</p>
+              <a class="btn btn-primary" href="https://chatgpt.com" target="_blank" rel="noopener">
+                <span data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <span class="app-badge" data-en="Steps 02–04" data-ar="الخطوات ٠٢–٠٤">Steps 02–04</span>
+              <h3>Google Gemini</h3>
+              <p data-en="Better at reading a photograph of a book page, which matters when your source is pictures of a student book. It can also build the slides itself in Canvas, and it turns the narration audio into a timed transcript for step 04." data-ar="أفضل في قراءة صورة صفحة من كتاب، وهذا مهم حين يكون مصدرك صورًا من كتاب الطالب. ويستطيع كذلك أن يبني الشرائح بنفسه في Canvas، ويحوّل الملف الصوتي إلى تفريغ بالتوقيت للخطوة ٠٤.">Better at reading a photograph of a book page, which matters when your source is pictures of a student book. It can also build the slides itself in Canvas, and it turns the narration audio into a timed transcript for step 04.</p>
+              <p class="app-url">https://gemini.google.com</p>
+              <a class="btn btn-primary" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <span data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <span class="app-badge" data-en="Step 03" data-ar="الخطوة ٠٣">Step 03</span>
+              <h3>Google AI Studio</h3>
+              <p data-en="Turns the narration script into natural speech with a calm, deep narrator voice, ready to download as an audio file." data-ar="يحوّل سيناريو الشرح إلى كلام طبيعي بصوت راوٍ هادئ وعميق، جاهز للتحميل كملف صوتي.">Turns the narration script into natural speech with a calm, deep narrator voice, ready to download as an audio file.</p>
+              <p class="app-url">https://aistudio.google.com</p>
+              <a class="btn btn-primary" href="https://aistudio.google.com" target="_blank" rel="noopener">
+                <span data-en="Open AI Studio" data-ar="افتح AI Studio">Open AI Studio</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <span class="app-badge" data-en="Step 04" data-ar="الخطوة ٠٤">Step 04</span>
+              <h3>Claude</h3>
+              <p data-en="Builds the whiteboard animation film as an interactive HTML Artifact, synced to your audio, after you approve its storyboard." data-ar="يبني فيلم الوايت بورد أنيميشن كملف HTML تفاعلي (Artifact) متزامن مع الصوت، بعد أن توافق على الـ Storyboard.">Builds the whiteboard animation film as an interactive HTML Artifact, synced to your audio, after you approve its storyboard.</p>
+              <p class="app-url">https://claude.ai</p>
+              <a class="btn btn-primary" href="https://claude.ai" target="_blank" rel="noopener">
+                <span data-en="Open Claude" data-ar="افتح Claude">Open Claude</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- Pager -->
+        <nav class="pager">
+          <a class="btn btn-outline" href="LessonPromptStudio.html">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Previous: Presentation Designer" data-ar="السابق: مصمّم العروض التقديمية">Previous: Presentation Designer</span>
+          </a>
+          <a class="btn btn-primary" href="WorkSheet.html">
+            <span data-en="Next: Worksheets" data-ar="التالي: أوراق العمل">Next: Worksheets</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/waleed-logo.png" alt="Waleed 2026">
+    <p data-en="Creating educational presentations with Gamma." data-ar="إنشاء العروض التعليمية باستخدام Gamma.">Creating educational presentations with Gamma.</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<!-- The single popup card every cheat sheet is poured into -->
+<dialog class="pop" id="pop">
+  <div class="pop-card">
+    <button class="pop-close" type="button" data-pop-close data-en-label="Close" data-ar-label="إغلاق" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="pop-body"></div>
+  </div>
+</dialog>
+
+<script src="assets/waleed.js"></script>
+<script src="assets/upgrade.js"></script>
+<script>
+/* تبويبات لغة البرومت: تتبع لغة الصفحة عند التحميل وعند تبديلها، ويمكن اختيارها يدويًا */
+(function () {
+  function show(tabs, lang) {
+    tabs.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.setAttribute('aria-selected', String(b.getAttribute('data-tab') === lang));
+    });
+    var pane = tabs.nextElementSibling;
+    while (pane && pane.classList.contains('ppane')) {
+      pane.hidden = pane.getAttribute('data-pane') !== lang;
+      pane = pane.nextElementSibling;
+    }
+  }
+  var all = document.querySelectorAll('.ptabs');
+  var pageLang = function () { return document.documentElement.getAttribute('dir') === 'rtl' ? 'ar' : 'en'; };
+  all.forEach(function (tabs) {
+    show(tabs, pageLang());
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]');
+      if (b) show(tabs, b.getAttribute('data-tab'));
+    });
+  });
+  new MutationObserver(function () { all.forEach(function (t) { show(t, pageLang()); }); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['dir'] });
+})();
+</script>
+</body>
+</html>

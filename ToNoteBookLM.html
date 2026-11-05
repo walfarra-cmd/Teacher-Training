@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemini Notebook Prompt Console</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<meta name="description" content="Gemini Notebook Prompt Console — bilingual EN/AR prompt builder for teachers">
+<link rel="stylesheet" href="assets/waleed.css">
+<style>
+:root{
+  --logo-teal:var(--cyan); --logo-orange:var(--lime); --brand:var(--cyan); --signal:var(--lime); --danger:#ff6b6b;
+  --red-soft:rgba(139,221,40,.16); --green:var(--brand-lift); --deep:var(--bg-2); --deeper:var(--bg); --mint:var(--surface);
+  --mint2:var(--bg-2); --red:var(--accent); --paper:var(--bg); --white:var(--surface); --rule:var(--line);
+  --mute:var(--muted); --mute2:var(--muted);
+  --r-sm:8px; --r:12px; --r-md:14px; --r-pill:999px;
+  --ease:cubic-bezier(0.4,0,0.2,1); --out:cubic-bezier(0.22,1,0.36,1);
+  --t-fast:160ms; --t:260ms;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:Anton,Impact,"Arial Narrow",sans-serif;
+  --serif:Anton,Impact,"Arial Narrow",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ar:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;
+  --rail:252px;
+}
+html[lang="ar"]{--sans:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif}
+html[lang="ar"] .crumb,html[lang="ar"] h3.sec,html[lang="ar"] .rail-tag,html[lang="ar"] .acard h4,html[lang="ar"] .block-h b,html[lang="ar"] .lockpill,html[lang="ar"] .band .letter .w{letter-spacing:0}
+[dir="rtl"] select{background-position:left 13px center;padding-inline-end:13px;padding-inline-start:38px}
+[dir="rtl"] .prog i{float:right}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--accent);color:var(--on-accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+.ava{display:inline-block;flex:none;border-radius:50%;background-repeat:no-repeat;background-size:cover;background-position:center;
+  background-color:var(--brand);border:1px solid var(--line)}
+[dir="rtl"] .howto li{padding:15px 58px 15px 18px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.f{display:flex;flex-direction:column;gap:6px}
+.f.wide{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--ink-2)}
+label .hint{font-weight:400;color:var(--muted);font-size:11px}
+input[type=text],select,textarea{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);
+  padding:11px 13px;font-size:14px;width:100%;min-height:44px;
+  transition:border-color var(--t-fast),background var(--t-fast)}
+textarea{resize:vertical;min-height:90px;line-height:1.65}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.55)}
+select{appearance:none;cursor:pointer;padding-inline-end:38px;background-repeat:no-repeat;background-position:right 13px center;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a3b5b2' stroke-width='2.2' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>")}
+/* files */
+.drop{border:1.5px dashed var(--line);border-radius:var(--r-md);background:var(--bg-2);padding:22px 18px;text-align:center;
+  cursor:pointer;transition:border-color var(--t-fast),background var(--t-fast)}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--surface)}
+.drop .big{font-size:13.5px;font-weight:600;color:var(--ink)}
+.drop .sm{font-size:12px;color:var(--muted);margin-top:4px}
+.filelist{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+.file{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--r-sm);padding:9px 12px;font-size:13px}
+.file .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file .sz{color:var(--muted);font-size:11.5px;font-variant-numeric:tabular-nums;font-family:var(--mono);
+  direction:ltr;unicode-bidi:isolate}
+.file .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;
+  min-width:28px;min-height:28px}
+.file .x:hover{color:var(--accent-text)}
+.file.warn{border-color:var(--accent-dim)}
+.thumb{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--r-md);padding:12px}
+.thumb .box{width:86px;height:62px;border-radius:var(--r-sm);background:var(--bg-2);display:flex;align-items:center;
+  justify-content:center;overflow:hidden;flex:0 0 86px;border:1px solid var(--line-soft)}
+.thumb .box img{max-width:100%;max-height:100%;display:block}
+.thumb .box .ph{font-size:10.5px;color:var(--muted)}
+.thumb .meta{flex:1;min-width:0;font-size:12.5px;color:var(--muted);line-height:1.55}
+.thumb .meta b{display:block;color:var(--ink);font-size:13px;font-weight:600}
+.thumb.fixed .box{background:var(--brand);flex:0 0 72px;width:72px;height:72px;border-radius:50%}
+.thumb.fixed .box img{max-height:100%;border-radius:50%}
+.lockpill{display:inline-flex;align-items:center;gap:6px;margin-top:7px;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:700;color:var(--signal);background:rgba(139,221,40,.14);
+  border:1px solid rgba(139,221,40,.4);border-radius:var(--r-pill);padding:3px 10px}
+.row{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:26px}
+.row.end{justify-content:flex-end}
+.note{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:14px 16px;
+  font-size:13px;color:var(--ink-2);line-height:1.7}
+.note b{color:var(--accent-text);display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  margin-bottom:5px;font-weight:700}
+.note.bad{border-color:var(--accent-dim);background:rgba(139,221,40,.1)}
+.note.good{border-color:var(--signal)}
+.note i{color:var(--ink)}
+/* analysis */
+.an-actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap}
+.prog{flex:1;min-width:180px;height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden;display:none}
+.prog.on{display:block}
+.prog i{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+.an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px;margin-top:6px}
+.acard{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:15px 17px}
+.acard h4{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-text);font-weight:700;
+  margin-bottom:9px}
+.acard p,.acard li{font-size:13px;line-height:1.65;color:var(--ink-2)}
+.acard ul{margin:0;padding-inline-start:17px}
+.acard li{margin-bottom:5px}
+.acard li b{color:var(--ink)}
+.acard .em{font-family:var(--sans);font-size:17px;font-weight:600;line-height:1.4;color:var(--ink)}
+.vocab{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.v{border:1px solid var(--line-soft);border-radius:var(--r-sm);padding:8px 11px;background:var(--bg-2);font-size:12.5px;
+  line-height:1.4;max-width:235px}
+.v b{display:block;font-size:13px;color:var(--ink)}
+.v .lv{font-size:9.5px;letter-spacing:.08em;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--surface-2);
+  color:var(--brand-lift);margin-inline-start:5px;vertical-align:1px}
+.v .lv.hard{background:rgba(139,221,40,.16);color:var(--accent-text)}
+.v .df{color:var(--muted);font-size:11.5px;margin-top:3px}
+/* prompt workspace */
+.work{display:grid;grid-template-columns:274px 1fr;gap:22px;align-items:start}
+.plist{display:flex;flex-direction:column;gap:7px;position:sticky;top:80px}
+.pbtn{display:flex;gap:11px;align-items:flex-start;text-align:start;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--r);padding:11px 12px;cursor:pointer;width:100%;
+  transition:border-color var(--t-fast),background var(--t-fast)}
+.pbtn:hover{border-color:var(--accent-dim);background:var(--surface-2)}
+.pbtn.on{background:var(--surface-2);border-color:var(--accent)}
+.pbtn .k{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent-text);line-height:1.5;
+  width:22px;flex:0 0 22px}
+.pbtn .lab{flex:1;min-width:0}
+.pbtn .lab b{display:block;font-size:13px;font-weight:600;line-height:1.35;color:var(--ink)}
+.pbtn .lab i{display:block;font-style:normal;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+.pbtn .fed{display:inline-block;font-size:10px;letter-spacing:.04em;background:rgba(139,221,40,.16);
+  color:var(--accent-text);border-radius:4px;padding:2px 7px;margin-top:5px;font-weight:700}
+.stage{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--r-md);overflow:hidden;min-height:430px}
+.stage-head{padding:15px 18px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;background:var(--surface)}
+.stage-head h2{font-family:var(--sans);font-size:19px;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+.stage-head .ar-t{font-family:var(--ar);font-size:14px;color:var(--muted);direction:rtl}
+.seg{display:flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden;margin-inline-start:auto}
+.seg button{background:transparent;border:0;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
+  color:var(--muted);min-height:38px;transition:background var(--t-fast),color var(--t-fast)}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--accent);color:var(--on-accent)}
+.spine{padding:0}
+.band{display:flex;border-bottom:1px solid var(--line-soft)}
+.band:last-child{border-bottom:0}
+.band .letter{flex:0 0 74px;background:var(--surface);border-inline-end:1px solid var(--line-soft);padding:15px 0;
+  text-align:center}
+.band .letter .g{font-family:var(--display);font-size:26px;line-height:1;color:var(--brand-lift);opacity:.85;
+  transition:color var(--t-fast),opacity var(--t-fast)}
+.band .letter .w{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:5px;font-weight:700}
+.band:hover .letter .g{opacity:1;color:var(--accent-text)}
+.band .txt{flex:1;min-width:0;padding:15px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.8;
+  color:var(--ink-2);white-space:pre-wrap;word-wrap:break-word}
+.band .txt mark{background:rgba(139,221,40,.16);color:var(--accent-text);padding:1px 4px;border-radius:3px}
+/* ── click-to-edit tokens ── */
+.band .txt mark.gap{cursor:pointer;border:1px dashed var(--accent-dim);
+  transition:background var(--t-fast),color var(--t-fast),border-color var(--t-fast)}
+.band .txt mark.gap::after{content:"\270E";font-size:9.5px;margin-inline-start:5px;opacity:.7}
+.band .txt mark.gap:hover,.band .txt mark.gap:focus-visible{background:var(--accent);color:var(--on-accent);
+  border-color:var(--accent);border-style:solid;outline:none}
+.band .txt mark.gap.set{background:transparent;color:var(--ink);border:0;border-bottom:1px dashed var(--line);
+  border-radius:0;padding:0 1px}
+.band .txt mark.gap.set::after{content:"";font-size:9px;margin-inline-start:0;opacity:0;
+  transition:opacity var(--t-fast)}
+.band .txt mark.gap.set:hover,.band .txt mark.gap.set:focus-visible{background:rgba(139,221,40,.14);
+  color:var(--signal);border-bottom-color:var(--signal)}
+.band .txt mark.gap.set:hover::after,.band .txt mark.gap.set:focus-visible::after{content:"\270E";
+  margin-inline-start:4px;opacity:.8}
+.editnote{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);
+  padding:9px 14px;border-bottom:1px solid var(--line-soft);background:var(--bg-2)}
+.editnote em{font-style:normal;background:rgba(139,221,40,.16);color:var(--accent-text);
+  border:1px dashed var(--accent-dim);border-radius:3px;padding:1px 6px;font-size:11.5px}
+/* ── the token editor ── */
+.gapmask{position:fixed;inset:0;z-index:60;background:rgba(10,6,50,.72);
+  backdrop-filter:blur(3px);display:grid;place-items:center;padding:22px}
+.gapmask[hidden]{display:none!important}
+.gapcard{width:min(520px,100%);background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;padding:20px 22px 18px;box-shadow:0 24px 60px rgba(10,6,50,.55)}
+.gapcard h4{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text);
+  font-weight:700;margin-bottom:11px}
+.gapcard textarea{min-height:130px}
+.gapcard .gaphint{font-size:11.5px;color:var(--muted);margin-top:11px;line-height:1.6}
+.gap-btns{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap;justify-content:flex-end}
+.gap-btns .spacer{margin-inline-end:auto}
+.stage.rtl .band{flex-direction:row-reverse}
+.stage.rtl .band .letter{border-inline-end:0;border-inline-start:1px solid var(--line-soft)}
+.stage.rtl .band .letter .w{font-family:var(--ar);letter-spacing:0}
+.stage.rtl .band .txt{direction:rtl;text-align:right;font-family:var(--ar);font-size:14.5px;line-height:2.05;
+  unicode-bidi:plaintext}
+.stage-foot{padding:14px 18px;border-top:1px solid var(--line-soft);background:var(--surface);display:flex;gap:10px;
+  align-items:center;flex-wrap:wrap}
+.stage-foot .use{font-size:12.5px;color:var(--muted);flex:1;min-width:200px;line-height:1.55}
+.stage-foot .use b{color:var(--ink-2)}
+.stage .empty{padding:80px 34px;text-align:center;color:var(--muted)}
+.stage .empty .g{font-family:var(--display);font-size:46px;color:var(--line);letter-spacing:8px}
+.stage .empty p{margin-top:14px;font-size:13.5px;max-width:360px;margin-inline:auto;text-wrap:pretty}
+/* copyable prompt block */
+.block{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--r-md);margin-bottom:16px;overflow:hidden}
+.block-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;
+  border-bottom:1px solid var(--line-soft);background:var(--surface);flex-wrap:wrap}
+.block-h b{font-size:12.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--accent-text)}
+.block-h .meta{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+pre{margin:0;padding:15px 17px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:var(--ink-2);
+  white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;max-width:100%}
+pre[dir="rtl"]{font-family:var(--ar);font-size:14px;line-height:2;text-align:right;unicode-bidi:plaintext}
+@media(max-width:560px){pre{font-size:11.5px;padding:12px 13px}}
+.remind{display:flex;gap:13px;align-items:flex-start;background:var(--surface);border:1px solid var(--line-soft);
+  border-inline-start:3px solid var(--accent);border-radius:var(--r-md);padding:13px 16px;margin-bottom:22px}
+.remind .ava{width:42px;height:42px}
+.remind .rtxt b{display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-text);
+  font-weight:700;margin-bottom:4px}
+html[lang="ar"] .remind .rtxt b{letter-spacing:0;font-size:11.5px}
+.remind .rtxt span{display:block;font-size:13.5px;color:var(--ink);line-height:1.55}
+.remind .rtxt i{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:4px}
+html[lang="ar"] .sign .role{letter-spacing:0;font-size:11.5px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--surface-2);
+  color:var(--ink);border:1px solid var(--line);padding:11px 20px;border-radius:var(--r-pill);font-size:13.5px;
+  font-weight:600;opacity:0;transition:opacity .3s,transform .3s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){
+  .work{grid-template-columns:1fr}
+  .plist{position:relative;top:0}
+  .band .letter{flex:0 0 58px}
+}
+@media(max-width:560px){
+  .band{flex-direction:column}
+  .band .letter{flex:none;display:flex;align-items:center;gap:9px;padding:9px 14px;border-inline-end:0;
+    border-bottom:1px solid var(--line-soft);text-align:start}
+  .band .letter .g{font-size:19px}
+  .band .letter .w{margin-top:0}
+  .stage.rtl .band{flex-direction:column}
+  .stage.rtl .band .letter{border-inline-start:0;border-bottom:1px solid var(--line-soft)}
+}
+
+@media print{
+  .row,.toast,.seg,.stage-foot{display:none!important}
+  .band .txt,.acard p,.acard li{color:#000}
+  .stage,.acard,.band .letter{background:#fff;border-color:#bbb}
+}
+#masterMeta{direction:ltr;unicode-bidi:isolate}
+
+
+#logoBox{background:#fff;border-radius:8px}
+select,input,textarea{color-scheme:dark}
+select option,select optgroup{background:#1b1464;color:#fff}
+select option:checked{background:#29bfe8;color:#1b1464}
+.step{display:flex;align-items:center;gap:12px;width:100%;text-align:start;white-space:normal;padding:10px 12px;border-radius:var(--r-sm);background:transparent;border:1px solid transparent;color:var(--ink-2);font-family:var(--sans);font-size:15px;cursor:pointer}
+.step:hover:not(.on){background:var(--surface-2);color:var(--ink)}
+.step.on{background:rgba(139,221,40,.12);border-color:var(--line);color:var(--ink)}
+.step .n{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--mono);background:var(--surface-2);color:var(--lime)}
+.step.on .n,.step.done .n{background:var(--lime);color:var(--navy)}
+.step .lab{display:flex;flex-direction:column;min-width:0}
+.step .t{font-weight:700;font-size:16px;line-height:1.3}
+.panel{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-lg);padding:38px;font-size:16px;min-width:0}
+.panel[hidden]{display:none}
+.phead{margin-bottom:26px}
+.phead h1,.phead h2{margin:0 0 12px;font-family:var(--display);font-weight:400;font-size:clamp(30px,3.6vw,42px);line-height:1.06;color:var(--lime)}
+html[dir="rtl"] .phead h1,html[dir="rtl"] .phead h2{font-family:var(--ar);font-weight:700;line-height:1.4}
+.phead p{margin:0;max-width:70ch;color:var(--ink-2);font-size:17px;line-height:1.7}
+h3.sec{margin:34px 0 16px;padding:0 0 12px;position:static;border-bottom:1px solid var(--line-soft);font:500 14px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--brand-lift)}
+h3.sec span.opt{font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--muted);margin-inline-start:8px}
+.chip.empty{opacity:.55;border-style:dashed}
+.chip.hot{border-color:var(--lime);color:var(--lime)}
+.hero-meta{margin-top:30px}
+.hero{padding:72px 0 84px}
+label .hint{display:inline;margin:0;padding:0;background:none;border:0;font-size:inherit;color:var(--muted);font-weight:500}
+.box .ph,.thumb .ph{background:none;border:0;color:var(--muted);font-weight:500}
+input[type=text],select,textarea{border-radius:var(--r)}
+.btn.sm{min-height:40px;padding:8px 16px;font-size:14px}
+.panel .btn{margin:6px 0}
+.work{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+.foot .role{color:var(--ink-2)}
+.panel .btn,.gapcard .btn,.row .btn{box-shadow:none}
+.panel .btn:hover,.gapcard .btn:hover,.row .btn:hover{box-shadow:0 8px 22px rgba(41,191,232,.3);transform:translateY(-1px)}
+.hero{padding:44px 0 52px}
+.hero .backlink{margin-bottom:20px}
+.hero h1{font-size:clamp(34px,5vw,48px);margin-bottom:18px}
+.hero .lede{font-size:clamp(17px,1.8vw,20px)}
+.hero-actions{margin-top:26px}
+html[lang="ar"] h3.sec{font-family:var(--ar);font-size:16px;font-weight:700;letter-spacing:0;text-transform:none}
+
+:root{color-scheme:dark}
+@media (max-width:960px){.panel{padding:24px}.work{grid-template-columns:1fr}}
+
+.g6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px 18px}
+.g6>.f{grid-column:span 2;min-width:0}.g6>.s3{grid-column:span 3}.g6>.s4{grid-column:span 4}.g6>.s6{grid-column:1/-1}
+.g6.sep{margin-top:26px;padding-top:24px;border-top:1px solid var(--line-soft)}
+@media (max-width:700px){.g6>.f{grid-column:1/-1}}
+
+/* ── tabs on top ── */
+.tabbar{display:flex;align-items:stretch;gap:12px;margin-bottom:22px;padding:8px;background:rgba(27,20,100,.88);backdrop-filter:blur(10px);
+  border:1px solid var(--line-soft);border-radius:var(--r-lg);position:sticky;top:90px;z-index:6}
+.steps{display:flex;flex:1;gap:6px;margin:0;min-width:0}
+.step{flex:1;justify-content:center;padding:12px 16px;border-radius:12px}
+.tab-tools{display:flex;gap:8px;align-items:center}
+.tab-tools .btn{margin:0;width:auto;min-height:42px;padding:8px 16px;font-size:14px;box-shadow:none}
+.work{grid-template-columns:minmax(0,1fr);gap:18px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:8px;position:static;top:auto}
+.pbtn{align-items:center;padding:10px 12px}
+@media (max-width:760px){
+  .tabbar{flex-wrap:wrap;top:84px}
+  .steps{flex:1 1 100%}
+  .step{padding:10px 6px;gap:8px;font-size:14px}.step .n{flex-basis:26px;height:26px}.step .t{font-size:14px}
+  .tab-tools{flex:1 1 100%}.tab-tools .btn{flex:1}
+}
+@media (max-width:720px){.tabbar{top:8px}}
+</style>
+<style id="hero-side-art">
+.hero .hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+  align-items:center;
+  gap:clamp(24px,5vw,72px);
+}
+.hero .hero-copy{min-width:0}
+.hero .hero-actions{margin-top:32px}
+.hero .hero-art{
+  position:relative; inset:auto; transform:none; margin:0;
+  display:flex; justify-content:center; align-items:center;
+  min-width:0;
+}
+.hero .hero-char{
+  display:block; width:100%; max-width:460px; height:auto;
+  filter:drop-shadow(0 24px 44px rgba(0,0,0,.35));
+  animation:hero-art-float 4.5s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes hero-art-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+@media (max-width:860px){
+  .hero .hero-grid{grid-template-columns:1fr}
+  .hero .hero-art{order:2; margin-top:8px}
+  .hero .hero-char{max-width:300px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .hero-char{animation:none}
+}
+</style>
+<style id="hero-compact">
+/* تقليص مسافة الواجهة لتطابق صفحة مصمّم الدروس */
+.hero{padding:46px 0 34px}
+.hero .hero-actions{margin-top:26px}
+#main > .sec:first-child{padding-top:0}
+@media (max-width:720px){.hero{padding:36px 0 28px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="topbar-in">
+  <div class="brand"><img src="assets/waleed-logo.png" alt="Waleed 2026"><span class="brand-tag">Gemini Notebook Prompt Console</span></div>
+  <div class="topbar-actions">
+    <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Home page" data-ar="الرئيسية">Home page</span></a>  
+    <button class="btn btn-ghost" id="uiLang" type="button" title="English / العربية"><span class="uiLangLabel">العربية</span></button>
+  </div>
+</div></header>
+
+<div class="hero">
+  <i class="orb orb-1" aria-hidden="true"></i><i class="orb orb-2" aria-hidden="true"></i>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow" id="crumb">Step 1 — Lesson detail</p>
+      <h1 class="display">Tailor the Gemini Notebook tools to explain a model lesson.</h1>
+      <div class="hero-actions">
+        <a class="btn btn-ghost" href="#main" data-go="0">Start customizing the tool</a>
+      </div>
+      <div class="hero-meta" id="ident"></div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><img class="hero-char" src="assets/notebooklm.png" alt="" width="1254" height="1254"></div>
+  </div>
+</div>
+<main id="main"><section class="sec"><div class="wrap">
+<div class="tabbar">
+<nav class="steps">
+<button class="step on" data-go="0"><span class="n">1</span><span class="lab"><span class="t">Lesson detail</span></span></button>
+    <button class="step" data-go="1"><span class="n">2</span><span class="lab"><span class="t">Master prompt</span></span><span class="dot"></span></button>
+    <button class="step" data-go="2"><span class="n">3</span><span class="lab"><span class="t">Prompt library</span></span><span class="dot"></span></button>
+</nav>
+  <div class="tab-tools">
+    <button class="btn btn-ghost" id="saveSetup">Save setup</button>
+    <button class="btn btn-ghost" id="loadSetup">Load setup</button>
+    <input type="file" id="setupFile" accept=".json" hidden="">
+  </div>
+</div>
+<div>
+  <section class="panel" id="p0">
+    <div class="phead">
+      <h2>Start customizing the tool</h2>
+      <p>Fill in the following fields as appropriate for the lesson.</p>
+    </div>
+    <h3 class="sec">The lesson</h3>
+    <div class="g6">
+      <div class="f s2"><label>Subject</label><input type="text" id="subject" placeholder="Arabic language · Science · Mathematics"></div>
+      <div class="f s2"><label>Framework <span class="hint">curriculum</span></label>
+        <select id="framework">
+          <option value="">Choose the curriculum</option>
+          <optgroup label="Regional">
+            <option>المنهج الوطني السعودي</option>
+            <option>المنهج الوطني الكويتي</option>
+            <option>المنهج الوطني القطري</option>
+            <option>منهج وزارة التربية والتعليم في دولة الإمارات العربية المتحدة</option>
+            <option>المنهج الدراسي الوطني المصري</option>
+            <option>Australian Curriculum</option>
+            <option>Ontario Curriculum (Canada)</option>
+            <option>French National Curriculum</option>
+          </optgroup>
+          <optgroup label="American">
+            <option>US Common Core State Standards (CCSS)</option>
+            <option>Next Generation Science Standards (NGSS)</option>
+            <option>AERO — American Education Reaches Out</option>
+            <option>Advanced Placement (AP)</option>
+            <option>Texas Essential Knowledge and Skills (TEKS)</option>
+            <option>American Diploma — US High School</option>
+          </optgroup>
+          <optgroup label="International Baccalaureate">
+            <option>IB PYP</option><option>IB MYP</option><option>IB DP</option>
+          </optgroup>
+          <optgroup label="British &amp; Cambridge">
+            <option>English National Curriculum (UK)</option>
+            <option>Cambridge Primary</option>
+            <option>Cambridge Lower Secondary</option>
+            <option>Cambridge IGCSE</option>
+            <option>IGCSE 0058</option>
+            <option>Cambridge A Level</option>
+            <option>EYFS — Early Years Foundation Stage</option>
+          </optgroup>
+          <optgroup label="Language &amp; ELT">
+            <option>CEFR</option>
+            <option>CELTA methodology</option>
+            <option>ACTFL Proficiency Guidelines</option>
+            <option>WIDA English Language Development Standards</option>
+            <option>TESOL / TEFL standards</option>
+          </optgroup>
+          <optgroup label="Cross-cutting">
+            <option>ISTE Standards for Students</option>
+            <option>UDL — Universal Design for Learning</option>
+            <option>UN Sustainable Development Goals</option>
+            <option>Bloom's Taxonomy &amp; DOK</option>
+            <option>Montessori</option>
+            <option>National curriculum</option>
+          </optgroup>
+        </select></div>
+      <div class="f s2"><label>Level or grade <span class="hint">year</span></label><input type="text" id="level" placeholder="Grade 6"></div>
+      <div class="f s4"><label>Lesson title</label><input type="text" id="title" placeholder="Arabic lesson - unit 6"></div>
+      <div class="f s2"><label>Lesson duration</label><input type="text" id="duration" placeholder="45 minutes"></div>
+    </div>
+    <h3 class="sec">Paste the lesson text <span class="opt">optional</span></h3>
+    <div class="grid"><div class="f wide">
+      <textarea id="pastedText" rows="6" aria-label="Paste the lesson text" placeholder="You can paste the lesson text, lesson plan, reading passage, etc., here."></textarea>
+    </div></div>
+    <div id="fillMsg" style="margin-top:13px"></div>
+    <div id="brandVault" hidden="">
+    <div class="grid two">
+      <div class="f">
+        <label>Logo</label>
+        <div class="thumb"><div class="box" id="logoBox"><span class="ph">No logo</span></div>
+          <div class="meta"><b id="logoName">School logo</b>Shown in the rail and named in every visual prompt.
+            <div style="margin-top:8px"><button class="btn btn-ghost sm" id="dlLogo">Save .png</button></div>
+          </div></div>
+      </div>
+      <div class="f">
+        <label>Character avatar</label>
+        <div class="thumb fixed"><div class="box" id="avBox"><span class="ph">No avatar</span></div>
+          <div class="meta"><b id="avName">Character avatar</b>Appears as narrator and on-slide guide.
+            <span class="lockpill" id="avState">Cartoon character · built in</span>
+            <div style="margin-top:8px"><button class="btn btn-ghost sm" id="dlAvatar">Save .png</button></div>
+          </div></div>
+      </div>
+      <div class="f"><label>Avatar name</label><input type="text" id="avatarName" value="Cartoon character" placeholder="Cartoon character"></div>
+      <div class="f"><label>Character source name <span class="hint">as saved in the notebook</span></label><input type="text" id="avatarFile" value="الشخصية الكرتونية" placeholder="الشخصية الكرتونية"></div>
+      <div class="f"><label>Character look <span class="hint">one sentence</span></label><input type="text" id="avatarLook" value="a boy with tousled dark-brown hair and round black glasses, smiling, in a blue zip hoodie over a white T-shirt, jeans and blue sneakers, carrying a navy backpack and a stack of green and yellow books, one hand raised with the index finger pointing at a glowing light bulb"></div>
+      <div class="f"><label>Avatar personality <span class="hint">three words</span></label><input type="text" id="avatarPersona" value="curious · encouraging · precise"></div>
+      <div class="f"><label>Brand name</label><input type="text" id="brandName" value="Waleed"></div>
+      <div class="f"><label>Tagline</label><input type="text" id="brandTag" value="Science makes a difference"></div>
+      <div class="f"><label>Primary colour</label><input type="text" id="colGreen" value="#0F695D"></div>
+      <div class="f"><label>Accent colour</label><input type="text" id="colRed" value="#EE3A23"></div>
+    </div></div>
+    <div class="g6 sep">
+      <div class="f s3"><label>DOK range</label>
+        <select id="dok"><option>1–2 (recall to apply)</option><option>1–3 (recall to analyse)</option><option>1–4 (recall to create)</option>
+          <option>2–4 (apply to create)</option></select></div>
+      <div class="f s3"><label>Beneficiaries</label>
+        <select id="Beneficiaries"><option>Students</option><option>Teachers (PD)</option><option>Parents</option>
+          <option>Students and parents</option></select></div>
+      <div class="f s3"><label>Output language</label>
+        <select id="outlang"><option>English</option><option>Arabic</option><option>Bilingual English–Arabic</option></select></div>
+      <div class="f s3"><label>Learner context</label>
+        <input type="text" id="country" placeholder="Saudi Arabia · Dammam" value="Saudi Arabia"></div>
+    </div>
+    <h3 class="sec">Objectives <span class="opt">paste verbatim from the lesson plan — or paste the lesson text above and let the console pull them</span></h3>
+    <div class="g6">
+      <div class="f s6"><textarea id="objectives" aria-label="Objectives" placeholder="بنهاية الدرس يكون الطالب قادر على&#10;·&#10;·"></textarea></div>
+      <div class="f s6"><label>Misconceptions to correct <span class="hint">one per line</span></label>
+        <textarea id="misconceptions" rows="3" aria-label="Misconceptions to correct" placeholder="· &quot;مثلا يكتب كلمة ابن هكذا: عبدالله ابن ابي قحافة&quot; → والتصحيح يكون: &quot;عبدالله بن أبي قحافة&quot;"></textarea></div>
+    </div>
+    <h3 class="sec">Output sizes</h3>
+    <div class="g6">
+      <div class="f s2"><label>Slides in the deck</label><input type="text" id="nSlides" value="10"></div>
+      <div class="f s2"><label>Quiz items</label><input type="text" id="nQuiz" value="20"></div>
+      <div class="f s2"><label>Flashcards</label><input type="text" id="nCards" value="15"></div>
+      <div class="f s2"><label>Video length (min)</label><input type="text" id="nVid" value="2"></div>
+      <div class="f s2"><label>Podcast length (min)</label><input type="text" id="nPod" value="8"></div>
+      <div class="f s2"><label>Word count for the infographic</label><input type="text" id="nWords" value="100"></div>
+    </div>
+    <h3 class="sec">Visual style <span class="opt">optional — pick the look of the slides and the infographic, the way you would in the NotebookLM Style Prompter extension</span></h3>
+    <div class="g6">
+      <div class="f s3"><label>Slides look</label><select id="vstyleDeck" class="vsSel"></select></div>
+      <div class="f s3"><label>Infographic look</label><select id="vstyleInfo" class="vsSel"></select></div>
+      <div class="f s3"><label>Pasted style — slides <span class="hint">used when “Custom” is selected</span></label>
+        <textarea id="vstyleCustomDeck" rows="4" placeholder="Paste the Style Prompter output for slides here"></textarea></div>
+      <div class="f s3"><label>Pasted style — infographic <span class="hint">used when “Custom” is selected</span></label>
+        <textarea id="vstyleCustomInfo" rows="4" placeholder="Paste the Style Prompter output for the infographic here"></textarea></div>
+      <div class="f s6"><div class="hint" style="line-height:1.8">NotebookLM Style Prompter (Chrome extension): choose the output type, theme, font, colour, layout and tone → Copy → paste it above. The prompts then treat it as a look-only design brief: it alone sets every colour, while your logo and character stay untouched.</div></div>
+    </div>
+    <div class="row end"><button class="btn btn-primary" data-go="1">Next step: The main prompt</button></div>
+  </section>
+  <section class="panel" id="p1" hidden="">
+    <div class="phead">
+      <h2>The master prompt.</h2>
+      <p>The key feature of this prompt is that it asks the AI not merely to serve as a source of answers, but to structure the learning process itself. Before use, it is essential to align on the target Depth of Knowledge (DOK) level, establish a clear standard for mastery, and ensure the availability of the source materials upon which the course will be built.</p>
+    </div>
+    <div class="an-actions">
+      <div class="seg" id="masterLang" style="margin-inline-start:0">
+        <button class="on" data-mlang="en">English</button><button data-mlang="ar">العربية</button>
+      </div>
+    </div>
+    <div id="masterWrap" style="margin-top:20px">
+      <div class="block">
+        <div class="block-h"><!--b id="masterTitle">Master prompt — read the lesson</b-->
+          <span style="display:flex;align-items:center;gap:10px">
+            <span class="meta mono" id="masterMeta"></span>
+            <button class="btn btn-primary sm" id="copyMaster">Copy prompt</button>
+          </span></div>
+        <pre id="masterOut"></pre>
+      </div>
+      
+    </div>
+    <div id="anMsg" style="margin-top:16px"></div>
+    <div id="anOut" style="margin-top:20px"></div>
+    <div class="row end" id="anNav"><button class="btn btn-ghost" data-go="0">Back</button><button class="btn btn-primary" data-go="2">Open the prompt library</button></div>
+  </section>
+  <section class="panel" id="p2" hidden="">
+    <div class="phead">
+      <h2>Nine outcomes for a single lesson</h2>
+      <p>Pick an artefact. The prompt below is already carrying your subject, level, framework, objectives
+         and brand. Copy it whole into the Gemini Notebook chat, then open the matching Studio panel.</p>
+    </div>
+    <div class="work">
+      <div class="plist" id="plist"></div>
+      <div class="stage" id="stage">
+        <div class="empty"><div class="g">RCTF</div>
+          <p>Choose an artefact above. Every prompt is built from the same four moves — role, context, task, format.</p></div>
+      </div>
+    </div>
+    <div class="row"><button class="btn btn-ghost" data-go="1">Back</button>
+      <button class="btn btn-ghost" id="dlAll">Download all ten prompts (.md)</button></div>
+  </section>
+</div></div></section></main>
+<footer class="foot"><div class="foot-in">
+  <img src="assets/waleed-logo.png" alt="Waleed 2026">
+  <p><b>أدوات مساندة وهامة</b> · <span class="role">في العملية التعليمية</span></p>
+  <button class="btn btn-ghost" id="uiLang2" type="button"><span class="uiLangLabel">العربية</span></button>
+</div></footer>
+<div class="gapmask" id="gapModal" hidden="" role="dialog" aria-modal="true" aria-labelledby="gapLabel">
+  <div class="gapcard">
+    <h4 id="gapLabel">Edit</h4>
+    <div id="gapField"></div>
+    <div class="gap-btns">
+      <button class="btn btn-ghost sm spacer" id="gapClear">Clear</button>
+      <button class="btn btn-ghost sm" id="gapCancel">Cancel</button>
+      <button class="btn btn-primary sm" id="gapSave">Save</button>
+    </div>
+    <p class="gaphint" id="gapHint"></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/nb-avatar.js"></script>
+<script>
+"use strict";
+/* ----- assets ----- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const S = {
+  d:{}, files:{plan:[],book:[]}, logo:null, avatar:null,
+  analysis:null, lang:'en', active:null
+};
+const FIELDS = ['subject','title','level','duration','framework','dok','Beneficiaries','outlang','country',
+  'objectives','misconceptions',
+  'nSlides','nQuiz','nCards','nVid','nPod','nWords','avatarName','avatarFile','avatarLook','avatarPersona','brandName',
+  'brandTag','colGreen','colRed','pastedText','vstyleDeck','vstyleInfo','vstyleCustomDeck','vstyleCustomInfo'];
+function sync(){ FIELDS.forEach(k => { const el=$('#'+k); if(el) S.d[k]=el.value.trim(); }); paintIdent(); }
+FIELDS.forEach(k => { const el=$('#'+k); if(el) el.addEventListener('input',sync); if(el) el.addEventListener('change',sync); });
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),2100); }
+const num=v=>+String(v||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const ai=v=>String(v).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const AV_LOOK_EN='a boy with tousled dark-brown hair and round black glasses, smiling, in a blue zip hoodie over a white T-shirt, jeans and blue sneakers, carrying a navy backpack and a stack of green and yellow books, one hand raised with the index finger pointing at a glowing light bulb';
+const AV_LOOK_AR='صبيٌّ بشعر بنيٍّ داكن مُشعَّث ونظارة سوداء مستديرة، مبتسم، يرتدي سترة زرقاء بسحّاب فوق قميص أبيض وبنطال جينز وحذاء رياضيًّا أزرق، ويحمل حقيبة ظهر كحلية وكتبًا خضراء وصفراء، ويرفع يدًا بإصبع مرفوع نحو مصباح مضيء';
+const DEF_EN={brandTag:'Science makes a difference',avatarPersona:'curious · encouraging · precise',avatarName:'Cartoon character',avatarLook:AV_LOOK_EN};
+const ard=(k,a)=>{const v=S.d[k];return v&&v!==DEF_EN[k]?v:a;};
+const dokL=ar=>(ar&&T_AR[S.d.dok])||S.d.dok;
+const BP={'1–2':[1,[60,40]],'1–3':[1,[40,40,20]],'1–4':[1,[40,30,20,10]],'2–4':[2,[40,40,20]]};
+function bp(ar){const[a,w]=BP[(S.d.dok||'').slice(0,3)]||BP['1–4'];
+  return w.map((x,i)=>ar?ai(x)+'٪ عمق '+ai(a+i):x+'% DOK '+(a+i)).join(ar?'، ':', ');}
+const esc = s => String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+/* ═══════════ editable values ═══════════
+   Every value the console writes into a prompt is wrapped in an invisible
+   marker, so the prompt view can turn it into a click-to-edit token.
+   The markers never leave this page — they are stripped from anything
+   copied, downloaded or shown in a <pre>. */
+const G1='\u0001', G2='\u0002', G3='\u0003';
+const GAP_RE = /\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g;
+function GAP(k,text){ return G1+k+G2+text+G3; }
+const stripGaps = t => String(t??'').replace(GAP_RE,'$2').replace(/[\u0001\u0002\u0003]/g,'');
+/* variable with visible, editable placeholder */
+function V(k,ph){ const v=S.d[k]; return GAP(k, v ? v : '['+ph+']'); }
+const CRUMBS=['Step 1 — Lesson detail','Step 2 — Master prompt','Step 3 — Prompt library'];
+let CUR_STEP=0;
+function go(i){
+  sync(); CUR_STEP=i;
+  [0,1,2].forEach(n => $('#p'+n).hidden = (n!==i));
+  $$('.step').forEach((b,n)=>b.classList.toggle('on', n===i));
+  $('#crumb').textContent = (typeof UILANG!=='undefined'&&UILANG==='ar'?CRUMBS_AR:CRUMBS)[i];
+  if(i===1){ S.masterSeen=true; showMaster(); }
+  if(i===2) buildLibrary();
+  { const el=$('#p'+i); window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-150),behavior:'smooth'}); }
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-go]'); if(b) go(+b.dataset.go); });
+function paintIdent(){
+  const box=$('#ident'); const bits=[];
+  const add=(v,ph,hot)=>bits.push(v?`<span class="chip${hot?' hot':''}">${esc(v)}</span>`:`<span class="chip empty">${ph}</span>`);
+  
+  if(S.d.framework) bits.push(`<span class="chip">${esc(S.d.framework)}</span>`);
+  if(S.analysis?.vocab?.length) bits.push(`<span class="chip hot">${S.analysis.vocab.length} words to teach</span>`);
+  box.innerHTML=bits.join('');
+  $$('.step')[0].classList.toggle('done', !!(S.d.subject&&S.d.framework&&S.d.level&&(S.d.title||S.d.objectives)));
+  $$('.step')[1].classList.toggle('done', !!(S.masterSeen||S.analysis));
+}
+const TXT = f => new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(f);});
+function paintReminders(){
+  const ar=(typeof UILANG!=='undefined' && UILANG==='ar');
+  document.querySelectorAll('.remind-ava').forEach(n=>{ n.style.backgroundImage=`url(${WIZFACE})`; });
+  document.querySelectorAll('.remind').forEach(r=>{
+    r.querySelector('.rtxt b').textContent = ar?'أرفِق هذه في الدفتر':'Attach these to the notebook';
+    r.querySelector('.rtxt span').textContent = ar
+      ? 'خطة الدرس · صفحات الكتاب · شعار مدرستي · صورة الشخصية الكرتونية المرفوعة'
+      : 'the lesson plan · the coursebook pages · your brand logo · your uploaded character image';
+    r.querySelector('.rtxt i').textContent = ar
+      ? 'لا يجيب Gemini Notebook إلا عمّا يراه. احفظ الشعار والشخصية من الخطوة ١.'
+      : 'Gemini Notebook answers only from what it can see. Save the logo and the avatar from step 1.';
+  });
+}
+const BUILTIN = {
+  logo:{ name:'waleed-2026-logo.png', url:'assets/waleed-logo.png', shown:'assets/waleed-logo.png' },
+  avatar:{ name:'Cartoon character-the-wizard.png', url:WIZ, shown:WIZ }
+};
+function loadBuiltIns(){
+  S.logo   = {name:BUILTIN.logo.name,   url:BUILTIN.logo.url};
+  S.avatar = {name:BUILTIN.avatar.name, url:BUILTIN.avatar.url};
+  try{ $('#railAva').style.backgroundImage = `url(${WIZFACE})`; }catch(e){}
+  $('#logoBox').innerHTML = `<img src="${BUILTIN.logo.shown}" alt="">`;
+  $('#logoName').textContent = BUILTIN.logo.name;
+  paintAvatar();
+  paintReminders();
+}
+/* save either asset as a real .png the notebook will accept */
+function savePNG(dataUrl, filename){
+  const img=new Image();
+  img.onload=()=>{
+    const c=document.createElement('canvas'); c.width=img.naturalWidth; c.height=img.naturalHeight;
+    c.getContext('2d').drawImage(img,0,0);
+    c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=filename;
+      a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); toast(filename+' saved'); },'image/png');
+  };
+  img.onerror=()=>toast(t_('That image could not be saved'));
+  img.src=dataUrl;
+}
+$('#dlLogo').onclick = ()=>{ const a=document.createElement('a'); a.href=BUILTIN.logo.url; a.download=BUILTIN.logo.name; a.click(); toast(BUILTIN.logo.name+' saved'); };
+$('#dlAvatar').onclick = ()=>savePNG(BUILTIN.avatar.url, BUILTIN.avatar.name);
+/* replace the avatar with your own image, or go back to Cartoon character */
+function paintAvatar(){
+  $('#avBox').innerHTML = `<img src="${WIZFACE}" alt="">`;
+  try{ $('#railAva').style.backgroundImage = `url(${WIZFACE})`; }catch(e){}
+  $('#avName').textContent = 'Cartoon character — the wizard';
+  $('#avState').textContent = 'Cartoon character · built in';
+}
+$('#avatarName').addEventListener('input',()=>{ try{ $('#railAvName').textContent = $('#avatarName').value.trim()||'Cartoon character'; }catch(e){} });
+$('#saveSetup').onclick=()=>{ sync();
+  const blob=new Blob([JSON.stringify({d:S.d,analysis:S.analysis},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(S.d.title||'lesson').replace(/[^\p{L}\p{N}_-]+/gu,'_')+'_setup.json'; a.click(); toast(t_('Setup saved'));
+};
+$('#loadSetup').onclick=()=>$('#setupFile').click();
+$('#setupFile').onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{ const j=JSON.parse(await TXT(f));
+    Object.assign(S.d,j.d||{}); S.analysis=j.analysis||null;
+    FIELDS.forEach(k=>{ const el=$('#'+k); if(el&&S.d[k]!=null) el.value=S.d[k]; });
+    paintIdent(); toast(t_('Setup loaded'));
+  }catch(err){ toast(t_('That file could not be read')); }
+};
+let MLANG='en';
+const COURSE_EN_HEAD = `ROLE
+Adopt the role of an expert educator and instructional designer. Create a custom course for me that covers the content found in the resources within this notebook, and guide me through it step-by-step until I am capable of working independently.
+RULES
+1. GROUNDING. Use only this notebook's sources and cite source + section/page for every key claim. If something I need is missing, write "GAP: not in sources" and tell me what to upload. Go beyond the sources only if I say "go beyond sources".
+2. ONE STEP AT A TIME. Map the path first, then teach only the current step. Never reveal or start the next step until I confirm this one is understood.
+3. I DO THE WORK. Never give the finished answer to an exercise: give clues, partial scaffolds and a worked parallel example, then let me produce it.
+4. ASSUME NO PRIOR KNOWLEDGE. Define each term in one line at first use.
+5. BREVITY. No praise, filler or repeating my question.`;
+const COURSE_EN_BODY = `PHASE 0 — DIAGNOSTIC (ask, then STOP)
+In one message ask: a) what I must be able to DO at the end (a task, not a topic); b) what I already know (1-5, why); c) time available and session length; d) where I will apply it (project, exam, teaching, work); e) how I learn best (worked examples, analogies, diagrams, drill).
+PHASE 1 — THE MAP (then STOP for approval)
+From the sources only: a course title; one measurable terminal objective; numbered modules (one sitting each) with objective (Bloom verb + DOK level), source sections and prerequisites. Order by rising demand: DOK 1 Recall → 2 Apply → 3 Analyse → 4 Create. Flag modules the sources cannot fully support. Ask "Approve this map, or change it?" Do not teach yet.
+PHASE 2 — LESSON LOOP (one module per message, in this order)
+1. HOOK: the one question this module answers.
+2. CORE: the concept in under 200 words, with citation.
+3. ANALOGY: one analogy plus one example from my Phase 0(d) context.
+4. CHECK: three Socratic questions (recall, application, "why / what if"). Ask, then WAIT; never answer them yourself.
+5. DIAGNOSE: mark my answers; name each error and the misconception behind it, without softening.
+6. TASK: one short exercise or micro-build proving I can use the idea.
+7. GATE: ask "Ready to move on, or reframe?" READY → 3-bullet summary + 2 retrieval questions for three days later, then the next module. NO → re-teach with a new analogy, a simpler example and guided clues, then re-test until I pass. Never advance on an unconfirmed step.
+PHASE 3 — CONSOLIDATION (every 2-3 modules)
+Five-item quiz (2 recall, 2 application, 1 analysis). Report my score per DOK band, name the modules to revisit if any band is under 80%, then give a study-guide summary I can paste into a NotebookLM Note.
+PHASE 4 — CAPSTONE
+One challenge that needs at least three modules. Give only the brief and success criteria, wait for my attempt, then assess against the criteria, name the gaps and give a repair plan.
+PHASE 5 — TRANSFER
+Ask me to state what I learned, what surprised me and what I still can't do. Then propose three ways to apply this to my Phase 0(d) project, ranked by effort-to-impact, with a review schedule (days 1, 3, 7, 21) using the retrieval questions.
+SESSION CONTROL
+End every message with: STATUS → Module __ of __ | Step __ | Next: ______
+Begin with PHASE 0 only.`;
+const COURSE_AR_HEAD = `الدور
+تقمص دور المعلم الخبير والمصمِّم التعليمي. ثم ابنِ لي دورة مخصّصة تعلّمني فيها مضمون مصادر هذا الدفتر، وساعدني بمرافقني فيها خطوةً بخطوة حتى اعتمد على نفسي وأعمل باستقلال.
+القواعد
+١. الاستناد إلى المصادر. اعتمد مصادر هذا الدفتر وحدها ووثّق اسم المصدر والقسم/الصفحة لكل ادعاء أساسي. وإن غاب ما أحتاجه فاكتب «فجوة: غير موجود في المصادر» وأخبرني بما أرفعه. ولا تتجاوز المصادر إلا إذا قلت «تجاوز المصادر».
+٢. خطوة واحدة في كل مرة. ارسم المسار أولًا ثم درِّس الخطوة الحالية وحدها، ولا تكشف التالية ولا تبدأها حتى أؤكد فهم الحالية.
+٣. العمل عملي أنا. لا تعطني الجواب النهائي لأي تمرين: أعطني تلميحات وسقالات جزئية ومثالًا موازيًا محلولًا ثم اتركني أنتجه.
+٤. لا تفترض معرفة سابقة. عرِّف كل مصطلح في سطر عند أول ورود.
+٥. الإيجاز. لا مجاملة ولا حشو ولا إعادة لسؤالي.`;
+const COURSE_AR_BODY = `المرحلة ٠ — التشخيص (اسأل ثم توقّف)
+اسألني في رسالة واحدة: أ) ما الذي أريد أن أكون قادرًا على فعله في النهاية (مهمة لا موضوع)؟ ب) ما الذي أعرفه أصلًا (من ١ إلى ٥ مع السبب)؟ ج) كم وقتي وطول الجلسة؟ د) أين سأطبّق هذا (مشروع، اختبار، تدريس، عمل)؟ هـ) كيف أتعلّم أفضل (أمثلة محلولة، تشبيهات، رسوم، تدريب مكثّف)؟
+المرحلة ١ — الخريطة (ثم توقّف انتظارًا للموافقة)
+من المصادر وحدها: عنوان الدورة؛ هدف نهائي واحد قابل للقياس؛ وحدات مرقّمة (كل وحدة جلسة واحدة) بهدفها (فعل بلوم + مستوى عمق المعرفة) وأقسام مصادرها ومتطلباتها السابقة. رتّبها بتصاعد الطلب المعرفي: عمق ١ تذكّر ← ٢ تطبيق ← ٣ تحليل ← ٤ إبداع. أشِر إلى أي وحدة لا تدعمها المصادر دعمًا كاملًا. ثم اسأل «أتوافق على هذه الخريطة أم تعدّلها؟» ولا تبدأ التدريس بعد.
+المرحلة ٢ — حلقة الدرس (وحدة واحدة في كل رسالة، بهذا الترتيب)
+١. الشوق: السؤال الواحد الذي تجيب عنه الوحدة.
+٢. الجوهر: المفهوم في أقل من ٢٠٠ كلمة مع التوثيق.
+٣. التشبيه: تشبيه واحد ومثال واحد من سياق تطبيقي في المرحلة ٠ (د).
+٤. الفحص: ثلاثة أسئلة سقراطية (تذكّر، تطبيق، «لماذا / ماذا لو»). اطرحها وانتظر، ولا تجب عنها بنفسك.
+٥. التشخيص: صحِّح أجوبتي وسمِّ كل خطأ والتصوّر الخاطئ وراءه دون تلطيف.
+٦. المهمة: تمرين قصير أو بناء مصغَّر يثبت أنني أستخدم الفكرة لا أتذكّرها فقط.
+٧. البوابة: اسأل «مستعد للانتقال أم أعيد الصياغة؟» مستعد ← ملخّص ٣ نقاط وسؤالا استرجاع لبعد ثلاثة أيام، ثم الوحدة التالية. لا ← أعد الشرح بتشبيه جديد ومثال أبسط وتلميحات موجَّهة ثم أعد الاختبار حتى أنجح. لا تتقدّم أبدًا على خطوة غير مؤكَّدة.
+المرحلة ٣ — التثبيت (كل ٢–٣ وحدات)
+اختبار من ٥ عناصر (٢ تذكّر، ٢ تطبيق، ١ تحليل). أبلغني بدرجتي في كل نطاق عمق، وسمِّ الوحدات التي أعيدها إن نزل أي نطاق عن ٨٠٪، ثم أعطني ملخّص دليل مراجعة ألصقه في ملاحظة NotebookLM.
+المرحلة ٤ — التحدي الختامي
+تحدٍّ واحد لا يُحَل دون ثلاث وحدات على الأقل. أعطني المهمة ومعايير النجاح فقط، وانتظر محاولتي، ثم قيّمها بالمعايير وسمِّ الفجوات وأعطني خطة إصلاح.
+المرحلة ٥ — النقل
+اطلب مني أن أقول بكلماتي: ما تعلّمته وما أدهشني وما لا أستطيع فعله بعد. ثم اقترح ثلاث طرق لتطبيقه على مشروعي في المرحلة ٠ (د) مرتّبة بنسبة الجهد إلى الأثر، مع جدول مراجعة (اليوم ١ و٣ و٧ و٢١) بأسئلة الاسترجاع.
+التحكم بالجلسة
+أنهِ كل رسالة بهذا السطر: الحالة → الوحدة __ من __ | الخطوة __ | التالي: ______
+ابدأ بالمرحلة ٠ فقط.`;
+/* what the console already knows — folded in so the tutor never re-asks it */
+function courseContext(L){
+  const ar = L==='ar';
+  const line = [];
+  const seg = (lab,v)=> v ? lab+': '+v : null;
+  const r1=[ seg(ar?'المادة':'Subject', S.d.subject), seg(ar?'المستوى':'Level', S.d.level),
+             seg(ar?'الإطار':'Framework', S.d.framework) ].filter(Boolean).join(' | ');
+  const r2=[ seg(ar?'نطاق عمق المعرفة المستهدف':'Target DOK band', dokL(ar)),
+             seg(ar?'المستفيدون':'Beneficiaries', ar?audAR():S.d.Beneficiaries) ].filter(Boolean).join(' | ');
+  const r3=[ seg(ar?'لغة ردودك':'Answer in', S.d.outlang||'English'),
+             seg(ar?'الدرس':'Lesson', S.d.title), seg(ar?'طول الجلسة':'Session length', S.d.duration),
+             seg(ar?'سياق المتعلمين':'Learner context', S.d.country) ].filter(Boolean).join(' | ');
+  [r1,r2,r3].forEach(r=>{ if(r) line.push(r); });
+  const obj = (S.d.objectives||'').trim();
+  if(obj) line.push((ar?'الأهداف المعلنة:':'Stated objectives:')+'\n'+obj);
+  if(!line.length) return '';
+  return (ar
+    ? 'سياق من اللوحة (اعتبره معطًى ولا تسألني عنه مرة أخرى)'
+    : 'NOTEBOOK CONTEXT (from the console — treat as given, do not ask me for it again)')
+    + '\n' + line.join('\n') + '\n';
+}
+
+function masterPrompt(L){
+  const ar = L==='ar';
+  return (ar?COURSE_AR_HEAD:COURSE_EN_HEAD) + '\n' + courseContext(L) + (ar?COURSE_AR_BODY:COURSE_EN_BODY);
+}
+function showMaster(){
+  sync();
+  const txt=stripGaps(masterPrompt(MLANG));
+  const pre=$('#masterOut'); pre.textContent=txt; pre.dir = MLANG==='ar'?'rtl':'ltr';
+  $('#masterMeta').textContent = txt.length.toLocaleString()+' chars';
+  const ar = MLANG==='ar';
+}
+$('#masterLang').addEventListener('click',e=>{
+  const b=e.target.closest('[data-mlang]'); if(!b) return;
+  MLANG=b.dataset.mlang;
+  $$('#masterLang button').forEach(x=>x.classList.toggle('on', x===b));
+  showMaster();
+});
+$('#copyMaster').onclick = ()=>copy(stripGaps($('#masterOut').textContent));
+/* ═══════════ click-to-edit tokens ═══════════
+   A token in the prompt view is bound to the real field on step 1.
+   Editing it writes back to that field, so the whole library updates and
+   the value still travels in the saved setup file. */
+let GAP_KEY = null;
+const GAP_LABEL_AR = {
+  vstyleDeck:'شكل الشرائح', vstyleInfo:'شكل الإنفوجرافيك', vstyleCustomDeck:'الوصف المُلصَق للشرائح', vstyleCustomInfo:'الوصف المُلصَق للإنفوجرافيك',
+  subject:'المادة', title:'عنوان الدرس', level:'المستوى أو الصف', duration:'مدة الدرس',
+  framework:'الإطار أو المنهج', dok:'مدى عمق المعرفة', Beneficiaries:'المستفيدون',
+  outlang:'لغة المخرجات', country:'سياق المتعلم', objectives:'الأهداف', misconceptions:'التصورات الخاطئة', avatarName:'اسم الشخصية', avatarFile:'اسم مصدر الشخصية في الدفتر', avatarLook:'وصف الشخصية',
+  avatarPersona:'سمات الشخصية', brandName:'اسم العلامة', brandTag:'الشعار النصي',
+  colGreen:'اللون الأساسي', colRed:'اللون المميِّز', nSlides:'عدد الشرائح', nQuiz:'عدد أسئلة الاختبار',
+  nCards:'البطاقات التعليمية', nVid:'مدة الفيديو (دقيقة)', nPod:'مدة البودكاست (دقيقة)',
+  nWords:'عدد الكلمات المقترح للإنفوجرافيك'
+};
+function gapLabel(k, src){
+  if(UILANG==='ar' && GAP_LABEL_AR[k]) return GAP_LABEL_AR[k];
+  const lab = src.closest('.f') && src.closest('.f').querySelector('label');
+  return lab ? lab.textContent.replace(/\s+/g,' ').trim() : k;
+}
+function gapOpen(k){
+  const src = $('#'+k);
+  if(!src){ toast(t_('That value cannot be edited here')); return; }
+  GAP_KEY = k;
+  const host = $('#gapField'); host.innerHTML='';
+  let ed;
+  if(src.tagName==='SELECT'){ ed = src.cloneNode(true); ed.removeAttribute('id'); }
+  else if(src.tagName==='TEXTAREA'){ ed = document.createElement('textarea'); ed.rows=6; }
+  else { ed = document.createElement('input'); ed.type='text'; }
+  if(src.placeholder) ed.placeholder = src.placeholder;
+  ed.id='gapInput'; ed.setAttribute('dir','auto'); ed.value = src.value;
+  host.appendChild(ed);
+  $('#gapLabel').textContent = gapLabel(k, src);
+  $('#gapHint').textContent = UILANG==='ar'
+    ? 'يُحفظ في الحقل نفسه في الخطوة ١، فتتحدّث الأوامر العشرة كلها معًا.'
+    : 'Saved into the same field on step 1 — all ten prompts update together.';
+  $('#gapClear').textContent  = UILANG==='ar'?'إفراغ':'Clear';
+  $('#gapCancel').textContent = UILANG==='ar'?'إلغاء':'Cancel';
+  $('#gapSave').textContent   = UILANG==='ar'?'حفظ':'Save';
+  $('#gapModal').hidden = false;
+  setTimeout(()=>{ ed.focus(); if(ed.tagName!=='SELECT'){ try{ ed.select(); }catch(e){} } }, 30);
+}
+function gapClose(){ $('#gapModal').hidden = true; GAP_KEY = null; }
+function gapCommit(val){
+  if(!GAP_KEY) return;
+  const src = $('#'+GAP_KEY); if(!src){ gapClose(); return; }
+  src.value = val;
+  src.dispatchEvent(new Event('input',{bubbles:true}));
+  src.dispatchEvent(new Event('change',{bubbles:true}));
+  const k = gapLabel(GAP_KEY, src);
+  sync(); gapClose();
+  if(S.active) showPrompt(S.active);
+  paintIdent();
+  toast((UILANG==='ar'?'حُفظ · ':'Saved · ') + k);
+}
+document.addEventListener('click', e=>{
+  const g = e.target.closest('mark.gap[data-k]');
+  if(g){ e.preventDefault(); gapOpen(g.dataset.k); return; }
+  if(e.target.id==='gapCancel' || e.target.id==='gapModal'){ gapClose(); return; }
+  if(e.target.id==='gapSave'){ const i=$('#gapInput'); gapCommit(i?i.value.trim():''); return; }
+  if(e.target.id==='gapClear'){ gapCommit(''); return; }
+});
+document.addEventListener('keydown', e=>{
+  const g = e.target.closest && e.target.closest('mark.gap[data-k]');
+  if(g && (e.key==='Enter' || e.key===' ')){ e.preventDefault(); gapOpen(g.dataset.k); return; }
+  if($('#gapModal') && !$('#gapModal').hidden){
+    if(e.key==='Escape'){ e.preventDefault(); gapClose(); }
+    if(e.key==='Enter' && !e.shiftKey && e.target.tagName!=='TEXTAREA'){
+      e.preventDefault(); const i=$('#gapInput'); gapCommit(i?i.value.trim():'');
+    }
+  }
+});
+const avFile=()=>GAP('avatarFile',S.d.avatarFile||'الشخصية الكرتونية');
+const avLookEN=()=>S.d.avatarLook?' ('+GAP('avatarLook',S.d.avatarLook)+')':'';
+const avLookAR=()=>S.d.avatarLook?' ('+GAP('avatarLook',ard('avatarLook',AV_LOOK_AR))+')':'';
+/* ═══════════ VISUAL STYLES — the teacher picks the look; the prompts carry it ═══════════
+   Each preset mirrors the controls of the NotebookLM Style Prompter extension
+   (theme · font · colour · layout · tone). Choosing "Custom" lets the teacher paste
+   the extension's own output instead. To add a style, copy one object and edit it. */
+const VSTYLES=[
+ {k:'brand', en:`School brand (default)`, ar:`هوية المدرسة (الافتراضي)`},
+ {k:'minimal', en:`Clean modern minimal`, ar:`عصري نظيف مبسّط`,
+  e:{theme:`flat modern minimalism — generous white space, thin rules, no gradients, no drop shadows`,font:`geometric sans-serif headings, humanist sans-serif body, one weight step between levels`,colour:`near-white background, charcoal text, one restrained accent colour`,layout:`strict grid, one idea per block, left-aligned text, a single focal visual`,tone:`calm, professional, confident`},
+  a:{theme:`تبسيط عصري مسطّح — مساحات بيضاء سخية وخطوط رفيعة بلا تدرجات ولا ظلال`,font:`خط عربي هندسي واضح للعناوين وخط إنساني مقروء للمتن مع تدرّج واحد في الوزن بين المستويات`,colour:`خلفية قريبة من الأبيض ونص بلون الفحم ولون واحد هادئ للتمييز`,layout:`شبكة صارمة وفكرة واحدة في كل كتلة ومحاذاة لجهة القراءة ومرئي بؤري واحد`,tone:`هادئة ومهنية وواثقة`}},
+ {k:'whiteboard', en:`Hand-drawn whiteboard`, ar:`سبّورة بيضاء مرسومة باليد`,
+  e:{theme:`hand-drawn marker-on-whiteboard look — sketched arrows, underlines, circled keywords and simple doodle icons`,font:`friendly hand-lettered marker style that stays fully legible at a distance`,colour:`white board background, black marker text, two or three highlighter colours`,layout:`loose but ordered — sections set apart by hand-drawn boxes, numbered steps linked by arrows`,tone:`friendly, informal, encouraging`},
+  a:{theme:`مظهر مرسوم باليد بقلم السبّورة البيضاء — أسهم وتسطير وتدوير للكلمات المفتاحية وأيقونات رسم بسيطة`,font:`خط يدوي ودّي بقلم التحديد يبقى مقروءًا بوضوح من مسافة`,colour:`خلفية سبّورة بيضاء ونص بقلم أسود وبضعة ألوان بضربات تظليل`,layout:`حرّ لكنه منظَّم — أقسام تفصلها مستطيلات مرسومة باليد وخطوات مرقّمة تربطها أسهم`,tone:`ودّية وغير رسمية ومشجِّعة`}},
+ {k:'chalkboard', en:`Classroom chalkboard`, ar:`سبّورة الطباشير الصفّية`,
+  e:{theme:`classroom chalkboard — dark slate surface with chalk-line drawings and a light dust texture`,font:`thick chalk-style lettering, readable from the back of a classroom`,colour:`deep slate-green background, white and pale-yellow chalk, a few coloured chalks`,layout:`centred title, ruled-off content areas, simple chalk diagrams`,tone:`warm, familiar, teacherly`},
+  a:{theme:`سبّورة صف دراسي — سطح داكن بلون الأردواز ورسوم بخطوط الطباشير وملمس غبار خفيف`,font:`حروف بطابع الطباشير سميكة تُقرأ من آخر الصف`,colour:`خلفية خضراء داكنة وطباشير أبيض وأصفر باهت وبضعة ألوان طباشير ملوّنة`,layout:`عنوان في الوسط ومناطق محتوى مفصولة بخطوط وأشكال بيانية طباشيرية بسيطة`,tone:`دافئة ومألوفة بروح المعلم`}},
+ {k:'storybook', en:`Watercolour storybook`, ar:`قصة مصوّرة بالألوان المائية`,
+  e:{theme:`soft watercolour storybook illustration with visible paper grain and gently bled edges`,font:`rounded, friendly serif or sans-serif with generous spacing`,colour:`warm muted pastels, a few deeper tones`,layout:`illustration-led — text set on calm areas of the scene, one large central picture`,tone:`gentle, curious, imaginative`},
+  a:{theme:`رسوم قصصية بالألوان المائية الناعمة مع حبيبات ورق ظاهرة وحواف متمازجة بلطف`,font:`خط مستدير ودود بمسافات رحبة`,colour:`ألوان باستيل دافئة هادئة مع درجات أعمق قليلة`,layout:`تقودها الرسوم — النص على مساحات هادئة من المشهد وصورة مركزية كبيرة واحدة`,tone:`لطيفة وفضولية وخيالية`}},
+ {k:'flat', en:`Playful flat vector`, ar:`رسوم مسطّحة مرحة`,
+  e:{theme:`playful flat-vector illustration — rounded shapes, thick clean outlines, sticker-like icons`,font:`bold rounded sans-serif at large sizes`,colour:`bright but harmonious palette of three or four colours`,layout:`big rounded cards, large icons, short labels, plenty of breathing space`,tone:`fun, energetic, child-friendly`},
+  a:{theme:`رسوم متجهية مسطّحة مرحة — أشكال مستديرة وخطوط عريضة نظيفة وأيقونات تشبه الملصقات`,font:`خط عريض مستدير بأحجام كبيرة`,colour:`ألوان زاهية متناسقة من ثلاثة ألوان أو أربعة`,layout:`بطاقات كبيرة مستديرة الزوايا وأيقونات كبيرة وعناوين قصيرة ومساحة تنفّس وافرة`,tone:`مرحة ونشيطة وملائمة للأطفال`}},
+ {k:'isometric', en:`Isometric 3D diagrams`, ar:`مخططات ثلاثية الأبعاد متساوية القياس`,
+  e:{theme:`clean isometric 3D diagrams with soft shading and labelled components`,font:`precise, clear technical sans-serif`,colour:`cool light-grey background, a restrained set of component colours, one warm highlight`,layout:`one central isometric model with numbered callouts`,tone:`precise, curious, modern`},
+  a:{theme:`مخططات ثلاثية الأبعاد متساوية القياس نظيفة بتظليل ناعم ومكوّنات موسومة`,font:`خط تقني دقيق وواضح`,colour:`خلفية رمادية فاتحة باردة وألوان هادئة للمكوّنات ولون دافئ واحد للتمييز`,layout:`نموذج مركزي واحد متساوي القياس مع مؤشرات مرقّمة`,tone:`دقيقة وفضولية وعصرية`}},
+ {k:'blueprint', en:`Blueprint technical drawing`, ar:`رسم هندسي أزرق`,
+  e:{theme:`engineering blueprint — fine grid, white line-work, dimension lines and leader callouts`,font:`drafting-style capitals for Latin text, a clean geometric Kufi-style face for Arabic`,colour:`deep blue background, white and cyan lines, one warm accent for highlights`,layout:`grid-aligned diagrams with annotated leader lines`,tone:`analytical, exact, methodical`},
+  a:{theme:`مخطط هندسي أزرق — شبكة دقيقة وخطوط بيضاء وخطوط أبعاد ومؤشرات توضيحية`,font:`حروف كبيرة بطابع الرسم الهندسي للاتينية وخط كوفي هندسي نظيف للعربية`,colour:`خلفية زرقاء عميقة وخطوط بيضاء وسماوية ولون دافئ واحد للتظليل`,layout:`مخططات محاذية للشبكة مع خطوط إيضاح مشروحة`,tone:`تحليلية ودقيقة ومنهجية`}},
+ {k:'editorial', en:`Editorial magazine`, ar:`مجلة تحريرية`,
+  e:{theme:`editorial magazine layout — column grid, bold headline, pull quotes and fine rules`,font:`high-contrast serif for headlines, clean sans-serif body; for Arabic, a classical Naskh-style headline face`,colour:`off-white paper, black ink, one or two spot colours`,layout:`multi-column with one dominant headline and one lead image`,tone:`authoritative, informative`},
+  a:{theme:`تخطيط مجلة تحريرية — شبكة أعمدة وعنوان بارز واقتباسات بارزة وخطوط فاصلة رفيعة`,font:`خط نسخ كلاسيكي بارز للعناوين وخط واضح للمتن`,colour:`ورق عاجي وحبر أسود ولون أو لونان للتمييز`,layout:`أعمدة متعددة مع عنوان مهيمن واحد وصورة رئيسة واحدة`,tone:`رصينة وإخبارية`}},
+ {k:'papercut', en:`Paper-cut collage`, ar:`كولاج الورق المقصوص`,
+  e:{theme:`layered paper-cut collage with soft drop shadows and subtly torn edges`,font:`chunky rounded cut-out lettering`,colour:`bright craft-paper palette`,layout:`overlapping layers around one central focal piece`,tone:`creative, tactile, joyful`},
+  a:{theme:`كولاج من الورق المقصوص المتراكب بظلال ناعمة وحواف ممزّقة بخفة`,font:`حروف مقصوصة ممتلئة ومستديرة`,colour:`ألوان ورق الحِرَف الزاهية `,layout:`طبقات متداخلة حول قطعة بؤرية مركزية واحدة`,tone:`إبداعية ملموسة وبهيجة`}},
+ {k:'dashboard', en:`Dark data dashboard`, ar:`لوحة بيانات داكنة`,
+  e:{theme:`dark-mode data dashboard — dark panels, thin glowing lines, tile cards with large figures`,font:`modern sans-serif with bold numerals`,colour:`charcoal-navy background, a cyan or teal glow, one accent for highlights, light text`,layout:`card grid with one hero figure and a clear hierarchy`,tone:`sharp, modern, data-driven`},
+  a:{theme:`لوحة بيانات بوضع داكن — لوحات داكنة وخطوط رفيعة متوهجة وبطاقات بأرقام كبيرة`,font:`خط عصري واضح بأرقام عريضة`,colour:`خلفية فحمية مائلة للكحلي وتوهّج سماوي أو أزرق مخضر ولون واحد للتمييز ونص فاتح`,layout:`شبكة بطاقات مع رقم رئيس بارز وهرمية واضحة`,tone:`حادة وعصرية تقودها البيانات`}},
+ {k:'heritage', en:`Arabian heritage geometry`, ar:`تراث عربي بزخارف هندسية`,
+  e:{theme:`Arabian heritage — subtle Islamic geometric patterns as borders and dividers, arch-shaped frames; no sacred text or religious figures used as decoration`,font:`refined Arabic display face (Kufi- or Thuluth-inspired) for headings, clear Naskh-style body`,colour:`ivory background, deep green and muted gold`,layout:`symmetrical, framed by an arch or border, centred hierarchy`,tone:`dignified, warm, respectful`},
+  a:{theme:`طابع تراثي عربي — زخارف هندسية إسلامية هادئة في الإطارات والفواصل وإطارات على هيئة أقواس؛ دون استخدام نص مقدّس أو شخصيات دينية للزينة`,font:`خط عربي عرضي أنيق بطابع كوفي أو ثلث للعناوين ونسخ واضح للمتن`,colour:`خلفية عاجية وأخضر عميق وذهبي خافت`,layout:`متماثل داخل إطار أو قوس وهرمية متمركزة`,tone:`وقورة ودافئة ومحترمة`}},
+ {k:'comic', en:`Comic-strip panels`, ar:`لوحات القصة المصوّرة`,
+  e:{theme:`comic-strip panels with speech bubbles that carry the character's short lines`,font:`clean comic lettering that remains fully legible`,colour:`bold flat colour with light halftone shading`,layout:`a few large panels in reading order, one idea per panel`,tone:`lively, humorous, engaging`},
+  a:{theme:`لوحات قصة مصوّرة مع فقاعات كلام تحمل عبارات الشخصية القصيرة`,font:`حروف قصص مصوّرة نظيفة تبقى مقروءة بوضوح`,colour:`ألوان مسطّحة جريئة مع تظليل شبكي خفيف `,layout:`عدد قليل من اللوحات الكبيرة بترتيب القراءة وفكرة واحدة في كل لوحة`,tone:`حيوية ومرحة وجاذبة`}},
+ {k:'custom', en:`Custom — paste from Style Prompter`, ar:`مخصَّص — الصق من الإضافة`}
+];
+$$('.vsSel').forEach(sel=>{ VSTYLES.forEach(v=>{ const o=document.createElement('option'); o.value=v.k; o.textContent=v.en; sel.appendChild(o); }); });
+['Deck','Info'].forEach(n=>{ const ta=$('#vstyleCustom'+n); if(!ta) return;
+  ta.addEventListener('input',()=>{ const sl=$('#vstyle'+n); if(ta.value.trim() && sl.value!=='custom'){ sl.value='custom'; sync(); } }); });
+const vsKind=kind=>kind==='info'?'Info':'Deck';
+function vsPick(kind){
+  const k=S.d['vstyle'+vsKind(kind)]||'brand';
+  if(k==='custom'){ const c=(S.d['vstyleCustom'+vsKind(kind)]||'').trim(); return c?{custom:true,text:c}:null; }
+  const v=VSTYLES.find(x=>x.k===k); return (v&&v.e)?v:null;
+}
+const OUTLANG_AR={'English':'الإنجليزية','Arabic':'العربية','Bilingual English–Arabic':'ثنائية اللغة (الإنجليزية والعربية)'};
+const outLangAR=()=>' لغة المخرجات: '+GAP('outlang',OUTLANG_AR[S.d.outlang]||'الإنجليزية')+'.';
+const vsArabicOut=()=>/arabic/i.test(S.d.outlang||'');
+/* the colour sentence inside the BRAND paragraph: white-dominant by default, style-led when a look is chosen */
+function colourRule(L,kind,g,r){
+  const on=kind&&vsPick(kind);
+  if(L==='ar') return on?'لا تفرض الهوية أي لون هنا: «الوصف البصري» الوارد أدناه وحده يحدد كل الألوان (الخلفية والنص والتمييز).':`اللون الأساسي ${g} للبنية والعناوين والحاويات، واللون المميِّز ${r} لنقطة تأكيد واحدة في كل مخرَج ولا يُستعمل حقلًا، والأبيض مهيمن بما لا يقل عن ٤٠٪ من المساحة غير مشغولة.`;
+  return on?'No brand colour is imposed here: the VISUAL STYLE BRIEF below alone decides every colour (background, text and accents).':`Primary colour ${g} for structure, headings and containers; accent ${r} for one emphasis point per artefact, never as a field. White dominant, at least 40% unmarked space.`;
+}
+/* the visual-style block that is dropped into the context of the deck, vocabulary and infographic prompts */
+function styleSlot(kind,L){
+  const p=vsPick(kind); if(!p) return '';
+  const ar=L==='ar', info=kind==='info', key='vstyle'+vsKind(kind);
+  const name=p.custom?(ar?'مخصَّص (من إضافة Style Prompter)':'Custom (from the Style Prompter)'):(ar?p.ar:p.en);
+  let body;
+  if(p.custom) body=(ar?'— بداية الوصف المُلصَق —\n':'— BEGIN PASTED STYLE BRIEF —\n')+GAP('vstyleCustom'+vsKind(kind),p.text)+(ar?'\n— نهاية الوصف المُلصَق —':'\n— END PASTED STYLE BRIEF —');
+  else{ const f=ar?p.a:p.e;
+    body=ar?`الموضوع البصري: ${f.theme}\nالخط: ${f.font}\nاللون: ${f.colour}\nالتخطيط: ${f.layout}\nالنبرة: ${f.tone}`
+           :`THEME: ${f.theme}\nFONT: ${f.font}\nCOLOUR: ${f.colour}\nLAYOUT: ${f.layout}\nTONE: ${f.tone}`; }
+  const arabicLine=vsArabicOut()?(ar
+    ?'\nالنص العربي: يُكتب من اليمين إلى اليسار بخط عربي واضح وحروف متصلة سليمة — دون تباعد بين الحروف أو تمطيط أو إمالة أو قطع للوصل؛ وتُبقى الحركات حيث تعين على القراءة فقط، وتُوحَّد الأرقام في المخرَج كله.'
+    :'\nARABIC TEXT: set Arabic right-to-left in a clear Arabic typeface with fully connected letters — no letter-spacing, no stretched or slanted glyphs, no broken joins; keep vowel marks only where they aid reading, and keep numerals consistent across the whole artefact.'):'';
+  if(ar) return `\n\nالوصف البصري — ${info?'الإنفوجرافيك':'الشرائح'}: ${GAP(key,name)}\nهذا الوصف يحدد كيف ${info?'يبدو الإنفوجرافيك':'تبدو كل شريحة'}. هو تعليمة تصميم وليس محتوى: لا تجعل ${info?'منطقة':'شريحة'} عن الأسلوب نفسه، ولا تقتبس هذا الوصف أو تشرحه في المخرَج، ولا تدعه يغيّر ما يقوله الدرس.\n${body}\nطريقة التطبيق: اعتمد نظامًا بصريًّا واحدًا متسقًا من البداية إلى النهاية — ${info?'المعالجة نفسها للخلفية والتدرّج الطباعي وسماكة الخطوط وطراز الأيقونات في كل منطقة':'المعالجة نفسها للخلفية والتدرّج الطباعي والشبكة وطراز الأيقونات في كل شريحة'}. وتأتي الألوان من هذا الوصف وحده ولا يُفرض لون من الهوية. ويبقى الشعار وصورة الشخصية المرفوعة نفسها كما حدّدتها قواعد الهوية أعلاه: ابنِ الأسلوب حولهما لا عليهما، ولا تعِد تصميم الشخصية أو الشعار أو تلوينهما أو رسمهما ليلائما الأسلوب. ويبقى النص كبيرًا وعالي التباين (٤٫٥:١ على الأقل مع خلفيته) في كل أسلوب؛ وإذا تعارض الأسلوب مع الوضوح أو الدقة فالغلبة للوضوح والدقة.${arabicLine}`;
+  return `\n\nVISUAL STYLE BRIEF — ${info?'INFOGRAPHIC':'SLIDES'}: ${GAP(key,name)}\nThis brief decides how ${info?'the infographic':'every slide'} LOOKS. It is a design instruction, never content: do not make ${info?'a zone':'a slide'} about the style, do not quote or describe this brief anywhere in the output, and do not let it change what the lesson says.\n${body}\nHOW TO APPLY IT: use ONE consistent visual system from start to finish — ${info?'the same background treatment, type hierarchy, line weight and icon style in every zone':'the same background treatment, type hierarchy, grid and icon style on every slide'}. The colours come from this brief alone — no brand colour is imposed. The exact logo and the exact uploaded character stay as set out in the BRAND rules above: build the style around them, never onto them — do not restyle, recolour or redraw the character or the logo to match the theme. Text stays large and high-contrast (at least 4.5:1 against its background) in every style; where the style conflicts with legibility or accuracy, legibility and accuracy win.${arabicLine}`;
+}
+const styleTag=(kind,L)=>vsPick(kind)?(L==='ar'?'، مرسومة بالأسلوب البصري المختار':', drawn in the chosen visual style'):'';
+const styleCheck=(kind,L)=>!vsPick(kind)?'':(L==='ar'
+  ?(kind==='info'?'؛ الإنفوجرافيك كله يتبع الوصف البصري بنظام واحد متسق، والوصف نفسه لا يظهر محتوى فيه':'؛ كل شريحة تتبع الوصف البصري بنظام واحد متسق، والوصف نفسه لا يظهر محتوى في أي شريحة')
+  :(kind==='info'?'; the infographic follows the visual style brief throughout in one consistent system, and the brief itself never appears as content':'; every slide follows the visual style brief in one consistent system, and the brief itself never appears as slide content'));
+function brand(L,kind){
+  if(L==='ar') return brandAR(kind);
+  const g=GAP('colGreen',S.d.colGreen||'#0F695D'), r=GAP('colRed',S.d.colRed||'#EE3A23');
+  const bn=GAP('brandName',S.d.brandName||'Waleed'), tg=GAP('brandTag',S.d.brandTag||'Science makes a difference');
+  const av=V('avatarName','avatar name'), per=GAP('avatarPersona',S.d.avatarPersona||'curious · encouraging · precise');
+  return `BRAND: ${bn} — "${tg}". ${colourRule('en',kind,g,r)}
+BRANDING — use the EXACT attached logo and the EXACT uploaded cartoon character image if they are among this notebook's sources. The character may have any identity or art style: treat that file as its only visual source of truth and use it on every visual — each slide, the video's opening and closing frames, the infographic, every worksheet header and flashcard.
+Logo: place it as supplied — never recoloured, redrawn, outlined, stretched, cropped or on a busy image, with clear space around it. If you cannot place it yourself, write the placement in that slide's or frame's visual direction (e.g. \`Logo: attached logo file, bottom-right\`).
+Character: use the exact uploaded image wherever the learning guide appears and keep its proportions, palette, pose, features, clothing and style. Never redraw, regenerate, restyle, recolour, approximate or replace it with stock or default art; derive supporting styling from its palette and style only. Name/voice label: ${av} (dialogue only; it never overrides the image's identity). Personality: ${per}; asks questions, never lectures, celebrates effort over cleverness. It appears at the opening, each section transition, the check point and the close — one sentence per appearance, at or below the Students' language level.
+CHARACTER SOURCE — the uploaded character image IS in this notebook's source list, saved as the source named «${avFile()}»${avLookEN()}. It is a picture, so it has little or no readable text; that is expected and is never a reason to treat it as missing. Find it by that name. Write [GAP — uploaded character image not attached] only if no source with that name appears in the source list. If you cannot embed the picture in a text reply, name the source and mark its position — never draw or generate a substitute.
+If the logo is NOT attached, never invent it — write [GAP — logo not attached] where it would appear, and carry on.`;
+}
+const AUD_AR={'Students':'المتعلمين','Teachers (PD)':'المعلمين (تطوير مهني)','Parents':'أولياء الأمور',
+  'Students and parents':'فئة مختلطة من المتعلمين وأولياء الأمور'};
+function audAR(){ return AUD_AR[S.d.Beneficiaries]||'المتعلمين'; }
+function brandAR(kind){
+  const g=GAP('colGreen',S.d.colGreen||'#0F695D'), r=GAP('colRed',S.d.colRed||'#EE3A23');
+  const bn=GAP('brandName',S.d.brandName||'مدرستي'), tg=GAP('brandTag',ard('brandTag','العلم يصنع الفرق'));
+  const av=GAP('avatarName',ard('avatarName','الشخصية الكرتونية')), per=GAP('avatarPersona',ard('avatarPersona','فضولية · مشجِّعة · دقيقة'));
+  return `الهوية البصرية: ${bn} — «${tg}». ${colourRule('ar',kind,g,r)}
+العلامة — استخدم ملف الشعار المرفق نفسه وملف صورة الشخصية الكرتونية المرفوعة نفسه إن كانا ضمن مصادر هذا الدفتر. قد تكون الشخصية بأي هوية أو طراز فني: اعتبر ذلك الملف مرجعها البصري الوحيد واستعمله في كل مخرَج بصري: كل شريحة، ولقطتَي البداية والنهاية في الفيديو، والإنفوجرافيك، وترويسة كل ورقة عمل وكل بطاقة تعليمية.
+الشعار: ضعه كما هو تمامًا — دون إعادة تلوين أو رسم أو تحديد أو مطّ أو قصّ، ودون وضعه على صورة مزدحمة، ومع مسافة خالصة حوله. وإن تعذّر إدراجه فاكتب موضعه في سطر التوجيه البصري للشريحة أو اللقطة (مثل: \`الشعار: ملف الشعار المرفق، أسفل اليمين\`).
+الشخصية الكرتونية المرفوعة: استخدم الصورة المرفوعة نفسها حيثما يظهر مرشد التعلّم، وحافظ على نسبها ولوحتها ووضعيتها وملامحها وملابسها وطرازها. لا تعِد رسمها أو توليدها أو تغيير طرازها أو ألوانها، ولا تستبدل بها رسمًا جاهزًا أو شخصية افتراضية؛ واستمد الأسلوب المساند من لوحتها وطرازها فقط. اسم/صوت الشخصية الكرتونية: ${av} (للحوار فقط، ولا يغيّر هوية الصورة). سماتها: ${per}؛ تسأل ولا تُلقي المحاضرات، وتحتفي بالجهد لا بالذكاء. وتظهر عند الافتتاح وكل انتقال بين الأقسام ونقطة الفحص والختام، بجملة واحدة في كل ظهور عند مستوى المتعلمين اللغوي أو دونه.
+مصدر الشخصية — صورة الشخصية المرفوعة موجودة فعلًا في قائمة مصادر هذا الدفتر، محفوظة باسم المصدر «${avFile()}»${avLookAR()}. وهي صورة، فنصها المقروء قليل أو معدوم، وهذا متوقع ولا يسوّغ اعتبارها مفقودة. ابحث عنها بهذا الاسم. واكتب [فجوة — لم تُرفق صورة الشخصية] فقط إذا لم يظهر في قائمة المصادر أي مصدر بهذا الاسم. وإن تعذّر عليك تضمين الصورة في ردٍّ نصي فاذكر اسم المصدر وحدِّد موضعه، ولا ترسم بديلًا ولا تولِّده.
+وإن لم يكن الشعار مرفقًا فلا تختلقه، واكتب [فجوة — لم يُرفق الشعار] في موضعه وامضِ.`;
+}
+function deckCharacterRules(){
+  const av=V('avatarName','the character'), per=GAP('avatarPersona',S.d.avatarPersona||'curious · encouraging · precise');
+  return `UPLOADED CHARACTER ASSET — MANDATORY: The standalone cartoon character image uploaded by the learner or teacher is in this notebook's source list, saved as the source named «${avFile()}»${avLookEN()}. It is a picture with little or no readable text — that is expected, not a sign it is missing. It may depict any person, animal, robot, fantasy figure or other subject; do not assume any particular identity, appearance or character type. Treat the exact uploaded file as the PRIMARY CHARACTER VISUAL ASSET for the deck.
+Use the exact uploaded image itself wherever the character appears. Do not redraw, regenerate, restyle, recolour, approximate or replace it; do not substitute stock art or a newly generated lookalike. Preserve its proportions, palette, pose and visible features.
+The exact uploaded character image MUST appear on slide 1, slide 3, the first main-content slide, the guided-practice slide, the penultimate checkpoint slide and the final slide. It may appear on additional slides when it supports learning. Its required presence is part of the task, not optional decoration.
+If the exact file cannot be placed directly, write "INSERT THE EXACT UPLOADED CHARACTER IMAGE HERE — DO NOT GENERATE A SUBSTITUTE" with its intended position. Write [GAP — character image not attached] only if no source named «${avFile()}» appears in the source list, and then do not invent one.
+Character voice: ${av}. Personality: ${per}; asks questions, never lectures, and celebrates effort rather than cleverness. The name controls the spoken line only; it does not override the identity of the uploaded visual asset.`;
+}
+function deckCharacterRulesAR(){
+  const av=GAP('avatarName',ard('avatarName','الشخصية الكرتونية')), per=GAP('avatarPersona',ard('avatarPersona','فضولية · مشجِّعة · دقيقة'));
+  return `صورة الشخصية المرفوعة — إلزامية: صورة الشخصية المنفردة التي رفعها المتعلم أو المعلم موجودة في قائمة مصادر هذا الدفتر باسم المصدر «${avFile()}»${avLookAR()}. وهي صورة، فنصها المقروء قليل أو معدوم، وهذا متوقع ولا يعني أنها مفقودة. قد تمثل شخصًا أو حيوانًا أو روبوتًا أو شخصية خيالية أو أي موضوع آخر؛ فلا تفترض أنها شخصية كرتونية أو نوعًا محددًا من الشخصيات. اعتبر الملف المرفوع نفسه الأصل البصري الأساسي للشخصية في العرض.
+استخدم صورة الشخصية المرفوعة نفسها في كل موضع تظهر فيه. لا تعِد رسمها أو توليدها، ولا تغيّر طرازها أو ألوانها، ولا تنشئ نسخة تقريبية منها أو تستبدل بها صورة جاهزة أو شخصية مولدة شبيهة. حافظ على نسبها ولوحتها اللونية ووضعيتها وملامحها الظاهرة.
+يجب أن تظهر صورة الشخصية المرفوعة نفسها في الشريحة ١، والشريحة ٣، وأول شريحة من المحتوى الرئيس، وشريحة التدريب الموجّه، وشريحة نقطة الفحص قبل الأخيرة، والشريحة الأخيرة. ويمكن أن تظهر في شرائح إضافية حين يخدم ذلك التعلم. وجودها في هذه الشرائح جزء إلزامي من المهمة وليس زينة اختيارية.
+إذا تعذّر إدراج الملف نفسه مباشرة، فاكتب «أدرِج صورة الشخصية المرفوعة نفسها هنا — لا تُنشئ بديلًا» مع تحديد موضعها. ولا تكتب [فجوة — لم تُرفق صورة الشخصية] إلا إذا لم يظهر في قائمة المصادر أي مصدر باسم «${avFile()}»، وعندها لا تختلق واحدة.
+صوت الشخصية: ${av}. السمات: ${per}؛ تسأل ولا تلقي المحاضرات، وتحتفي بالجهد لا بالذكاء. يحدد الاسم العبارة المنطوقة فقط، ولا يغيّر هوية الأصل البصري المرفوع.`;
+}
+function infographicAssetGate(){
+  return `CHARACTER ASSET GATE — COMPLETE BEFORE GENERATION: First locate the exact standalone cartoon character image among the attached sources and identify it by its displayed source filename (expected source name: «${avFile()}»). Confirm that the original file itself is available for direct insertion, not merely visible as a reference that can be redrawn. The infographic is acceptable only if that exact image is visibly present in the final graphic. A newly generated child, mascot, avatar, lookalike, traced version or stylistic imitation is a failure even if it resembles the attachment. If the exact uploaded file cannot be located or inserted, STOP and do not generate the infographic. Return only: [BLOCKED — exact uploaded cartoon character cannot be inserted; attach or select the character image and retry]. Never continue with a substitute.`;
+}
+function infographicAssetGateAR(){
+  return `بوابة التحقق من ملف الشخصية — تُستكمل قبل التوليد: ابحث أولًا عن ملف صورة الشخصية الكرتونية المنفردة نفسه ضمن المصادر المرفقة، وحدده باسم الملف الظاهر في المصدر (الاسم المتوقع: «${avFile()}»). تأكد أن الملف الأصلي نفسه متاح للإدراج المباشر، لا أنه ظاهر مرجعًا يمكن إعادة رسمه فقط. لا يُقبل الإنفوجرافيك إلا إذا ظهرت تلك الصورة نفسها بوضوح في الرسم النهائي. ويُعد إنشاء طفل أو تميمة أو أفاتار أو نسخة شبيهة أو متتبعة أو محاكاة فنية جديدة إخفاقًا، حتى لو بدت شبيهة بالمرفق. إذا تعذّر العثور على الملف المرفوع نفسه أو إدراجه، فتوقف ولا تنشئ الإنفوجرافيك. أخرج فقط: [متعذر — لا يمكن إدراج صورة الشخصية الكرتونية المرفوعة نفسها؛ أرفق صورة الشخصية أو حدّدها ثم أعد المحاولة]. لا تواصل أبدًا باستخدام بديل.`;
+}
+function objectivesLineAR(){
+  if(S.d.objectives) return `الأهداف المعلنة:\n${GAP('objectives',S.d.objectives)}`;
+  const a=S.analysis?.objectives;
+  if(a?.length) return `الأهداف المقروءة من الدرس:\n${GAP('objectives',a.map(o=>'· '+o).join('\n'))}`;
+  return `الأهداف: ${GAP('objectives','[انسخها حرفيًّا من خطة الدرس]')}`;
+}
+function Students(){
+  const p=[];
+  p.push(`Students are ${V('level','level or grade')}`);
+  p.push(`working within ${V('framework','curriculum framework')}`);
+  if(S.d.country) p.push(`in ${GAP('country',S.d.country)}`);
+  return p.join(', ')+`. Lesson duration ${V('duration','duration')}. Target DOK range ${GAP('dok',S.d.dok||'1–4')}. Output language: ${GAP('outlang',S.d.outlang||'English')}.`;
+}
+function sourceLine(){
+  const names=[...S.files.plan,...S.files.book].map(f=>f.name);
+  const base=`Use ONLY the attached sources${names.length?' ('+names.join(', ')+')':' — the lesson plan and coursebook pages'}. Do not introduce facts, examples or data that are not in them; where a source is silent, write [GAP — teacher to supply] rather than inventing. Cite the source page for every claim.`;
+  return base;
+}
+function objectivesLine(){
+  if(S.d.objectives) return `Stated objectives:\n${GAP('objectives',S.d.objectives)}`;
+  const a=S.analysis?.objectives;
+  if(a?.length) return `Objectives read from the lesson:\n${GAP('objectives',a.map(o=>'· '+o).join('\n'))}`;
+  return `Objectives: ${GAP('objectives','[paste verbatim from the lesson plan]')}`;
+}
+function vocabList(){
+  const v=S.analysis?.vocab||[];
+  if(!v.length) return null;
+  return v.map(x=>`· ${x.w} (${x.pos||'—'}, ${x.lvl||'—'}) — ${x.def}${x.ex?` | e.g. "${x.ex}"`:''}`).join('\n');
+}
+function miscLine(){
+  if(S.d.misconceptions) return GAP('misconceptions', S.d.misconceptions);
+  const m=S.analysis?.misconceptions||[];
+  if(!m.length) return GAP('misconceptions', UILANG==='ar'
+    ? '[سمِّ التصور الخاطئ الذي تريد تصحيحه]' : '[name the misconception you want corrected]');
+  return GAP('misconceptions', m.map(x=>`· "${x.m}" → correct with: "${x.fix}"`).join('\n'));
+}
+
+const srcAR=()=>'استخدم المصادر المرفقة وحدها، ولا تُدخل معلومة أو مثالًا غير وارد فيها؛ وحيث يصمت المصدر فاكتب [فجوة — على المعلم توفيرها] ولا تختلق؛ ووثِّق صفحة المصدر لكل ادعاء.';
+const studAR=()=>`الطلاب في ${V('level','المستوى')}، ضمن إطار ${V('framework','المنهج')}. مدة الدرس ${V('duration','المدة')}. مدى عمق المعرفة ${dokL(1)||'١–٤'}.${outLangAR()}`;
+const AR={R:'الدور',C:'السياق',T:'المهمة',F:'الصيغة'};
+/* ── the vocabulary insert, shared by several prompts ── */
+function vocabInsert(){
+  const list=vocabList();
+  if(!list) return `If the lesson plan introduces new vocabulary, identify the words in the attached material that sit at or above the Students' level and build a dedicated teaching slide for them before the main content.`;
+  return `The lesson introduces new vocabulary. These words were detected in the attached material as sitting at or above the Students' level and MUST be pre-taught on their own slide before the main content:\n${list}\n${S.analysis?.teachFirst?.length?`Teach these first: ${S.analysis.teachFirst.join(', ')}.`:''}`;
+}
+function vocabInsertAR(){
+  const list=vocabList();
+  if(!list) return `إذا كانت خطة الدرس تقدّم مفردات جديدة، فحدِّد الكلمات الواردة في المادة المرفقة التي تقع عند مستوى المتعلمين أو فوقه، وابنِ لها شريحة تعليمية مستقلة قبل المحتوى الرئيس.`;
+  return `يقدّم الدرس مفردات جديدة. رُصدت الكلمات الآتية في المادة المرفقة بوصفها عند مستوى المتعلمين أو فوقه، ويجب تدريسها مسبقًا في شريحة مستقلة قبل المحتوى الرئيس:\n${list}\n${S.analysis?.teachFirst?.length?`ابدأ بهذه: ${S.analysis.teachFirst.join('، ')}.`:''}`;
+}
+/* ── prompt definitions ── */
+const P = [
+{ id:'brief', key:'00', en:'Notebook brief', ar:'البرومت الأساسي',
+  feeds:[],
+  use:'Paste it into the conversation with Gemini Notebook so that subsequent prompts can make use of it.',
+  build(){ return {
+ en:{R:`You are a principal instructional designer and curriculum analyst, a master of ${V('subject','subject')} pedagogy, backward design and standards alignment.`,
+  C:`${sourceLine()}\nLESSON: ${V('title','lesson title')} — ${V('subject','subject')}.\n${Students()}\n${objectivesLine()}\nMISCONCEPTIONS TO CORRECT:\n${miscLine()}\n${brand()}\nIf this profile and the sources disagree, the sources win — and you flag the disagreement.`,
+  T:`Read every attached source and lock this lesson profile for the whole session; apply it silently to every later request in this notebook.\n\nDELIVERABLE — every element below is mandatory:\nExactly three lines: (1) the lesson's big idea in one sentence; (2) the objectives you will hold every later output to; (3) every gap, contradiction or above-level content found in the sources — or "None found".\n\nWORK IN THIS ORDER (silently — print none of it):\n1. Read every source end to end and note where each key claim sits.\n2. Identify the one driving concept, then the objectives it serves.\n3. Compare the sources with this profile; list every gap, contradiction and above-level item and where you found it.\n4. Lock the profile and apply it to every later request in this notebook without restating it.\n\nSELF-CHECK before replying: exactly three numbered lines; line 1 is a single sentence; line 3 names specific items (or says \"None found\"); no preamble, no summary, no offer of next steps.`,
+  F:`Three numbered lines. No preamble, no summary of the sources, no offer of next steps. Then stop and wait for my next request.`},
+ ar:{R:`أنت كبير مصمّمي التعليم ومحلّل مناهج، متمكّن من تدريس ${V('subject','المادة')} ومن التصميم العكسي ومواءمة المعايير.`,
+  C:`${srcAR()}\nالدرس: ${V('title','عنوان الدرس')} — ${V('subject','المادة')}.\n${studAR()}\n${objectivesLineAR()}\nالتصورات الخاطئة الواجب تصحيحها:\n${miscLine()}\n${brand("ar")}\nوإن تعارض هذا الملف مع المصادر فالمصادر هي المرجع، وتنبِّهني إلى التعارض.`,
+  T:`اقرأ كل المصادر المرفقة وثبِّت ملف هذا الدرس طوال الجلسة، وطبِّقه بصمت على كل طلب لاحق في هذا الدفتر.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nثلاثة أسطر بالضبط: (١) الفكرة الكبرى للدرس في جملة واحدة؛ (٢) الأهداف التي ستُحاسَب عليها كل المخرجات اللاحقة؛ (٣) كل فجوة أو تناقض أو محتوى أعلى من المستوى في المصادر — أو «لا شيء».\n\nاعمل بهذا الترتيب (بصمت — ولا تطبع شيئًا منه):\n١. اقرأ كل مصدر من أوله إلى آخره وسجّل موضع كل ادعاء رئيس.\n٢. حدِّد الفكرة المحورية الواحدة ثم الأهداف التي تخدمها.\n٣. قارن المصادر بهذا الملف، وسجّل كل فجوة وتناقض ومحتوى أعلى من المستوى مع موضعه.\n٤. ثبِّت الملف وطبِّقه على كل طلب لاحق في هذا الدفتر دون إعادة ذكره.\n\nتحقّق قبل الرد: ثلاثة أسطر مرقّمة بالضبط؛ السطر الأول جملة واحدة؛ السطر الثالث يسمّي عناصر محددة (أو «لا شيء»)؛ بلا مقدمة ولا تلخيص ولا عرض لخطوات تالية.`,
+  F:`ثلاثة أسطر مرقّمة. بلا مقدمة ولا تلخيص للمصادر ولا عرض لخطوات تالية. ثم توقف وانتظر طلبي التالي.`}};}},
+{ id:'deck', key:'01', en:'Presentation / slide deck', ar:'العرض التقديمي',
+  feeds:[],
+  use:'Run in chat, then open <b>Slide deck</b> in the Studio panel. The look comes from <b>Visual style</b> in step 1.',
+  build(){ return {
+   en:{R:`You are a master instructional designer and visual-learning strategist, expert in ${V('subject','subject')}, Bloom's Taxonomy, DOK sequencing, UDL and cognitive-load-aware slide design.`,
+       C:`${sourceLine()}\n${Students()}\n${objectivesLine()}\n\nVOCABULARY RULE — ${vocabInsert()}\n\nMISCONCEPTIONS to address on their own slide:\n${miscLine()}\n\n${brand('en','deck')}${styleSlot('deck','en')}\n\n${deckCharacterRules()}`,
+       T:`Produce a teaching-ready deck of ${GAP('nSlides',S.d.nSlides||'10')} slides delivering the attached lesson to ${(S.d.Beneficiaries||'Students').toLowerCase()}, moving deliberately up the DOK ladder and closing with an assessment-ready checkpoint. The exact standalone character image uploaded to the notebook is a required visual asset, not optional decoration. Fit every element into exactly that many slides — merge or trim, never exceed.\n\nDELIVERABLE — every element below is mandatory:\nA deck a teacher can open and teach immediately, and still edit freely. Give every slide as editable text — title, body, visual direction, character line and speaker notes written out as text I can paste into Google Slides, PowerPoint or the Studio deck and change. Never deliver a slide as an image of text, a screenshot or a flattened graphic, and never lock the wording.\nSlide 1: title, subject, level, logo and the exact uploaded character image.\nSlide 2: objectives as learner-facing "I can…" statements.\nSlide 3: activation of prior knowledge — one question, one image direction and the exact uploaded character image.\nVocabulary slide(s): every detected word with a learner-friendly definition, an image cue, and one example sentence. Never more than 5 words per slide.\nThen content chunked at one idea per slide, maximum 30 words of body text, each tagged with its DOK level. Include at least one worked example, one guided-practice slide and one independent-practice slide. Put the exact uploaded character image on the first main-content slide and the guided-practice slide.\nPenultimate slide: a 3-item exit check aligned to the objectives, with the exact uploaded character image.\nFinal slide: summary plus one transfer question, with the exact uploaded character image.\nEvery slide cites its source page.\n\nWORK IN THIS ORDER:\n1. Fix the slide budget first and allocate it: opening, vocabulary, content, practice, exit check, close.\n2. Chunk the content at one idea per slide and sequence it up the DOK ladder.\n3. Place the logo and the exact uploaded character on every required slide, as the rules above direct.\n4. Write the speaker notes last, so they match the final slide wording.\n\nSELF-CHECK before you send: the slide count equals the number stated in the task; no slide body exceeds 30 words; every slide carries a source page and a DOK tag; the exact uploaded character is placed on every required slide and never replaced; every slide is plain editable text, never an image of text${styleCheck('deck','en')}.`,
+       F:`Plain editable text throughout — no images of text, no flattened slides. Slide by slide, use this structure and nothing else:\nSlide [n] — [Title]\nBody: (max 30 words, bulleted)\nVisual direction: (what image, chart or diagram, and where${styleTag('deck','en')})\nBranding: (where the exact attached logo sits on this slide)\nUploaded character asset: Use the exact uploaded character image — do not generate a substitute — position: [position].\nOR, only on a slide where the character is not required:\nUploaded character asset: Character does not appear on this slide.\nIf direct placement is unavailable on a required slide, write: INSERT THE EXACT UPLOADED CHARACTER IMAGE HERE — DO NOT GENERATE A SUBSTITUTE — position: [position].\nCharacter line: (one sentence spoken by ${S.d.avatarName||'the character'}, or "None" when the character does not speak)\nDOK: [1–4] | Source: [page]\nSpeaker notes: (2–3 sentences of teacher script)`},
+   ar:{R:`أنت مصمّم تعليمي متمرّس واستراتيجي للتعلّم البصري، خبير في ${V('subject','المادة')} وتصنيف بلوم وتدرّج عمق المعرفة والتصميم الشامل للتعلّم وتصميم الشرائح بما يراعي الحِمل المعرفي.`,
+       C:`استخدم المصادر المرفقة فقط، ولا تختلق ما ليس فيها؛ وإذا خلا المصدر من معلومة فاكتب [فجوة — على المعلم توفيرها]، ووثِّق صفحة المصدر لكل ادعاء.\nالطلاب في ${V('level','المستوى')}، ضمن إطار ${V('framework','المنهج')}. المدة ${V('duration','المدة')}.${outLangAR()}\n${objectivesLineAR()}\n\nقاعدة المفردات — ${vocabInsertAR()}\n\nالتصورات الخاطئة التي تُعالَج في شريحة مستقلة:\n${miscLine()}\n\n${brand('ar','deck')}${styleSlot('deck','ar')}\n\n${deckCharacterRulesAR()}`,
+       T:`أنتج عرضًا جاهزًا للتدريس من ${GAP('nSlides',S.d.nSlides||'10')} شريحة يقدّم الدرس المرفق إلى ${audAR()}، ويرتقي عمدًا عبر سُلّم عمق المعرفة، وينتهي بنقطة تقويم جاهزة. صورة الشخصية المنفردة المرفوعة إلى الدفتر أصل بصري إلزامي وليست زينة اختيارية. ولا تتجاوز هذا العدد: ادمج أو اختصر.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nعرض يستطيع المعلم فتحه وتدريسه فورًا، ويبقى قابلًا للتعديل بحرية. قدِّم كل شريحة نصًّا قابلًا للتحرير — العنوان والمتن والتوجيه البصري وعبارة الشخصية وملاحظات المعلم مكتوبة نصًّا أستطيع لصقه في Google Slides أو PowerPoint أو شرائح الاستوديو وتغييره. ولا تقدّم الشريحة صورةً للنص ولا لقطة شاشة ولا رسمًا مسطَّحًا، ولا تُثبِّت الصياغة.\nالشريحة ١: العنوان والمادة والمستوى والشعار وصورة الشخصية المرفوعة نفسها.\nالشريحة ٢: الأهداف بصيغة «أستطيع أن…».\nالشريحة ٣: تنشيط المعرفة السابقة — سؤال واحد وتوجيه لصورة واحدة وصورة الشخصية المرفوعة نفسها.\nشرائح المفردات: كل كلمة مرصودة مع تعريف مبسَّط، ومثير صوري، وجملة مثال واحدة، وبما لا يزيد على ٥ كلمات في الشريحة.\nثم تقسيم المحتوى بفكرة واحدة لكل شريحة، وبحد أقصى ٣٠ كلمة في المتن، مع وسم عمق المعرفة. ومثال محلول واحد على الأقل، وشريحة تدريب موجَّه، وشريحة تدريب مستقل. ضع صورة الشخصية المرفوعة نفسها في أول شريحة من المحتوى الرئيس وفي شريحة التدريب الموجّه.\nالشريحة قبل الأخيرة: اختبار خروج من ٣ عناصر متوائم مع الأهداف، مع صورة الشخصية المرفوعة نفسها.\nالشريحة الأخيرة: ملخّص وسؤال نقل تعلُّم، مع صورة الشخصية المرفوعة نفسها.\nوتُوثَّق كل شريحة بصفحة مصدرها.\n\nاعمل بهذا الترتيب:\n١. ثبّت ميزانية الشرائح أولًا ووزّعها: الافتتاح، المفردات، المحتوى، التدريب، اختبار الخروج، الخاتمة.\n٢. قسّم المحتوى بفكرة واحدة لكل شريحة ورتّبه صعودًا على سُلّم عمق المعرفة.\n٣. ضع الشعار وصورة الشخصية المرفوعة نفسها في كل شريحة إلزامية كما تقضي القواعد أعلاه.\n٤. اكتب ملاحظات المعلم أخيرًا لتطابق الصياغة النهائية للشرائح.\n\nتحقّق قبل الإرسال: عدد الشرائح مطابق للعدد المذكور في المهمة؛ لا يتجاوز متن أي شريحة ٣٠ كلمة؛ كل شريحة موسومة بعمق المعرفة وصفحة المصدر؛ صورة الشخصية المرفوعة نفسها موضوعة في كل شريحة إلزامية ولم يُستبدل بها شيء؛ كل شريحة نصٌّ قابل للتحرير لا صورةً للنص${styleCheck('deck','ar')}.`,
+       F:`نصٌّ قابل للتحرير بالكامل — لا صور نصية ولا شرائح مسطَّحة. وشريحةً شريحة، بهذا التركيب فقط:\nشريحة [الرقم] — [العنوان]\nالمتن: (٣٠ كلمة كحد أقصى، بنقاط)\nالتوجيه البصري: (الصورة أو الرسم المطلوب وموضعه${styleTag('deck','ar')})\nالعلامة: (موضع ملف الشعار المرفق نفسه في هذه الشريحة)\nصورة الشخصية المرفوعة: استخدم صورة الشخصية المرفوعة نفسها — لا تُنشئ بديلًا — الموضع: [الموضع].\nأو، فقط في شريحة لا يُشترط فيها ظهور الشخصية:\nصورة الشخصية المرفوعة: لا تظهر الشخصية في هذه الشريحة.\nإذا تعذّر الإدراج المباشر في شريحة إلزامية فاكتب: أدرِج صورة الشخصية المرفوعة نفسها هنا — لا تُنشئ بديلًا — الموضع: [الموضع].\nعبارة الشخصية: (جملة واحدة تنطق بها ${ard('avatarName','الشخصية الكرتونية')}، أو «لا توجد» إذا لم تتكلم)\nعمق المعرفة: [١–٤] | المصدر: [الصفحة]\nملاحظات المعلم: (٢–٣ جمل)`}};}},
+{ id:'vocab', key:'02', en:'Vocabulary teaching slides', ar:'بطاقات تعليمية',
+  feeds:[],
+  use:'Run after the deck. Produces the pre-teaching sequence that goes in front of it.',
+  build(){ return {
+ en:{R:`You are a CELTA-qualified lexis specialist and materials writer who presents new vocabulary through meaning, form and pronunciation before any productive task.`,
+  C:`${sourceLine()}\n${Students()}\nSELECTION: find every word or term in the sources at or above the Students' level that would block comprehension. Judge by frequency, abstractness, morphology and whether meaning is recoverable from context. Maximum 12 words, ranked by importance; list them first and mark the four to teach first.\nTEACHING RULES: meaning before form, form before pronunciation. Definitions use only vocabulary below the Students' level and never rely on another word from the list.\n${brand('en','deck')}${styleSlot('deck','en')}`,
+  T:`Build the pre-teaching vocabulary sequence — one slide per word plus one consolidation activity — so no learner meets the main content blocked by an unknown word.\n\nDELIVERABLE — every element below is mandatory:\nFor each word: a concept-checking question that exposes a wrong guess, with the expected answer; a learner-friendly definition of 10 words or fewer; a picture or gesture cue; one example sentence from or matching the lesson; part of speech, key forms and stress pattern; the most likely learner error with its correction. Close with one consolidation activity that forces Students to use at least four words together, and a 5-item quick check with answers.\n\nWORK IN THIS ORDER:\n1. Scan the sources and list every candidate word or term that could block comprehension.\n2. Rank by blocking power and cut to the maximum; mark the four to teach first.\n3. Build one block per word in teaching order: meaning, then form, then sound.\n4. Finish with the consolidation activity and the quick check.\n\nSELF-CHECK before you send: no more than 12 words; every definition is 10 words or fewer and uses neither another listed word nor vocabulary above the Students' level; every block completes all the format fields; the quick check has exactly five items, each with its answer${styleCheck('deck','en')}.`,
+  F:`Selection list, then one block per word:\nSlide [n] — [WORD]\nMeaning: (≤10 words)\nCheck: (question → expected answer)\nForm: (part of speech, plural/past if relevant)\nSound: (stress marked, e.g. PHO-to-graph)\nVisual: (image or gesture direction${styleTag('deck','en')})\nExample: (one sentence)\nLikely error: (what Students say) → Correction: (what to say back)\nSource: [page]\nEnd with CONSOLIDATION ACTIVITY, then QUICK CHECK.`},
+ ar:{R:`أنت أخصائي مفردات حاصل على CELTA وكاتب مواد تعليمية، تقدّم المفردة الجديدة عبر المعنى ثم الشكل ثم النطق قبل أي مهمة إنتاجية.`,
+  C:`${srcAR()}\n${studAR()}\nالانتقاء: حدِّد كل كلمة أو مصطلح في المصادر يقع عند مستوى المتعلمين أو فوقه ويعوق الفهم، بحسب التكرار والتجريد والبنية الصرفية وإمكان استنتاج المعنى من السياق. بحد أقصى ١٢ كلمة مرتّبة بالأهمية؛ اعرضها أولًا وعلِّم الأربع التي تُدرَّس قبل غيرها.\nقواعد التدريس: المعنى قبل الشكل، والشكل قبل النطق. تستعمل التعريفات مفردات أدنى من مستوى المتعلمين ولا تُعرَّف كلمة بأخرى من القائمة.\n${brand('ar','deck')}${styleSlot('deck','ar')}`,
+  T:`ابنِ متتالية التعليم المسبق للمفردات — شريحة لكل كلمة ونشاط تثبيت واحد — حتى لا يواجه أي متعلم المحتوى الرئيس معطَّلًا بكلمة مجهولة.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nلكل كلمة: سؤال فحص مفهوم يكشف التخمين الخاطئ مع الإجابة المتوقعة؛ وتعريف مبسَّط لا يتجاوز ١٠ كلمات؛ ومثير صوري أو إيمائي؛ وجملة مثال من الدرس أو مطابقة له؛ ونوع الكلمة وصيغها الأساسية وموضع النبر؛ والخطأ الأرجح للمتعلم مع تصحيحه. واختم بنشاط تثبيت يُلزم المتعلمين باستعمال أربع كلمات معًا على الأقل، وفحص سريع من ٥ عناصر بإجاباتها.\n\nاعمل بهذا الترتيب:\n١. امسح المصادر وسجّل كل كلمة أو مصطلح يُحتمل أن يعوق الفهم.\n٢. رتّبها بحسب قدرتها على تعطيل الفهم واقتصر على الحد الأقصى، وعلِّم الأربع التي تُدرَّس قبل غيرها.\n٣. ابنِ كتلة لكل كلمة بترتيب التدريس: المعنى ثم الشكل ثم النطق.\n٤. اختم بنشاط التثبيت ثم الفحص السريع.\n\nتحقّق قبل الإرسال: لا تزيد الكلمات على ١٢؛ كل تعريف لا يتجاوز ١٠ كلمات ولا يستعمل كلمة أخرى من القائمة ولا مفردات أعلى من مستوى المتعلمين؛ كل كتلة مستوفية لجميع حقول الصيغة؛ والفحص السريع من ٥ عناصر بالضبط ولكلٍّ إجابته${styleCheck('deck','ar')}.`,
+  F:`قائمة الانتقاء، ثم كتلة لكل كلمة:\nشريحة [الرقم] — [الكلمة]\nالمعنى: (≤١٠ كلمات)\nالفحص: (السؤال ← الإجابة المتوقعة)\nالشكل: (نوع الكلمة، الجمع أو الماضي إن لزم)\nالنطق: (موضع النبر)\nالمرئي: (توجيه الصورة أو الإيماءة${styleTag('deck','ar')})\nالمثال: (جملة واحدة)\nالخطأ المتوقع: (ما يقوله المتعلم) ← التصحيح: (ما تردّ به)\nالمصدر: [الصفحة]\nوتُختم بـ«نشاط التثبيت» ثم «الفحص السريع».`}};}},
+{ id:'video', key:'03', en:'Cinematic video overview', ar:'ملخص بالفيديو',
+  feeds:[],
+  use:'Run in chat, then open <b>Video Overview</b> and choose the cinematic style.',
+  build(){ return {
+   en:{R:`You are a top-tier creative director and educational scriptwriter, expert in cinematic explainers for ${V('subject','subject')} and in narration pitched precisely to the learners' language level.`,
+       C:`${sourceLine()}\n${Students()}\nNarration must sit at the Students' level — short sentences, high-frequency vocabulary, no idioms unless taught in the lesson. Total narration must not exceed ${Math.round((num(S.d.nVid)||2)*115)} words. Aspect ratio 16:9. No shot longer than 8 seconds.\n${brand()}\nThe avatar is the on-screen narrator and appears in the opening shot, at each section transition, and in the closing shot.`,
+       T:`Write the complete production script for a ${GAP('nVid',S.d.nVid||'2')} minute cinematic video overview teaching the core concept of the attached lesson as a single narrative arc: hook → question → explanation → demonstration → resolution → call to think.\n\nDELIVERABLE — every element below is mandatory:\nA script executable shot by shot with no further interpretation: a 5-second hook posing the lesson's driving question; 4–6 scenes each carrying one teaching point; at least one visual metaphor making an abstract idea concrete; on-screen text that reinforces rather than duplicates the narration; a 15-second recap; and a closing question sending Students back to the coursebook page.\n\nWORK IN THIS ORDER:\n1. State the lesson's driving question and the single teaching point of each scene.\n2. Outline the arc: hook, question, explanation, demonstration, resolution, call to think.\n3. Write the narration, then count its words against the cap in the context.\n4. Add visuals, avatar actions, on-screen text and sound, shot by shot.\n5. Finish with the thumbnail concept and the three title options.\n\nSELF-CHECK before you send: total narration is within the word cap and the shot durations add up to the requested length; no shot exceeds 8 seconds; the avatar appears in the opening shot, at every section transition and in the closing shot; the logo and the attached character follow the branding rules; every teaching point traces to a source page.`,
+       F:`A numbered shot table, these columns only:\nShot | Duration | Visual (what we see) | Avatar action | Narration (verbatim) | On-screen text | Branding (logo / character) | Music / SFX | Source page\nThe attached logo sits in the opening and closing frames and as a small persistent mark elsewhere; the attached character image is the on-screen narrator wherever the Avatar action column is not empty.\nThen one thumbnail concept — which must carry the attached logo and the attached character image — and three title options under 8 words each.`},
+   ar:{R:`أنت مدير إبداعي رفيع المستوى وكاتب سيناريو تعليمي، خبير في الأفلام التفسيرية السينمائية في ${V('subject','المادة')} وفي ضبط التعليق الصوتي على مستوى المتعلمين اللغوي.`,
+       C:`استخدم المصادر المرفقة فقط ووثِّق صفحة المصدر.\nالطلاب في ${V('level','المستوى')}.${outLangAR()}\nويجب ضبط التعليق الصوتي على مستوى المتعلمين: جمل قصيرة، ومفردات عالية التكرار، وتجنُّب التعابير الاصطلاحية. وألا يتجاوز التعليق ${Math.round((num(S.d.nVid)||2)*115)} كلمة. نسبة العرض ١٦:٩. ولا تتجاوز أي لقطة ٨ ثوانٍ.\n${brand("ar")}\nوالشخصية هي الراوي الظاهر، وتظهر في اللقطة الافتتاحية وعند كل انتقال وفي اللقطة الختامية.`,
+       T:`اكتب سيناريو الإنتاج الكامل لفيديو سينمائي مدته ${GAP('nVid',S.d.nVid||'2')} دقائق يشرح المفهوم الجوهري للدرس المرفق في قوس سردي واحد: جذب ← سؤال ← شرح ← تطبيق ← حل ← دعوة للتفكير.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nسيناريو ينفَّذ لقطةً لقطة دون اجتهاد إضافي: جملة جذب مدتها ٥ ثوانٍ تطرح السؤال المحوري؛ و٤–٦ مشاهد يحمل كل منها نقطة تعليمية واحدة؛ واستعارة بصرية واحدة على الأقل تُجسِّد فكرة مجردة؛ ونص على الشاشة يعزّز التعليق ولا يكرره؛ ومراجعة مدتها ١٥ ثانية؛ وسؤال ختامي يعيد المتعلمين إلى صفحة الكتاب.\n\nاعمل بهذا الترتيب:\n١. صُغ السؤال المحوري للدرس وحدِّد نقطة تعليمية واحدة لكل مشهد.\n٢. ارسم القوس السردي: جذب ← سؤال ← شرح ← عرض عملي ← حل ← دعوة إلى التفكير.\n٣. اكتب التعليق الصوتي ثم عُدّ كلماته قياسًا إلى السقف المذكور في السياق.\n٤. أضف الصورة وحركة الشخصية والنص على الشاشة والمؤثرات لقطةً لقطة.\n٥. اختم بفكرة الصورة المصغّرة وخيارات العنوان الثلاثة.\n\nتحقّق قبل الإرسال: مجموع التعليق ضمن سقف الكلمات ومدد اللقطات تساوي المدة المطلوبة؛ لا لقطة تتجاوز ٨ ثوانٍ؛ تظهر الشخصية في لقطة الافتتاح وعند كل انتقال بين الأقسام وفي لقطة الختام؛ الشعار وصورة الشخصية يتبعان قواعد العلامة؛ وكل نقطة تعليمية موثّقة بصفحة مصدرها.`,
+       F:`جدول لقطات مرقّم بهذه الأعمدة فقط:\nاللقطة | المدة | الصورة | حركة الشخصية | التعليق الصوتي (نصًّا) | النص على الشاشة | العلامة (الشعار/الشخصية) | الموسيقى والمؤثرات | صفحة المصدر\nويظهر الشعار المرفق في اللقطتين الافتتاحية والختامية، وعلامةً صغيرة ثابتة في ما عداهما؛ وتكون صورة الشخصية المرفقة هي الراوي الظاهر في كل لقطة لم يفرغ فيها عمود حركة الشخصية.\nثم فكرة صورة مصغَّرة واحدة تحمل الشعار المرفق وصورة الشخصية المرفقة، وثلاثة عناوين لا يتجاوز كل منها ٨ كلمات.`}};}},
+{ id:'pod', key:'04', en:'Podcast / audio overview', ar:'ملخص صوتي',
+  feeds:[],
+  use:'Run in chat, then open <b>Audio Overview</b> and customise with this script.',
+  build(){ return {
+ en:{R:`You are a podcast producer and teacher-educator who turns lesson material into conversational audio that listeners finish and remember.`,
+  C:`${sourceLine()}\n${Students()}\nHost A is the curious learner voice, asking what a real ${V('level','level')} student would ask. Host B is ${S.d.avatarName||'the character avatar'}, who explains with analogies from everyday life in ${S.d.country||"the Students' context"}.\nMISCONCEPTIONS Host B must name and correct aloud:\n${miscLine()}\nNo term is used before it is defined. ${S.d.outlang==='Bilingual English–Arabic'?'Give key terms in English and Arabic at first mention.':''}\n${brand()}`,
+  T:`Write a two-host podcast script of ${GAP('nPod',S.d.nPod||'8')} minutes (about ${Math.round((num(S.d.nPod)||8)*150)} spoken words) unpacking the attached lesson for ${(S.d.Beneficiaries||'Students').toLowerCase()}, so a listener who never opens the book grasps the core concept and knows what to practise.\n\nDELIVERABLE — every element below is mandatory:\nAudio that teaches rather than summarises: a 20-second cold open on why this lesson matters; each misconception stated and corrected out loud; two worked examples spoken step by step; one deliberate pause ("pause the audio and try this"); a 60-second recap in three points; three reflection questions to close. Tone warm, brisk, never patronising.\n\nWORK IN THIS ORDER:\n1. Choose the core concept, the two worked examples and the misconceptions to correct aloud.\n2. Draft the 20-second cold open.\n3. Script the exchange so Host A voices each misconception as a real student would, and Host B corrects it with an everyday analogy.\n4. Place the deliberate pause, then the 60-second recap and the three reflection questions.\n5. Time-stamp every turn at the spoken pace implied by the word target.\n\nSELF-CHECK before you send: the spoken-word count is close to the target; the time-stamps rise steadily and match that pace; no term is used before it is defined; every misconception is both named and corrected; the show notes list the vocabulary, the three reflection questions and the source pages.`,
+  F:`Time-stamped script:\n[00:00] HOST A: …\n[00:20] ${(S.d.avatarName||'AVATAR').toUpperCase()}: …\nBracketed production notes wherever tone, pace or sound matters. End with a "Show notes" block: key vocabulary (term – definition), the three reflection questions, source pages.`},
+ ar:{R:`أنت منتج بودكاست ومدرّب معلمين، تحوّل مادة الدرس إلى محتوى صوتي حواري يُكمله المستمع ويتذكّره.`,
+  C:`${srcAR()}\n${studAR()}\nالمقدِّم (أ) صوت المتعلم الفضولي يسأل ما يسأله طالب حقيقي في ${V('level','المستوى')}. والمقدِّم (ب) هو ${ard('avatarName','الشخصية الكرتونية')}، يشرح بتشبيهات من الحياة اليومية في ${S.d.country||'بيئة المتعلمين'}.\nالتصورات الخاطئة التي يسمّيها (ب) ويصحّحها بصوت مسموع:\n${miscLine()}\nلا يُستعمل مصطلح قبل تعريفه.\n${brand("ar")}`,
+  T:`اكتب نص بودكاست بمقدِّمَين مدته ${GAP('nPod',S.d.nPod||'8')} دقائق (نحو ${Math.round((num(S.d.nPod)||8)*150)} كلمة منطوقة) يفكّك الدرس المرفق لصالح ${audAR()}، فيفهم المستمع المفهوم الجوهري ويعرف ما يتدرّب عليه ولو لم يفتح الكتاب.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nمحتوى صوتي يُعلِّم لا يلخِّص: افتتاحية ٢٠ ثانية عن أهمية الدرس؛ وكل تصور خاطئ يُذكر ويُصحَّح بصوت مسموع؛ ومثالان محلولان منطوقان خطوةً خطوة؛ ولحظة توقف مقصودة («أوقف التسجيل وجرّب هذا»)؛ ومراجعة ٦٠ ثانية في ثلاث نقاط؛ وثلاثة أسئلة تأملية ختامية. النبرة دافئة سريعة غير متعالية.\n\nاعمل بهذا الترتيب:\n١. اختر المفهوم الجوهري والمثالين المحلولين والتصورات الخاطئة التي تُصحَّح بصوت مسموع.\n٢. اكتب افتتاحية مدتها ٢٠ ثانية.\n٣. ابنِ الحوار بحيث يعرض المقدِّم (أ) كل تصور خاطئ كما يفعل طالب حقيقي، ويصحّحه المقدِّم الثاني (الشخصية) بتشبيه من الحياة اليومية.\n٤. ضع وقفة التوقف المقصودة، ثم خلاصة مدتها ٦٠ ثانية، ثم أسئلة التأمل الثلاثة.\n٥. ضع الطابع الزمني لكل دور بحسب وتيرة الكلام التي يفرضها عدد الكلمات المستهدف.\n\nتحقّق قبل الإرسال: عدد الكلمات المنطوقة قريب من المستهدف؛ والطوابع الزمنية تتصاعد باطّراد وتوافق تلك الوتيرة؛ ولا مصطلح يُستعمل قبل تعريفه؛ وكل تصور خاطئ يُذكر ويُصحَّح؛ وملاحظات العرض تضم المفردات وأسئلة التأمل الثلاثة وصفحات المصدر.`,
+  F:`نص بطوابع زمنية:\n[00:00] المقدِّم (أ): …\n[00:20] ${ard('avatarName','الشخصية')}: …\nوملاحظات إنتاج بين قوسين حيث تهم النبرة أو الإيقاع أو المؤثر. واختم بكتلة «ملاحظات الحلقة»: المفردات المفتاحية (المصطلح — التعريف)، والأسئلة التأملية الثلاثة، ومراجع الصفحات.`}};}},
+{ id:'quiz', key:'05', en:'Quiz / assessment set', ar:'اختبار',
+  feeds:[],
+  use:'Run in chat, then open <b>Quiz</b>. Section B is the student paper.',
+  build(){ return {
+ en:{R:`You are a psychometrician and assessment specialist expert in item writing, distractor design, construct validity and DOK-aligned blueprints for ${V('subject','subject')}.`,
+  C:`${sourceLine()}\n${Students()}\n${objectivesLine()}\nBLUEPRINT: ${bp()}.\nLANGUAGE: item wording sits one level BELOW the content level so reading difficulty is never what is being measured.\nVOCABULARY: at least four items on the lesson's key terms.\nDISTRACTORS: each is plausible and diagnostic, built from a real misconception:\n${miscLine()}\nNever a joke option, never "all of the above", no negative stems, no clued answers.`,
+  T:`Build a ${GAP('nQuiz',S.d.nQuiz||'20')}-item quiz on the attached lesson that measures the stated objectives — and only those — with items spread deliberately across DOK ${S.d.dok||'1–4'}.\n\nDELIVERABLE — every element below is mandatory:\nAn assessment a teacher can administer and a colleague could defend: a blueprint mapping every item to objective, DOK level and source page; the items; a full key giving one sentence on why the answer is right AND why each distractor attracts; marks per item; and a remediation note on what to reteach when a cluster is missed. Self-check before output: every item maps to a stated objective and has exactly one defensible key.\n\nWORK IN THIS ORDER:\n1. Fix the blueprint: how many items per objective and per DOK level.\n2. Write each stem so it tests the objective, not reading ability.\n3. Build every distractor from a real misconception, so a wrong answer diagnoses a specific error.\n4. Confirm one defensible key per item and vary the key positions.\n5. Write the rationales, the marks and the remediation notes.\n\nSELF-CHECK before you send: the item count equals the number in the task; every item maps to a stated objective, a DOK level and a source page; no joke option, no \"all of the above\", no negative stem, no clued answer; correct answers are spread across positions; the marks total is stated on the student paper.`,
+  F:`Three sections, never mixed:\nSECTION A — Blueprint (table: Item # | Objective | DOK | Item type | Source page | Marks)\nSECTION B — Student paper (clean, no answers, numbered, with instructions and total marks)\nSECTION C — Marking key, rationales and remediation`},
+ ar:{R:`أنت خبير قياس وتقويم متخصص في صياغة المفردات الاختبارية وتصميم المشتّتات وصدق البناء ومصفوفات عمق المعرفة في ${V('subject','المادة')}.`,
+  C:`${srcAR()}\n${studAR()}\n${objectivesLineAR()}\nالمصفوفة: ${bp(1)}.\nاللغة: تكون صياغة المفردات أدنى بمستوى واحد من مستوى المحتوى حتى لا تصير صعوبة القراءة هي المقيس.\nالمفردات: أربع مفردات على الأقل عن مصطلحات الدرس المفتاحية.\nالمشتّتات: كل مشتّت معقول وتشخيصي، مبنيّ على تصور خاطئ حقيقي:\n${miscLine()}\nلا خيارات هزلية ولا «كل ما سبق» ولا مقدمات منفية ولا إجابات مُلمَّح إليها.`,
+  T:`ابنِ اختبارًا من ${GAP('nQuiz',S.d.nQuiz||'20')} مفردة على الدرس المرفق يقيس الأهداف المعلنة ولا شيء سواها، بتوزيع مقصود عبر عمق المعرفة ${dokL(1)||'١–٤'}.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nتقويم يستطيع المعلم تطبيقه ويستطيع زميل مهني الدفاع عنه: مصفوفة تربط كل مفردة بهدفها ومستوى عمقها وصفحة مصدرها؛ والمفردات؛ ومفتاح كامل بجملة تبيّن سبب صحة الإجابة وسبب جاذبية كل مشتّت؛ والدرجات؛ وملاحظة علاجية بما يُعاد تدريسه عند الإخفاق في كل مجموعة. وقبل التسليم افحص: كل مفردة مرتبطة بهدف معلن ولها مفتاح واحد قابل للدفاع.\n\nاعمل بهذا الترتيب:\n١. ثبّت المصفوفة: عدد المفردات لكل هدف ولكل مستوى من عمق المعرفة.\n٢. صُغ كل سؤال ليقيس الهدف لا قدرة القراءة.\n٣. ابنِ كل مشتّت من تصور خاطئ حقيقي ليكشف الخطأ المحدد عند اختياره.\n٤. تأكد من وجود مفتاح واحد قابل للدفاع عنه لكل مفردة، ونوِّع مواضع المفاتيح.\n٥. اكتب المسوّغات والدرجات وملاحظات المعالجة.\n\nتحقّق قبل الإرسال: عدد المفردات مطابق للعدد المذكور في المهمة؛ كل مفردة مرتبطة بهدف معلن ومستوى عمق المعرفة وصفحة المصدر؛ لا خيار هزلي ولا «كل ما سبق» ولا سؤال بصيغة النفي ولا إجابة مُلمَّح إليها؛ الإجابات الصحيحة موزعة على المواضع؛ ومجموع الدرجات مذكور في ورقة الطالب.`,
+  F:`ثلاثة أقسام دون خلط:\nالقسم أ — المصفوفة (جدول: رقم المفردة | الهدف | عمق المعرفة | النوع | صفحة المصدر | الدرجة)\nالقسم ب — ورقة الطالب (نظيفة، بلا إجابات، مرقّمة، مع التعليمات والدرجة الكلية)\nالقسم ج — مفتاح التصحيح والمبررات والعلاج`}};}},
+{ id:'cards', key:'06', en:'Flashcards', ar:'البطاقات التعليمية',
+  feeds:[],
+  use:'Run in chat, then open <b>Flashcards</b>. The import block pastes into Anki or Quizlet.',
+  build(){ return {
+ en:{R:`You are a learning scientist specialising in retrieval practice, spaced repetition and atomic flashcards that never overload working memory.`,
+  C:`${sourceLine()}\n${Students()}\nATOMICITY: one card tests one fact, term or step — never a list. Fronts are questions or cues, never statements. Backs are 15 words or fewer. Mix types: definition, application, error-spotting, image-cue, production ("say / write the sentence"). Cover every key term of the lesson.${S.d.outlang==='Bilingual English–Arabic'?' Put key terms in English and Arabic on the back.':''}\n${brand()}`,
+  T:`Generate ${GAP('nCards',S.d.nCards||'15')} flashcards covering the lesson's essential knowledge and vocabulary, built for active recall, not recognition.\n\nDELIVERABLE — every element below is mandatory:\nA deck a learner can study alone: ordered from foundational to derived, tagged Easy / Core / Stretch and by DOK, with a one-line memory hook on every abstract item. Star the 5 cards to review before any assessment.\n\nWORK IN THIS ORDER:\n1. List the lesson's essential facts, terms and steps.\n2. Turn each into one atomic card and assign its type.\n3. Order the cards from foundational to derived and tag difficulty and DOK.\n4. Add a one-line memory hook to every abstract card and star the five to review before any assessment.\n5. Build the import block from the final table.\n\nSELF-CHECK before you send: the card count equals the number in the task; every front is a question or cue, never a statement; every back is 15 words or fewer; each card tests one thing; every key term of the lesson is covered; the import block matches the table pair for pair.`,
+  F:`A table with exactly these columns:\n# | Front (cue) | Back (≤15 words) | Type | DOK | Difficulty | Memory hook | Source page\nThen "Import note": the same set as tab-separated Front/Back pairs, ready for Anki, Quizlet or Kahoot.`},
+ ar:{R:`أنت عالِم تعلّم متخصص في ممارسة الاسترجاع والتكرار المتباعد والبطاقات الذرّية التي لا تُثقل الذاكرة العاملة.`,
+  C:`${srcAR()}\n${studAR()}\nالذرّية: البطاقة الواحدة تقيس حقيقة أو مصطلحًا أو خطوة واحدة، لا قائمة. والوجه سؤال أو مثير لا عبارة خبرية. والظهر ١٥ كلمة فأقل. نوِّع الأنماط: تعريف، تطبيق، كشف خطأ، مثير صوري، إنتاج («قل / اكتب الجملة»). وغطِّ كل مصطلح مفتاحي في الدرس.\n${brand("ar")}`,
+  T:`أنشئ ${GAP('nCards',S.d.nCards||'15')} بطاقة تغطي المعارف والمفردات الجوهرية في الدرس، مبنيّة للاسترجاع النشط لا للتعرّف.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nمجموعة يدرسها المتعلم منفردًا: مرتّبة من التأسيسي إلى المشتق، وموسومة بالصعوبة (سهل / أساسي / تحدٍّ) وبعمق المعرفة، ومعها مرتكز تذكّر في سطر لكل عنصر مجرَّد. ضع نجمة على البطاقات الخمس الأهم للمراجعة قبل أي تقويم.\n\nاعمل بهذا الترتيب:\n١. دوِّن المعارف والمصطلحات والخطوات الجوهرية في الدرس.\n٢. حوّل كلًّا منها إلى بطاقة ذرّية واحدة وحدِّد نوعها.\n٣. رتّب البطاقات من التأسيسي إلى المشتق ووسِمها بالصعوبة وعمق المعرفة.\n٤. أضف مرتكز ذاكرة من سطر واحد لكل بطاقة مجردة، وضع نجمة على البطاقات الخمس التي تُراجع قبل أي تقويم.\n٥. ابنِ كتلة الاستيراد من الجدول النهائي.\n\nتحقّق قبل الإرسال: عدد البطاقات مطابق للعدد المذكور في المهمة؛ كل وجه سؤال أو مثير لا عبارة تقريرية؛ كل ظهر ١٥ كلمة فأقل؛ كل بطاقة تقيس أمرًا واحدًا؛ وكل مصطلح رئيس في الدرس مغطّى؛ وكتلة الاستيراد تطابق الجدول زوجًا بزوج.`,
+  F:`جدول بهذه الأعمدة تحديدًا:\nم | الوجه (المثير) | الظهر (≤١٥ كلمة) | النوع | عمق المعرفة | الصعوبة | مرتكز التذكر | صفحة المصدر\nثم «ملاحظة الاستيراد»: المجموعة نفسها أزواج وجه/ظهر مفصولة بعلامة جدولة، جاهزة للصق في أنكي أو كويزلت أو كاهوت.`}};}},
+{ id:'info', key:'07', en:'Summary infographic', ar:'مخطط بياني',
+  feeds:[],
+  use:'Run in chat, then open <b>Infographic</b>, or take the spec into Canva. The look comes from <b>Visual style</b> in step 1.',
+  build(){ return {
+   en:{R:`You are an information designer in the tradition of visual explanation — hierarchy before decoration, meaning before ornament — fluent in WCAG 2.1 accessibility.`,
+       C:`${sourceLine()}\n${Students()}\nText budget for the entire page: ${GAP('nWords',S.d.nWords||'100')} words maximum. All text/background pairings must meet 4.5:1 contrast. Orientation portrait A4.\n${brand('en','info')}${styleSlot('info','en')}\n\n${infographicAssetGate()}\n\nUPLOADED CARTOON INTEGRATION — MANDATORY AFTER THE ASSET GATE PASSES: Use the verified exact standalone cartoon character file, whatever its identity, appearance, species, costume or art style. Do not use a built-in/default character and do not redraw, regenerate, restyle, recolour, mirror, crop, distort, approximate or replace the uploaded character. Place the exact file once at the entry point of the numbered reading path, sized as a clear supporting guide rather than the dominant content — approximately 12–18% of page height, with clear space and no overlap with text. Position it so its existing pose or gaze leads naturally toward the headline or zone 1; if the existing pose does not point that way, place a separate directional cue beside it rather than altering the character. Echo up to three visible traits from the uploaded character — such as palette, line quality, shape language or rendering style — only in supporting icons, dividers or containers, while preserving ${vsPick('info')?'':'the stated brand colours and '}accessible contrast.`,
+       T:`Design a single-page summary infographic that lets a learner reconstruct the whole lesson from the visual alone, in under 90 seconds of looking. Integrate the learner's exact uploaded cartoon character as the visual guide into the infographic's hierarchy and reading path. Visible inclusion of the original uploaded character file is a non-negotiable acceptance condition; generating a substitute is not a completed result.\n\nDELIVERABLE — every element below is mandatory:\nA graphic with an unmistakable reading path: one headline stating the big idea in under 10 words; five zones maximum, sized by importance not content volume; one central visual carrying the core concept (a process, a comparison, a cycle or a hierarchy — choose and say which); the verified exact uploaded cartoon file acting once as the entry-point guide; icon direction for each zone; a numbered eye-path (1→5) a designer can follow; and a bottom strip with the three things to remember. Every element, including the character, must support meaning, navigation or recall; nothing is merely decorative. Do not deliver the graphic if the exact uploaded character is absent.\n\nWORK IN THIS ORDER:\n1. Run the asset verification first; if it returns BLOCKED, output the BLOCKED message and stop.\n2. Choose the central visual (process, comparison, cycle or hierarchy) and justify it.\n3. Write all text within the word budget, then assign it to at most five zones.\n4. Define the numbered eye-path, the icon directions and the colour roles.\n5. Run the final acceptance check.\n\nSELF-CHECK before you send: total words are within the budget; no more than five zones; every text and background pairing meets 4.5:1 contrast; the exact uploaded character file is placed once at the entry point and no substitute exists; every element supports meaning, navigation or recall${styleCheck('info','en')}.`,
+       F:`0. Asset verification: exact displayed source filename | original file directly insertable: PASS/BLOCKED. Stop on BLOCKED.\n1. Big idea headline\n2. Chosen visual metaphor (and why it fits this content)${styleTag('info','en')}\n3. Zone table: Zone # | Position | Purpose | Exact text (word count) | Icon / visual direction | Colour role\n4. Eye-path (numbered sequence)\n5. Bottom strip: three takeaways, ≤8 words each\n6. Uploaded cartoon integration: exact attached character filename | entry-point role | position | size (12–18% page height) | clear space | how its existing pose/gaze leads to the headline or zone 1 | up to three visible style traits echoed in supporting elements. State explicitly: the original attached file is inserted; no generated, redrawn or substitute character is used.\n7. Logo placement: exact attached logo file, with position and clear space\n8. Accessibility note and source page references\n9. Final acceptance check: exact uploaded character visibly present: YES/NO | substitute characters present: YES/NO. Deliver only when the answers are YES and NO respectively; otherwise return the BLOCKED message from the asset gate.`},
+   ar:{R:`أنت مصمّم معلومات على نهج الشرح البصري — الهرمية قبل الزخرفة والمعنى قبل الزينة — متمكّن من معايير الإتاحة WCAG 2.1.`,
+       C:`استخدم المصادر المرفقة فقط ووثِّق صفحة المصدر.\nالطلاب في ${V('level','المستوى')}.${outLangAR()}\nميزانية النص للصفحة كلها: ${GAP('nWords',S.d.nWords||'100')} كلمة كحد أقصى. ويجب أن يحقق كل اقتران بين النص والخلفية تباينًا ٤٫٥:١. الاتجاه طولي A4.\n${brand('ar','info')}${styleSlot('info','ar')}\n\n${infographicAssetGateAR()}\n\nدمج الشخصية الكرتونية المرفوعة — إلزامي بعد اجتياز بوابة التحقق: استخدم ملف صورة الشخصية الكرتونية المنفردة الذي تم التحقق منه نفسه، أيًّا كانت هويتها أو مظهرها أو نوعها أو زيها أو طرازها الفني. لا تستخدم شخصية مدمجة أو افتراضية، ولا تعِد رسم الشخصية المرفوعة أو توليدها أو تغيير طرازها أو ألوانها، ولا تعكسها أو تقصّها أو تشوّهها أو تنشئ نسخة تقريبية منها أو تستبدل بها صورة أخرى. ضع الملف نفسه مرة واحدة عند نقطة دخول مسار القراءة المرقّم، بحجم يجعله مرشدًا مساعدًا واضحًا لا المحتوى المهيمن — نحو ١٢–١٨٪ من ارتفاع الصفحة — مع مساحة خالصة ومن دون تداخل مع النص. ضعه بحيث تقود وضعيته أو نظرته الأصلية طبيعيًّا نحو العنوان أو المنطقة ١؛ وإذا لم تكن وضعيته الأصلية تشير إلى ذلك، فضع إشارة اتجاهية منفصلة بجواره بدل تغيير الشخصية. اعكس ما يصل إلى ثلاث سمات ظاهرة من الشخصية المرفوعة — مثل اللوحة اللونية أو جودة الخط أو لغة الأشكال أو طراز المعالجة — في الأيقونات أو الفواصل أو الحاويات المساندة فقط، مع الحفاظ على ${vsPick('info')?'':'ألوان العلامة المحددة و'}التباين المتاح.`,
+       T:`صمِّم إنفوجرافيك تلخيصيًّا في صفحة واحدة يمكّن المتعلم من إعادة بناء الدرس كاملًا من الصورة وحدها في أقل من ٩٠ ثانية، وادمج صورة الشخصية الكرتونية المرفوعة نفسها بوصفها مرشدًا بصريًّا داخل هرمية الإنفوجرافيك ومسار قراءته. ظهور ملف الشخصية الأصلي المرفوع بوضوح شرط قبول غير قابل للتفاوض؛ ولا يُعد توليد بديل نتيجة مكتملة.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nرسم ذو مسار قراءة لا يُخطئه النظر: عنوان رئيس يذكر الفكرة الكبرى في أقل من ١٠ كلمات؛ وخمس مناطق كحد أقصى تُحدَّد مساحاتها بالأهمية لا بحجم المحتوى؛ ومرئي مركزي واحد يحمل المفهوم الجوهري (عملية أو مقارنة أو دورة أو هرمية — اختر وصرِّح)؛ وملف صورة الشخصية الكرتونية المرفوعة نفسه بعد التحقق يظهر مرة واحدة مرشدًا عند نقطة الدخول؛ وتوجيه أيقونات لكل منطقة؛ ومسار عين مرقّم (١←٥)؛ وشريط سفلي يضم ثلاثة أشياء تُتذكَّر. ويجب أن يخدم كل عنصر، بما فيه الشخصية، المعنى أو التنقل أو التذكر؛ ولا شيء زخرفيًّا بلا غرض. لا تسلّم الرسم إذا غابت صورة الشخصية المرفوعة نفسها.\n\nاعمل بهذا الترتيب:\n١. شغّل التحقق من الملف أولًا؛ فإن كانت النتيجة «متعذر» فاكتب رسالة المنع وتوقف.\n٢. اختر الرسم المحوري (عملية أو مقارنة أو دورة أو هرمية) وعلِّل اختيارك.\n٣. اكتب كل النص ضمن ميزانية الكلمات ثم وزّعه على خمس مناطق كحد أقصى.\n٤. حدِّد مسار العين المرقّم وتوجيهات الأيقونات وأدوار الألوان.\n٥. أجرِ فحص القبول النهائي.\n\nتحقّق قبل الإرسال: مجموع الكلمات ضمن الميزانية؛ لا تزيد المناطق على خمس؛ كل ثنائي نص وخلفية يحقق تباين ٤٫٥:١؛ ملف الشخصية المرفوعة نفسه موضوع مرة واحدة عند نقطة الدخول ولا بديل عنه؛ وكل عنصر يخدم المعنى أو التوجيه أو التذكّر${styleCheck('info','ar')}.`,
+       F:`٠. التحقق من الملف: اسم ملف المصدر الظاهر نفسه | الملف الأصلي قابل للإدراج المباشر: ناجح/متعذر. توقف عند «متعذر».\n١. عنوان الفكرة الكبرى\n٢. الاستعارة البصرية المختارة (ولماذا تناسب المحتوى)${styleTag('info','ar')}\n٣. جدول المناطق: رقم المنطقة | الموضع | الغرض | النص الدقيق (عدد الكلمات) | توجيه الأيقونة | دور اللون\n٤. مسار العين (تسلسل مرقّم)\n٥. الشريط السفلي: ثلاث خلاصات ≤٨ كلمات\n٦. دمج الشخصية الكرتونية المرفوعة: اسم ملف الشخصية المرفق نفسه | دورها عند نقطة الدخول | الموضع | الحجم (١٢–١٨٪ من ارتفاع الصفحة) | المساحة الخالصة | كيف تقود وضعيتها/نظرتها الأصلية إلى العنوان أو المنطقة ١ | ما يصل إلى ثلاث سمات بصرية ظاهرة تُعكس في العناصر المساندة. صرّح بوضوح أن الملف الأصلي المرفق نفسه قد أُدرج وأنه لم تُستخدم شخصية مولدة أو معاد رسمها أو بديلة.\n٧. موضع الشعار: ملف الشعار المرفق نفسه، مع الموضع والمساحة الخالصة\n٨. ملاحظة الإتاحة ومراجع الصفحات\n٩. فحص القبول النهائي: صورة الشخصية المرفوعة نفسها ظاهرة: نعم/لا | توجد شخصيات بديلة: نعم/لا. لا تسلّم إلا إذا كانت الإجابتان «نعم» و«لا» بالترتيب؛ وإلا فأخرج رسالة التعذر من بوابة التحقق.`}};}},
+{ id:'map', key:'08', en:'Mind map', ar:'الخريطة الذهنية',
+  feeds:[],
+  use:'Run in chat, then open <b>Mind Map</b>. The Mermaid block pastes into any mapping tool.',
+  build(){ return {
+ en:{R:`You are a curriculum architect who maps knowledge structures — concepts, relationships and dependencies — so learners see how ideas connect instead of memorising a list.`,
+  C:`${sourceLine()}\n${Students()}\nCentral node = the driving concept, NOT the lesson title; derive it from the sources and objectives. Seed branches from the objectives and key ideas.\nLimits: 6 primary branches, 3 levels, 7 words per node. Every branch label starts with a noun or a verb naming a relationship — never "Details" or "More". Colour branches by DOK in tints of ${S.d.colGreen||'#0F695D'}; reserve ${S.d.colRed||'#EE3A23'} for the branch holding the commonest misconception:\n${miscLine()}`,
+  T:`Produce a mind map of the attached lesson that exposes its conceptual structure: the central idea, what depends on what, and where the lesson connects to prior and later learning.\n\nDELIVERABLE — every element below is mandatory:\nA map that reveals structure, not a decorated contents page: parallel primary branches at one level of abstraction; sub-nodes truly subordinate; at least two cross-links where a real dependency exists; one node marked "prior learning", one "next lesson", one "common misconception". Every leaf cites its source page.\n\nWORK IN THIS ORDER:\n1. Derive the driving concept for the central node from the sources and objectives.\n2. Draft the primary branches at one level of abstraction.\n3. Add subordinate nodes, the cross-links and the three marked nodes (prior learning, next lesson, common misconception).\n4. Colour by DOK, reserving the alert colour for the misconception branch.\n5. Write the outline first, then generate the Mermaid or Markmap block from that same outline.\n\nSELF-CHECK before you send: no more than six primary branches, three levels and seven words per node; no vague labels such as \"Details\" or \"More\"; at least two real cross-links; every leaf cites its source page; the outline and the pasteable markdown contain exactly the same nodes and the syntax is valid.`,
+  F:`The map twice: first an indented outline (dashes for depth), then Markmap/Mermaid-compatible markdown ready to paste into a mapping tool. Then a "Cross-links" list ("Node A → Node B: because…") and a "Colour legend".`},
+ ar:{R:`أنت مهندس مناهج ترسم بُنى المعرفة — المفاهيم والعلاقات والاعتماديات — ليرى المتعلمون ترابط الأفكار بدل حفظها قائمةً مفكّكة.`,
+  C:`${srcAR()}\n${studAR()}\nالعقدة المركزية = المفهوم المحوري لا عنوان الدرس؛ استخلصه من المصادر والأهداف. وابذر الفروع من الأهداف والأفكار الرئيسة.\nالحدود: ٦ فروع رئيسة، و٣ مستويات، و٧ كلمات للعقدة. يبدأ عنوان كل فرع باسم أو فعل يسمّي علاقة، لا بـ«تفاصيل» أو «المزيد». لوِّن الفروع بعمق المعرفة بدرجات من ${S.d.colGreen||'#0F695D'}، واحجز ${S.d.colRed||'#EE3A23'} للفرع الذي يحوي التصور الخاطئ الأشيع:\n${miscLine()}`,
+  T:`أنتج خريطة ذهنية للدرس المرفق تكشف بنيته المفاهيمية: الفكرة المركزية، وما يعتمد على ماذا، وأين يتصل الدرس بالتعلّم السابق واللاحق.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nخريطة تكشف البنية لا فهرسًا مزخرفًا: فروع رئيسة متوازية في درجة التجريد نفسها؛ وعُقد فرعية تابعة حقًّا؛ ورابطان عرضيان على الأقل حيث توجد اعتمادية فعلية؛ وعقدة «تعلُّم سابق» وعقدة «الدرس التالي» وعقدة «التصور الخاطئ الشائع». وكل عقدة طرفية تُوثَّق بصفحة مصدرها.\n\nاعمل بهذا الترتيب:\n١. استخلص المفهوم المحوري للعقدة المركزية من المصادر والأهداف.\n٢. ارسم الفروع الرئيسة في درجة تجريد واحدة.\n٣. أضف العقد التابعة والروابط العرضية والعقد الثلاث الموسومة (التعلم السابق، الدرس التالي، التصور الخاطئ الشائع).\n٤. لوِّن بحسب عمق المعرفة، واحجز اللون التنبيهي لفرع التصور الخاطئ.\n٥. اكتب المخطط الهرمي أولًا، ثم ولِّد كتلة Mermaid أو Markmap منه نفسه.\n\nتحقّق قبل الإرسال: لا تزيد الفروع الرئيسة على ٦ ولا المستويات على ٣ ولا كلمات العقدة على ٧؛ لا تسميات مبهمة مثل «تفاصيل» أو «المزيد»؛ رابطان عرضيان حقيقيان على الأقل؛ كل ورقة موثّقة بصفحة مصدرها؛ والمخطط الهرمي وكتلة الماركداون تضمان العقد نفسها وصياغتهما سليمة.`,
+  F:`الخريطة مرتين: مخطَّطًا هرميًّا بمسافات بادئة وشرطات للعمق، ثم ماركداون متوافقًا مع Markmap/Mermaid يُلصق مباشرة في أداة خرائط. ثم قائمة «الروابط العرضية» («العقدة أ ← العقدة ب: لأن…») و«مفتاح الألوان».`}};}},
+{ id:'brieft', key:'09', en:'Teacher brief / report', ar:'تقارير',
+  feeds:[],
+  use:'Run this <b>first</b> in a training session — it critiques the lesson plan rather than decorating it.',
+  build(){ return {
+ en:{R:`You are the Head of Instructional Design writing the candid internal brief that equips a teacher before a lesson is delivered.`,
+  C:`${sourceLine()}\n${Students()}\n${objectivesLine()}\nMISCONCEPTIONS already flagged:\n${miscLine()}\nThe reader is a competent teacher who has not yet studied the material. Tone: professional, evidence-based, no filler. Where the lesson plan is weak, silent or over-long for the time, say so plainly and propose the fix.`,
+  T:`Produce a one-to-two-page teacher brief for the attached lesson that lets a teacher deliver it with confidence, anticipate difficulty and differentiate on the spot.\n\nDELIVERABLE — every element below is mandatory:\nA brief that changes what the teacher does in the room: the lesson in one sentence; objectives as observable behaviours; the two or three points where Students predictably struggle and why; a misconception watchlist with the exact wording of each correction; three differentiation moves (support, core, stretch); an assessment map showing which activity evidences which objective; timing with a cut-line for a short lesson; materials; a five-question quick check; and vocabulary to pre-teach.\n\nWORK IN THIS ORDER:\n1. Read the lesson plan critically against the sources: where is it weak, silent or too long for the time?\n2. Predict where Students will struggle and why.\n3. Write the exact wording of each misconception correction the teacher will say.\n4. Design the three differentiation moves and the assessment map.\n5. Set the timing and the cut-line, then list materials and vocabulary.\n\nSELF-CHECK before you send: one to two pages; every heading appears in the order given and no preamble precedes the first; each weakness you flag comes with a concrete fix; every correction is quoted word for word; there is no filler.`,
+  F:`These headings, in order, no preamble:\nLesson in one sentence · Observable objectives · Vocabulary to pre-teach · Where Students struggle · Misconception watchlist · Differentiation (support / core / stretch) · Assessment map · Timing and cut-line · Materials · Quick check · Source references`},
+ ar:{R:`أنت رئيس التصميم التعليمي، تكتب الموجز الداخلي الصريح الذي يهيّئ المعلم قبل تنفيذ الدرس.`,
+  C:`${srcAR()}\n${studAR()}\n${objectivesLineAR()}\nالتصورات الخاطئة المرصودة:\n${miscLine()}\nالقارئ معلم كفء لم يدرس المادة بعد. النبرة مهنية قائمة على الأدلة بلا حشو. وحيث تكون خطة الدرس ضعيفة أو صامتة أو أطول من الزمن المتاح فصرِّح بذلك واقترح المعالجة.`,
+  T:`أنتج موجزًا تربويًّا من صفحة إلى صفحتين عن الدرس المرفق، يمكّن المعلم من تنفيذه بثقة وتوقّع مواضع الصعوبة والتمايز الفوري داخل الصف.\n\nالمخرَج المطلوب — كل عنصر فيما يلي إلزامي:\nموجز يغيّر ما يفعله المعلم داخل الصف: الدرس في جملة؛ والأهداف سلوكيات قابلة للملاحظة؛ والنقطتان أو الثلاث التي يتعثر عندها الطلاب عادةً ولماذا؛ وقائمة رصد للتصورات الخاطئة بالصياغة الدقيقة للتصحيح؛ وثلاث حركات تمايز (دعم / أساسي / تحدٍّ)؛ وخريطة تقويم تبيّن أي نشاط يدل على أي هدف؛ وتوقيت مع خط اقتطاع للحصة القصيرة؛ والمواد؛ وفحص سريع من خمسة أسئلة؛ والمفردات التي تُدرَّس مسبقًا.\n\nاعمل بهذا الترتيب:\n١. اقرأ خطة الدرس نقديًّا قياسًا إلى المصادر: أين هي ضعيفة أو صامتة أو أطول مما يتسع له الوقت؟\n٢. توقّع مواضع تعثّر المتعلمين وأسبابها.\n٣. اكتب الصياغة الحرفية لتصحيح كل تصور خاطئ مما سيقوله المعلم.\n٤. صمّم حركات التمايز الثلاث وخريطة التقويم.\n٥. حدِّد التوقيت وخط القطع، ثم المواد والمفردات.\n\nتحقّق قبل الإرسال: صفحة إلى صفحتين؛ كل العناوين بالترتيب المذكور ولا مقدمة قبل أولها؛ كل ضعف تشير إليه مقرون بحل محدد؛ كل تصحيح مكتوب بصياغته الحرفية؛ ولا حشو.`,
+  F:`هذه العناوين بهذا الترتيب ودون مقدمة:\nالدرس في جملة · أهداف قابلة للملاحظة · مفردات للتعليم المسبق · مواضع تعثّر المتعلمين · قائمة رصد التصورات الخاطئة · التمايز (دعم / أساسي / تحدٍّ) · خريطة التقويم · التوقيت وخط الاقتطاع · المواد · الفحص السريع · مراجع المصادر`}};}}
+];
+function feedLabel(f){
+  const bits=[];
+  if(f.includes('vocab')&&S.analysis?.vocab?.length) bits.push(S.analysis.vocab.length+' words');
+  if(f.includes('misc')&&S.analysis?.misconceptions?.length) bits.push(S.analysis.misconceptions.length+' misconceptions');
+  return bits.length? 'carrying '+bits.join(' · ') : '';
+}
+const USE_AR={brief:'يتم لصقه في المحادثة مع Gemini Notebook لتستفيد منه باقي البرومتات.',
+  deck:'شغّله في المحادثة ثم افتح <b>Slide deck</b> في الاستوديو. ويأتي الشكل من «الأسلوب البصري» في الخطوة ١.',
+  vocab:'يطلب من الدفتر أن يرصد الكلمات الصعبة في المادة المرفقة ثم يبني لها الشرائح.',
+  video:'شغّله في المحادثة ثم افتح <b>Video Overview</b>.',
+  pod:'شغّله في المحادثة ثم افتح <b>Audio Overview</b>.',
+  quiz:'شغّله في المحادثة ثم افتح <b>Quiz</b>.',
+  cards:'شغّله في المحادثة ثم افتح <b>Flashcards</b>.',
+  info:'شغّله في المحادثة ثم افتح <b>Infographic</b>. ويأتي الشكل من «الأسلوب البصري» في الخطوة ١.',
+  map:'شغّله في المحادثة ثم افتح <b>Mind Map</b>، وكتلة Mermaid تُلصق في أي أداة خرائط.',
+  brieft:'شغّله <b>أولًا</b> في التدريب — فهو ينقد خطة الدرس لا يزخرفها.'};
+const puse = p => (UILANG==='ar' && USE_AR[p.id]) ? USE_AR[p.id] : p.use;
+function buildLibrary(){
+  $('#plist').innerHTML = P.map(p=>`<button class="pbtn${S.active===p.id?' on':''}" data-p="${p.id}">
+    <span class="k">${p.key}</span><span class="lab"><b>${esc(UILANG==='ar'?p.ar:p.en)}</b>
+    ${feedLabel(p.feeds)?`<span class="fed">${feedLabel(p.feeds)}</span>`:''}</span></button>`).join('');
+  if(S.active) showPrompt(S.active);
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-p]'); if(b) showPrompt(b.dataset.p); });
+function currentText(p){
+  const o=p.build()[S.lang];
+  const L = S.lang==='ar' ? AR : {R:'ROLE',C:'CONTEXT',T:'TASK',F:'FORMAT'};
+  return stripGaps(['R','C','T','F'].map(k=>`${L[k]}\n${o[k]}`).join('\n\n'));
+}
+/* an editable token, or a plain [instruction] the model is meant to read */
+const staticMark = t => t.replace(/\[([^\]]+)\]/g,'<mark>[$1]</mark>');
+function renderTxt(raw){
+  const t = esc(raw);
+  let out='', last=0, m;
+  GAP_RE.lastIndex = 0;
+  while((m = GAP_RE.exec(t))){
+    out += staticMark(t.slice(last, m.index));
+    const key = m[1], val = m[2];
+    const empty = /^\[[\s\S]*\]$/.test(val);
+    out += `<mark class="gap${empty?'':' set'}" data-k="${key}" tabindex="0" role="button" `
+         + `title="${empty?(UILANG==='ar'?'اضغط لملء هذه القيمة':'Click to fill this in')
+                         :(UILANG==='ar'?'اضغط لتعديل هذه القيمة':'Click to edit this')}">${val}</mark>`;
+    last = GAP_RE.lastIndex;
+  }
+  out += staticMark(t.slice(last));
+  return out;
+}
+function bidiSafe(html){
+  if(S.lang!=='ar') return html;
+  return html.replace(/#[0-9A-Fa-f]{6}\b/g, m=>`<bdi dir="ltr">${m}</bdi>`);
+}
+function showPrompt(id){
+  const p=P.find(x=>x.id===id); if(!p) return;
+  S.active=id; sync();
+  const o=p.build()[S.lang];
+  const L = S.lang==='ar' ? AR : {R:'Role',C:'Context',T:'Task',F:'Format'};
+  const st=$('#stage'); st.className='stage'+(S.lang==='ar'?' rtl':'');
+  st.innerHTML=`
+   <div class="stage-head">
+     <div><h2>${esc(p.en)}</h2><div class="ar-t">${esc(p.ar)}</div></div>
+     <div class="seg"><button class="${S.lang==='en'?'on':''}" data-lang="en">English</button>
+       <button class="${S.lang==='ar'?'on':''}" data-lang="ar">العربية</button></div>
+   </div>
+   <div class="editnote"><span>${UILANG==='ar'
+     ? 'كل كلمة فيما يلي داخل الإطار قابلة للتعديل انقر عليها وعدلها'
+     : 'Every word inside the frame below is editable; click on it to edit.'}</span>
+     <em>${UILANG==='ar'?'[هكذا]':'[like this]'}</em>
+     </div>
+   <div class="spine">${['R','C','T','F'].map(k=>`
+     <div class="band"><div class="letter"><div class="g">${k}</div><div class="w">${esc(L[k])}</div></div>
+     <div class="txt">${bidiSafe(renderTxt(o[k]))}</div></div>`).join('')}</div>
+   <div class="stage-foot">
+     <span class="use">${puse(p)}</span>
+     <button class="btn btn-primary sm" data-copy="${p.id}">${t_('Copy prompt')}</button>
+     <button class="btn btn-ghost sm" data-copyboth="${p.id}">${t_('Copy EN + AR')}</button>
+   </div>`;
+  $$('.pbtn').forEach(b=>b.classList.toggle('on', b.dataset.p===id));
+}
+document.addEventListener('click',e=>{
+  const l=e.target.closest('[data-lang]'); if(l){ S.lang=l.dataset.lang; showPrompt(S.active); return; }
+  const c=e.target.closest('[data-copy]'); if(c){ const p=P.find(x=>x.id===c.dataset.copy);
+    copy(currentText(p)); return; }
+  const cb=e.target.closest('[data-copyboth]'); if(cb){ const p=P.find(x=>x.id===cb.dataset.copyboth);
+    const save=S.lang; S.lang='en'; const en=currentText(p); S.lang='ar'; const ar=currentText(p); S.lang=save;
+    copy(`${p.en}\n\n${'='.repeat(46)}\nENGLISH\n${'='.repeat(46)}\n\n${en}\n\n${'='.repeat(46)}\nالعربية\n${'='.repeat(46)}\n\n${ar}`); return; }
+});
+function copy(t){
+  navigator.clipboard.writeText(t).then(()=>toast(t_('Prompt copied — paste it into Gemini Notebook')))
+    .catch(()=>{ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove(); toast(t_('Prompt copied')); });
+}
+$('#dlAll').onclick=()=>{
+  sync(); const save=S.lang; const out=[];
+  out.push(`# ${S.d.brandName||'Waleed'} — Gemini Notebook prompt set`);
+  out.push(`**Lesson:** ${S.d.title||'—'} · **Subject:** ${S.d.subject||'—'} · **Level:** ${S.d.level||'—'}`);
+  if(S.analysis?.vocab?.length) out.push(`**Words to pre-teach:** ${S.analysis.vocab.map(v=>v.w).join(', ')}`);
+  out.push('');
+  P.forEach(p=>{ S.lang='en'; const en=currentText(p); S.lang='ar'; const ar=currentText(p);
+    out.push(`\n---\n\n## ${p.key} · ${p.en} — ${p.ar}\n\n### English\n\n\`\`\`\n${en}\n\`\`\`\n\n### العربية\n\n\`\`\`\n${ar}\n\`\`\`\n`); });
+  S.lang=save;
+  const blob=new Blob([out.join('\n')],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(S.d.title||'lesson').replace(/[^\p{L}\p{N}_-]+/gu,'_')+'_Gemini_Notebook_prompts.md'; a.click();
+  toast(t_('Ten prompts downloaded'));
+};
+/* ═══════════════════════════════════════════════════════════════
+   1 · AUTO-FILL — read the attached lesson locally and populate
+       the brief. Never overwrites something you typed yourself.
+   ═══════════════════════════════════════════════════════════════ */
+const FW_LIST = ['IB PYP','IB MYP','IB DP','Cambridge IGCSE','IGCSE 0058','Cambridge Primary',
+  'Cambridge Lower Secondary','Cambridge A Level','English National Curriculum (UK)','EYFS — Early Years Foundation Stage',
+  'US Common Core State Standards (CCSS)','Next Generation Science Standards (NGSS)',
+  'AERO — American Education Reaches Out','Advanced Placement (AP)','Texas Essential Knowledge and Skills (TEKS)',
+  'American Diploma — US High School','CEFR','CELTA methodology','ACTFL Proficiency Guidelines',
+  'WIDA English Language Development Standards','TESOL / TEFL standards','Egyptian National Curriculum',
+  'Saudi National Curriculum','UAE Ministry of Education Curriculum','Kuwait National Curriculum',
+  'Qatar National Curriculum','Australian Curriculum','Ontario Curriculum (Canada)','French National Curriculum',
+  'ISTE Standards for Students','UDL — Universal Design for Learning','UN Sustainable Development Goals',
+  'Montessori','National curriculum'];
+/* short spellings a lesson plan is likely to actually use */
+const FW_ALIAS = [
+  [/\bcommon core\b|\bCCSS\b/i,'US Common Core State Standards (CCSS)'],
+  [/\bNGSS\b|next generation science/i,'Next Generation Science Standards (NGSS)'],
+  [/\bAERO\b/i,'AERO — American Education Reaches Out'],
+  [/\bTEKS\b/i,'Texas Essential Knowledge and Skills (TEKS)'],
+  [/\bAdvanced Placement\b|\bAP (?:course|exam|standards)\b/i,'Advanced Placement (AP)'],
+  [/american (?:curriculum|diploma|standards)|المنهج الأمريكي/i,'American Diploma — US High School'],
+  [/\bWIDA\b/i,'WIDA English Language Development Standards'],
+  [/\bACTFL\b/i,'ACTFL Proficiency Guidelines'],
+  [/\bISTE\b/i,'ISTE Standards for Students'],
+  [/\bEYFS\b/i,'EYFS — Early Years Foundation Stage'],
+  [/\bIGCSE\b/i,'Cambridge IGCSE'],
+  [/\bPYP\b/i,'IB PYP'],[/\bMYP\b/i,'IB MYP'],[/\bIB DP\b|diploma programme/i,'IB DP'],
+  [/british curriculum|national curriculum \(england\)|المنهج البريطاني/i,'English National Curriculum (UK)'],
+  [/egyptian curriculum|المنهج المصري/i,'Egyptian National Curriculum'],
+  [/\bSDGs?\b|sustainable development goals/i,'UN Sustainable Development Goals'],
+  [/\bUDL\b/i,'UDL — Universal Design for Learning']
+];
+const SUBJ_HINTS = {
+  'English':/\b(english|reading|grammar|phonics|vocabulary lesson|اللغة الإنجليزية|إنجليزي)\b/i,
+  'Science':/\b(science|biology|physics|chemistry|living things|photosynthesis|العلوم|أحياء|فيزياء|كيمياء)\b/i,
+  'Mathematics':/\b(mathematics|maths|math|fractions|multiplication|geometry|الرياضيات|كسور|قسمة|هندسة)\b/i,
+  'Social studies':/\b(history|geography|social studies|civics|التاريخ|الجغرافيا|الاجتماعيات)\b/i,
+  'ICT':/\b(computing|ict|coding|computer science|الحاسب|الحاسوب|برمجة)\b/i
+};
+function plainText(){
+  let t = (($('#pastedText')||{}).value || '') + '\n';
+  [...S.files.plan, ...S.files.book].forEach(f=>{ if(f.kind==='text' && f.text) t += '\n' + f.text; });
+  return t;
+}
+function grab(t, res){
+  for(const r of res){
+    const m = t.match(r);
+    if(m){
+      let v = (m[2]||m[1]||'').split(/\r?\n/)[0].replace(/\s{2,}/g,' ').trim();
+      v = v.replace(/[\s:;,،.\-–—]+$/,'');
+      if(v) return v.slice(0,90);
+    }
+  }
+  return '';
+}
+function extractObjectives(t){
+  const lines = t.split(/\r?\n/);
+  const trig = /by the end of|learning objectives?|lesson objectives?|^\s*objectives?\s*[:\-–—]|الأهداف|أهداف الدرس|بنهاية (هذا )?الدرس/i;
+  const stop = /^\s*(materials|resources|assessment|evaluation|warm[- ]?up|starter|procedure|lesson stages|stages|homework|differentiation|المواد|الوسائل|التقويم|الإجراءات|التهيئة|الواجب|خطوات)\b/i;
+  const bullet = /^\s*([-•·*–—]|\d+[.)]|[a-z][.)]|[أ-ي][.)])\s+/i;
+  const start = lines.findIndex(l=>trig.test(l));
+  if(start < 0) return '';
+  const out = [];
+  if(/will be able to|able to|سيتمكن|سيكون|أن ي/i.test(lines[start]) && lines[start].trim().length > 24)
+    out.push(lines[start].trim());
+  for(let i=start+1; i<Math.min(lines.length, start+16); i++){
+    const l = lines[i].trim();
+    if(!l){ if(out.length) break; continue; }
+    if(stop.test(l)) break;
+    if(bullet.test(l) || (!out.length && l.length > 12)) out.push(l);
+    else if(out.length) break;
+  }
+  return out.join('\n').trim().slice(0, 1200);
+}
+/* returns the list of field labels it filled */
+function autofill(quiet){
+  const t = plainText();
+  if(tidyish(t).length < 40) return [];
+  const filled = [];
+  const put = (id, val, label) => {
+    if(!val) return;
+    const el = $('#'+id); if(!el) return;
+    if(tidyish(el.value)) return;                 // yours wins, always
+    el.value = val; filled.push(label);
+  };
+  put('title', grab(t,[/(?:lesson|unit)\s*(?:title)?\s*[:\-–—]\s*(.+)/i, /^#\s*(.+)$/m, /^\s*(?:topic)\s*[:\-–—]\s*(.+)/i,
+        /(?:عنوان الدرس|الدرس|الوحدة)\s*[:\-–—]\s*(.+)/]), t_('Lesson title'));
+  put('level', grab(t,[/\b((?:grade|year|class)\s*[:\-–—]?\s*\d{1,2})\b/i,
+        /\b(?:الصف|السنة|المستوى)\s*[:\-–—]?\s*([^\n،.]{1,18})/]), t_('Level or grade'));
+  put('duration', grab(t,[/\b(?:duration|time|length)\s*[:\-–—]?\s*(\d{1,3}\s*(?:minutes|mins|min|hours?))/i,
+        /\b(\d{2,3}\s*(?:minutes|mins))\b/i, /\b(?:المدة|الزمن)\s*[:\-–—]?\s*([^\n،.]{1,18})/]), t_('Lesson duration'));
+  put('subject', (()=>{ const d=grab(t,[/\b(?:subject)\s*[:\-–—]\s*(.+)/i,/\b(?:المادة)\s*[:\-–—]\s*(.+)/]);
+        if(d) return d;
+        for(const [k,r] of Object.entries(SUBJ_HINTS)) if(r.test(t)) return k;
+        return ''; })(), t_('Subject'));
+  put('objectives', extractObjectives(t), t_('Objectives'));
+  /* framework is a select */
+  const fwEl=$('#framework');
+  if(fwEl && !fwEl.value){
+    const alias = (FW_ALIAS.find(a=>a[0].test(t))||[])[1];
+    const hit = alias || FW_LIST.find(f=>new RegExp(f.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i').test(t))
+      || (/\bPYP\b|primary years/i.test(t)?'IB PYP':null) || (/\bMYP\b|middle years/i.test(t)?'IB MYP':null)
+      || (/\bIGCSE\b/i.test(t)?'IGCSE 0058':null) || (/\bCELTA\b/i.test(t)?'CELTA methodology':null)
+      || (/\bcambridge\b/i.test(t)?'Cambridge Primary':null);
+    if(hit){ fwEl.value=hit; filled.push(t_('Framework')); }
+  }
+  if(filled.length){ sync(); paintIdent(); }
+  if(!quiet) reportFill(filled);
+  return filled;
+}
+const tidyish = s => String(s||'').replace(/\s+/g,' ').trim();
+function reportFill(filled){
+  const box=$('#fillMsg'); if(!box) return;
+  if(!filled.length){
+    const hasText = tidyish(plainText()).length >= 40;
+    box.innerHTML = hasText
+      ? `<div class="note"><b>${t_('Already complete')}</b>${t_('doneBody')}</div>`
+      : `<div class="note"><b>${t_('Nothing to read yet')}</b>${t_('noFillBody')}</div>`;
+    return;
+  }
+  box.innerHTML=`<div class="note good"><b>${t_('Filled from the lesson')}</b>${t_('filledBody')} <b style="display:inline;font-size:inherit;letter-spacing:0;text-transform:none;color:var(--ink)">${filled.map(esc).join(' · ')}</b></div>`;
+  toast(t_('Fields filled')+' — '+filled.length);
+}
+let fillTimer=null;
+function scheduleFill(){ clearTimeout(fillTimer); fillTimer=setTimeout(()=>autofill(true) && paintIdent(), 700); }
+/* ═══════════════════════════════════════════════════════════════
+   2 · ARABIC — full interface translation, RTL, and typing in
+       either language in any field (dir="auto").
+   ═══════════════════════════════════════════════════════════════ */
+const CRUMBS_AR = ['الخطوة ١ — تفاصيل الدرس','الخطوة ٢ — البرومت الرئيسي','الخطوة ٣ — مكتبة الأوامر'];
+const T_AR = {
+  
+  "Brand character · custom":"شخصية العلامة · صورة خاصة",
+  "Subject, framework, year, files":"المادة والإطار والسنة والملفات",
+  "Lesson detail":"تفاصيل الدرس","Objectives, standards, sizes":"الأهداف والمعايير والأحجام",
+  "Read the lesson":"قراءة الدرس","Vocabulary & misconceptions":"المفردات والتصورات الخاطئة",
+  "Prompt library":"مكتبة الأوامر",
+  "Connect your Gemini Notebook — a walk-through for teachers":"اربط دفتر Gemini Notebook — دليل عملي للمعلمين",
+  "Save setup":"حفظ الإعدادات","Load setup":"تحميل الإعدادات",
+  "Name the subject, the framework and the year, then upload the same files you will drop into your Gemini Notebook notebook. The console reads them in step 3 to find the vocabulary, the misconceptions and the conceptual spine, then writes those findings into every prompt.":"حدِّد المادة والإطار والسنة، ثم ارفع الملفات نفسها التي ستضعها في دفتر Gemini Notebook. تقرأها اللوحة في الخطوة ٣ لتستخرج المفردات والتصورات الخاطئة والعمود المفاهيمي، ثم تكتب ما وجدته في كل أمر.",
+  "The lesson":"عناصر الدرس","Subject":"المادة","Framework":"الإطار","curriculum":"المنهج",
+  "Level or grade":"المستوى أو الصف","year":"السنة",
+  "You can paste the lesson text, lesson plan, reading passage, etc., here.":"ممكن تلصق هنا نص الدرس أو خطته أو قطعة قراءة .. الخ",
+  "Brand & character":"الهوية والشخصية","the logo and the wizard are already loaded":"الشعار والساحر محمَّلان مسبقًا",
+  "Logo":"الشعار","Shown in the rail and named in every visual prompt.":"يظهر في الشريط ويُسمّى في كل أمر بصري.",
+  "Replace":"استبدال","Save .png":"حفظ .png","Character avatar":"شخصية الأفاتار",
+  "Appears as narrator and on-slide guide.":"تظهر راويًا ومرشدًا على الشرائح.",
+  "Cartoon character · built in":"شخصية كرتونية · مدمج","your image":"صورتك","Use Cartoon character":"استخدم شخصية كرتونية",
+  "Avatar name":"اسم الشخصية","Character source name":"اسم مصدر الشخصية","as saved in the notebook":"كما هو محفوظ في الدفتر","Character look":"وصف الشخصية","Avatar personality":"سمات الشخصية","three words":"ثلاث كلمات",
+  "Brand name":"اسم العلامة","Tagline":"الشعار النصي","Primary colour":"اللون الأساسي","Accent colour":"اللون المميِّز",
+  "Back":"رجوع","Next — read the lesson":"التالي — قراءة الدرس",
+  "Describe the lesson once.":"اوصف الدرس مرة واحدة.",
+  "Everything on this page flows into all ten prompts. Change the subject here and the same library rebuilds itself for science, mathematics, history or a PYP unit of inquiry — no prompt is ever rewritten.":"كل ما في هذه الصفحة يتدفّق إلى الأوامر العشرة. غيِّر المادة هنا وتُعيد المكتبة نفسها بناء نفسها للعلوم أو الرياضيات أو التاريخ أو وحدة استقصاء في PYP — دون إعادة كتابة أي أمر.",
+  "Lesson title":"عنوان الدرس","Lesson duration":"مدة الدرس",
+  "DOK range":"مدى عمق المعرفة  (تذكّر وتطبيق وتحليل وإبداع)","Beneficiaries":"المستفيدون",
+  "Students":"الطلاب","Teachers (PD)":"المعلمون (تدريب وتأهيل)","Parents":"أولياء الأمور",
+  "Students and parents":"طلاب وأولياء أمور",
+  "Output language":"لغة المخرجات","English":"الإنجليزية","Arabic":"العربية","Bilingual English–Arabic":"ثنائي إنجليزي–عربي",
+  "Learner context":"سياق المتعلم",
+  "Objectives":"الأهداف",
+  "paste verbatim from the lesson plan — or paste the lesson text above and let the console pull them":"هي نفسها أهداف خطة الدرس — انسخها حرفيًّا من خطة الدرس والصقها هنا",
+  "Output sizes":"أحجام المخرجات",
+  "optional — these fill the red slots in every prompt":"اختياري — يملأ الحقول الحمراء في كل أمر",
+  "one sentence":"جملة واحدة",
+  "Misconceptions to correct":"التصورات الخاطئة الواجب تصحيحها","one per line":"كل تصور خاطئ يكتب في سطر مستقل",
+  "Slides in the deck":"عدد الشرائح","Quiz items":"عدد أسئلة الاختبار","Flashcards":"البطاقات التعليمية",
+  "Video length (min)":"مدة الفيديو (دقيقة)","Podcast length (min)":"مدة البودكاست (دقيقة)",
+  "Word count for the infographic":"عدد الكلمات المقترحة للإنفوجرافيك",
+  "Read the lesson.":"اقرأ الدرس.",
+  "Two passes over your sources. The first maps the lesson's big idea, objectives and the misconceptions Students predictably bring. The second finds the words that sit above your stated level — the ones that need teaching before anything else works.":"مرّتان على مصادرك. الأولى ترسم الفكرة الكبرى والأهداف والتصورات الخاطئة التي يأتي بها الطلاب عادة. والثانية تجد الكلمات التي تقع فوق المستوى المعلن — تلك التي يجب تدريسها قبل أي شيء آخر.",
+  "Read the attached lesson":"اقرأ الدرس المرفق","Skip — build prompts without it":"تخطَّ — ابنِ الأوامر دونها",
+  "Open the prompt library":"إلى تخصيص أدوات Gemini Notebook",
+  "Nine outcomes for a single lesson":"تسعة مخرجات لدرس واحد",
+  "Copy prompt":"انسخ البرومت","Copy EN + AR":"انسخ الإنجليزي والعربي",
+  "Download all ten prompts (.md)":"نزّل الأوامر العشرة (.md)",
+  
+  "Fields filled":"تم ملء الحقول",
+  "Filled from the lesson":"مأخوذ من الدرس",
+  "Nothing to read yet":"لا شيء لقراءته بعد",
+  "Anthropic API key":"مفتاح Anthropic API","kept in this tab only, never saved to the setup file":"يبقى في هذه الصفحة فقط ولا يُحفظ في ملف الإعداد",
+  "Model":"النموذج",
+  "Objectives found":"الأهداف المقروءة","Sits between":"موقعه بين","Misconception watchlist":"قائمة رصد التصورات الخاطئة",
+  "None stated":"غير مذكورة","None detected":"لم يُرصد شيء","Teach first:":"ابدأ بهذه:",
+  "Before:":"قبله:","After:":"بعده:","Topic":"الموضوع","read from":"مقروء من","Say:":"قل:"
+};
+let UILANG='en';
+const T_ORIG = new Map();
+const t_ = s => (UILANG==='ar' && T_AR[s]) ? T_AR[s] : (EXTRA_EN[s]||s);
+const EXTRA_EN = {
+  noFillBody:'Paste the lesson text and the fields fill themselves. PDFs and page images cannot be read here — put them in the notebook and let the master prompt read them.',
+  filledBody:'These fields were taken from the attached lesson — edit any of them freely:',
+  doneBody:'Every field the lesson could supply is already filled. Clear a field and press this again to re-read it.'
+};
+T_AR.noFillBody='الصق نص الدرس وستملأ الحقول نفسها. أما ملفات PDF وصور الصفحات فلا تُقرأ هنا — ضعها في الدفتر ودع البرومت الرئيسي يقرأها.';
+T_AR.filledBody='أُخذت هذه الحقول من الدرس المرفق، ويمكنك تعديل أيّها:';
+T_AR.doneBody='كل حقل يستطيع الدرس تزويده ممتلئ بالفعل. أفرِغ حقلًا واضغط الزر مرة أخرى لإعادة قراءته.';
+T_AR['Already complete']='مكتمل بالفعل';
+T_AR['Arabic language · Science · Mathematics']='اللغة العربية · العلوم · الرياضيات';
+T_AR['Arabic lesson - unit 6']='الوحدة6 - همزتا الوصل والقطع';
+T_AR['Grade 6']='الصف السادس';
+T_AR['45 minutes']='45 دقيقة';
+T_AR['Saudi Arabia · Dammam']='السعودية · الدمام';
+T_AR['1–2 (recall to apply)']='١–٢ (تذكّر إلى تطبيق)';
+T_AR['1–3 (recall to analyse)']='١–٣ (تذكّر إلى تحليل)';
+T_AR['1–4 (recall to create)']='١–٤ (تذكّر إلى إبداع)';
+T_AR['2–4 (apply to create)']='٢–٤ (تطبيق إلى إبداع)';
+T_AR['Choose the curriculum']='اختر المنهج';
+T_AR['Start customizing the tool']='ابدأ بتخصيص الأداة';
+T_AR['Fill in the following fields as appropriate for the lesson.']='قم بتعبئة الحقول التالية بما يناسب الدرس';
+T_AR['Paste the lesson text']='الصق نص الدرس هنا';
+T_AR['optional']='اختياري';
+T_AR['Subject, framework, year, text']='المادة والإطار والسنة والنص';
+T_AR['Master prompt']='البرومت الرئيسي';
+T_AR['The master prompt.']='البرومت الرئيسي';
+T_AR['The key feature of this prompt is that it asks the AI not merely to serve as a source of answers, but to structure the learning process itself. Before use, it is essential to align on the target Depth of Knowledge (DOK) level, establish a clear standard for mastery, and ensure the availability of the source materials upon which the course will be built.']='أهم ما يميز هذا البرومت أنه لا يطلب من الذكاء الاصطناعي أن يكون مصدرًا للإجابات فحسب، بل أن يكون منظّمًا لعملية التعلم نفسها. وأهم ما يحتاج إليه قبل الاستخدام هو توحيد مستوى DOK المستهدف، وتحديد معيار واضح للإتقان، والتأكد من توفر المصادر التي ستُبنى عليها الدورة.';
+T_AR['Next step: The main prompt']='الخطوة التالية : البرومت الرئيسي';
+T_AR['Pick an artefact. The prompt below is already carrying your subject, level, framework, objectives and brand. Copy it whole into the Gemini Notebook chat, then open the matching Studio panel.']='اختر المخرَج. الأمر أدناه يحمل بالفعل مادتك ومستواك وإطارك وأهدافك وهويتك. انسخه كاملًا في محادثة Gemini Notebook، ثم افتح لوحة الاستوديو المقابلة.';
+T_AR['Choose an artefact above. Every prompt is built from the same four moves — role, context, task, format.']='اختر مخرجًا من الأعلى. كل أمر يُبنى من الحركات الأربع نفسها — الدور والسياق والمهمة والصيغة.';
+T_AR['General Supervisor']='مشرف عام';
+T_AR['Waleed Alfarra']='وليد الفرا';
+T_AR['Skip to content']='تخطَّ إلى المحتوى';
+T_AR['Gemini Notebook Prompt Console']='لوحة أوامر Gemini Notebook';
+T_AR['Back to home page']='العودة إلى الصفحة الرئيسية';
+T_AR['Tailor the Gemini Notebook tools to explain a model lesson.']='خصِّص أدوات الـ Gemini Notebook لشرح درس نموذجي.';
+T_AR['Start with the lesson']='ابدأ من الدرس';
+Object.assign(T_AR,{'That image could not be saved':'تعذّر حفظ الصورة','That file could not be read':'تعذّرت قراءة الملف','That value cannot be edited here':'لا يمكن تعديل هذه القيمة هنا'});
+Object.assign(T_AR,{'Prompt copied — paste it into Gemini Notebook':'تم النسخ — الصقه في Gemini Notebook','Prompt copied':'تم نسخ البرومت','Ten prompts downloaded':'تم تنزيل البرومتات العشرة','Setup saved':'تم حفظ الإعداد','Setup loaded':'تم تحميل الإعداد'});
+Object.assign(T_AR,{
+ 'Visual style':'الأسلوب البصري',
+ 'optional — pick the look of the slides and the infographic, the way you would in the NotebookLM Style Prompter extension':'اختياري — اختر شكل الشرائح والإنفوجرافيك كما تفعل في إضافة NotebookLM Style Prompter',
+ 'Slides look':'شكل الشرائح','Infographic look':'شكل الإنفوجرافيك',
+ 'Pasted style — slides':'الوصف المُلصَق — الشرائح','Pasted style — infographic':'الوصف المُلصَق — الإنفوجرافيك',
+ 'used when “Custom” is selected':'يُستعمل عند اختيار «مخصَّص»',
+ 'Paste the Style Prompter output for slides here':'الصق هنا ناتج الإضافة الخاص بالشرائح',
+ 'Paste the Style Prompter output for the infographic here':'الصق هنا ناتج الإضافة الخاص بالإنفوجرافيك',
+ 'NotebookLM Style Prompter (Chrome extension): choose the output type, theme, font, colour, layout and tone → Copy → paste it above. The prompts then treat it as a look-only design brief: it alone sets every colour, while your logo and character stay untouched.':'إضافة NotebookLM Style Prompter (لمتصفح كروم): اختر نوع المخرَج والموضوع والخط واللون والتخطيط والنبرة ← انسخ ← الصق الناتج في الخانة أعلاه. ثم تعامله البرومتات بوصفه وصفًا للشكل فقط: هو وحده يحدد كل الألوان، ويبقى الشعار والشخصية دون مساس.'
+});
+VSTYLES.forEach(v=>{ T_AR[v.en]=v.ar; });
+const SKIP_TAGS = new Set(['SCRIPT','STYLE','TEXTAREA','PRE','CODE']);
+/* whitespace-normalised index, so paragraphs wrapped in the markup still match */
+const T_AR_N = {};
+function reindexAR(){ Object.keys(T_AR).forEach(k=>{ T_AR_N[k.trim().replace(/\s+/g,' ')] = T_AR[k]; }); }
+function translateTree(root, to){
+  const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(n){
+      const p=n.parentElement; if(!p) return NodeFilter.FILTER_REJECT;
+      if(SKIP_TAGS.has(p.tagName)) return NodeFilter.FILTER_REJECT;
+      if(p.closest('.stage,.band,.acard .em,.v,#ident')) return NodeFilter.FILTER_REJECT;
+      return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }});
+  const nodes=[]; while(walk.nextNode()) nodes.push(walk.currentNode);
+  nodes.forEach(n=>{
+    const raw=n.nodeValue, key=raw.trim().replace(/\s+/g,' ');
+    if(to==='ar'){
+      const tr=T_AR_N[key];
+      if(tr){
+        if(!T_ORIG.has(n)) T_ORIG.set(n,raw);
+        const lead=(raw.match(/^\s*/)||[''])[0].replace(/[\r\n]+\s*/,' ');
+        const tail=(raw.match(/\s*$/)||[''])[0].replace(/[\r\n]+\s*/,' ');
+        n.nodeValue = lead + tr + tail;
+      }
+    } else if(T_ORIG.has(n)){ n.nodeValue=T_ORIG.get(n); }
+  });
+  root.querySelectorAll('[placeholder]').forEach(el=>{
+    const key=el.getAttribute('data-ph-en') || el.placeholder;
+    if(false){}
+    if(!el.getAttribute('data-ph-en')) el.setAttribute('data-ph-en',key);
+    el.placeholder = (to==='ar' && T_AR[key]) ? T_AR[key] : key;
+  });
+}
+function setUILang(l){
+  reindexAR();
+  UILANG=l;
+  document.documentElement.lang = l;
+  document.documentElement.dir  = l==='ar' ? 'rtl' : 'ltr';
+  document.title = l==='ar' ? 'لوحة أوامر Gemini Notebook' : 'Gemini Notebook Prompt Console';
+  translateTree(document.body, l);
+  paintReminders();
+  $$('.uiLangLabel').forEach(n=>n.textContent = l==='ar' ? 'English' : 'العربية');
+  $('#crumb').textContent = (l==='ar'?CRUMBS_AR:CRUMBS)[CUR_STEP];
+  if(S.active) showPrompt(S.active);
+  buildLibrary();
+  paintIdent();
+}
+/* every field accepts either script and lays itself out accordingly */
+function enableBidiTyping(){
+  document.querySelectorAll('input[type=text],textarea').forEach(el=>{ el.setAttribute('dir','auto'); });
+}
+/* option labels may be translated, so pin their values to the English text first */
+function pinOptionValues(){
+  document.querySelectorAll('select option').forEach(o=>{ if(!o.hasAttribute('value')) o.value=o.textContent.trim(); });
+}
+/* ═══════════════════════════════════════════════════════════════
+   5 · TIPS & TRICKS — connecting a Gemini Notebook notebook.
+       Written for a teacher opening Gemini Notebook for the first time.
+       Repainted on every language switch, so it is kept out of the
+       blind text translator above.
+   ═══════════════════════════════════════════════════════════════ */
+
+pinOptionValues();
+enableBidiTyping();
+$$('#uiLang,#uiLang2').forEach(b=>b.onclick = ()=>setUILang(UILANG==='ar'?'en':'ar'));
+try{ $('#fillNow').onclick = ()=>autofill(false); }catch(e){}
+$('#pastedText').addEventListener('input', scheduleFill);
+loadBuiltIns();
+sync();
+/* default interface language: Arabic (the toggle button still switches to English) */
+setUILang('ar');
+</script>
+</body>
+</html>

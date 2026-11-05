@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lesson Prompt Studio · مصمّم الدروس</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Anton&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120c47;--bg-2:#170f55;--surface:#1b1464;--surface-2:#251c80;--line:#3a31a0;--line-soft:#2d2590;--ink:#fff;--ink-2:#d6dcf5;--muted:#a3b5b2;--cyan:#29bfe8;--lime:#8bdd28;--navy:#1b1464;--r:12px;--ar:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--ar);min-height:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--lime);color:var(--navy)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.topbar{background:rgba(27,20,100,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft);position:sticky;top:0;z-index:8}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;direction:ltr}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:Anton,Impact,sans-serif;letter-spacing:.04em;color:var(--lime);font-size:19px}
+.brand img{height:42px;width:auto;display:block}
+.brand small{font:500 12px var(--mono);color:var(--cyan);margin-inline-start:10px;letter-spacing:.1em}
+.acts{display:flex;gap:8px;align-items:center}
+.acts .btn{margin:0;white-space:nowrap}
+.acts svg{width:17px;height:17px;flex:none}
+a.btn{text-decoration:none;color:inherit}
+.bld{margin-top:34px}
+#wfr{width:100%;height:560px;border:1px solid var(--line);border-radius:14px;margin-top:16px;background:#fff}
+html[lang=en] .hero h1,html[lang=en] .phead h2{font-family:Anton,Impact,sans-serif;font-weight:400}
+@media(max-width:700px){.brand small{display:none}}
+.hero{position:relative;overflow:hidden;padding:46px 0 34px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none}
+.o1{width:300px;height:300px;background:var(--cyan);top:-120px;inset-inline-start:-60px}
+.o2{width:260px;height:260px;background:var(--lime);opacity:.22;bottom:-130px;inset-inline-end:8%}
+.eyebrow{font:500 13px var(--mono);letter-spacing:.14em;color:var(--cyan);margin:0 0 10px}
+.hero h1{position:relative;margin:0 0 12px;font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.35;color:var(--lime)}
+.hero p.lede{position:relative;margin:0;max-width:62ch;color:var(--ink-2);font-size:18px}
+.steps{display:flex;gap:6px;padding:8px;background:rgba(27,20,100,.88);border:1px solid var(--line-soft);border-radius:18px;margin-bottom:22px}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 12px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;color:var(--ink-2);font-weight:700}
+.step .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--mono);background:var(--surface-2);color:var(--lime);flex:none}
+.step.on{background:rgba(139,221,40,.12);border-color:var(--line);color:var(--ink)}
+.step.on .n{background:var(--lime);color:var(--navy)}
+.panel{background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:34px;margin-bottom:60px}
+.panel[hidden]{display:none}
+.phead h2{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);color:var(--lime);line-height:1.4}
+.phead p{margin:0 0 6px;color:var(--ink-2)}
+h3.sec{margin:30px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line-soft);font-size:16px;color:var(--cyan)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px 16px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}.f.w{grid-column:1/-1}
+label{font-size:13px;font-weight:600;color:var(--ink-2)}
+label .h{font-weight:400;color:var(--muted);font-size:12px}
+input[type=text],input[type=number],select,textarea{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 13px;width:100%;min-height:44px;font-size:15px}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+select option,select optgroup{background:#1b1464;color:#fff}
+input[type=file]{width:100%;background:var(--bg-2);border:1.5px dashed var(--line);border-radius:var(--r);padding:12px;font-size:13px;color:var(--muted)}
+.pv{display:none;align-items:center;gap:10px;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.pv.on{display:flex}.pv img{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg-2);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px}
+.chip:has(input:checked){border-color:var(--lime);color:var(--lime);background:rgba(139,221,40,.1)}
+.chip input{accent-color:var(--lime);width:16px;height:16px}
+.row{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}.row.end{justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 20px;border-radius:12px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:700;transition:transform .16s,box-shadow .16s,background .16s}
+.btn:hover{box-shadow:0 8px 22px rgba(41,191,232,.3);transform:translateY(-1px)}
+.btn.p{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+.btn.sm{min-height:38px;padding:6px 14px;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:22px}
+.seg button{background:transparent;border:0;padding:10px 22px;cursor:pointer;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--cyan);color:var(--navy)}
+.blk{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:var(--surface-2);border-bottom:1px solid var(--line-soft)}
+.bh b{font-size:14px;color:var(--lime)}
+.ba{display:flex;gap:6px;flex-wrap:wrap}
+.bf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
+.btn.c{border-color:var(--cyan);color:var(--cyan);min-height:34px;padding:4px 13px;font-size:13px}
+.dl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px;padding-top:20px;border-top:1px solid var(--line-soft)}
+pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font:13.5px/1.9 var(--ar);color:var(--ink-2);max-height:430px;overflow:auto}
+pre.rtl{direction:rtl;text-align:right}pre.ltr{direction:ltr;text-align:left;font-family:var(--mono);font-size:12.5px}
+.note{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--ink-2);margin:0 0 16px}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;background:var(--lime);color:var(--navy);font-weight:700;padding:10px 22px;border-radius:999px;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;z-index:20}
+.toast.on{opacity:1;transform:none}
+@media(max-width:700px){.panel{padding:22px}.step .t{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+<a class="brand" href="index.html"><img src="assets/waleed1-logo.png" alt="Waleed 2026" onerror="this.style.display='none'"><span>LESSON STUDIO<small>PROMPT CONSOLE</small></span></a>
+<div class="acts"><a class="btn sm" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>الرئيسية</span></a><button class="btn sm" id="ui" type="button" title="English / العربية">English</button></div>
+</div></header>
+<div class="hero"><i class="orb o1"></i><i class="orb o2"></i><div class="wrap">
+<p class="eyebrow" id="eb">الخطوة 1 — بيانات الدرس</p>
+<h1>مصمّم العروض التقديمية (الباوربوينت) الذكي</h1>
+<p class="lede">أدخل بيانات الدرس مرة واحدة، فتحصل على البرومت الرئيسي بالعربية والإنجليزية، ثم برومت الشرائح وبرومت التقويم التفاعلي جاهزَين للنسخ.</p>
+</div></div>
+<main class="wrap">
+<nav class="steps">
+<button class="step on" data-go="0"><span class="n">1</span><span class="t">بيانات الدرس</span></button>
+<button class="step" data-go="1"><span class="n">2</span><span class="t">البرومت الرئيسي</span></button>
+<button class="step" data-go="2"><span class="n">3</span><span class="t">تخصيص البرومت</span></button>
+</nav>
+
+<section class="panel" id="p0">
+<div class="phead"><h2>بيانات الدرس</h2><p>املأ الحقول التالية، وكل ما تكتبه ينتقل تلقائيًا إلى البرومتات.</p></div>
+<h3 class="sec">الهوية</h3>
+<div class="g">
+<div class="f"><label>اسم المعلم</label><input type="text" id="t"></div>
+<div class="f"><label>اسم المدرسة</label><input type="text" id="s"></div>
+<div class="f"><label>شعار المدرسة <span class="h">اختياري</span></label><input type="file" id="logo" accept="image/*"><div class="pv" id="pvl"></div></div>
+<div class="f"><label>الشخصية الكرتونية <span class="h">إن وجدت</span></label><input type="file" id="char" accept="image/*"><div class="pv" id="pvc"></div></div>
+<div class="f w"><label>وصف الشخصية <span class="h">اسمها وطبعها، اختياري</span></label><input type="text" id="cd" placeholder="مثال: الأرنب «ريّان» فضولي ومرح"></div>
+</div>
+<h3 class="sec">الدرس</h3>
+<div class="g">
+<div class="f"><label>الصف</label><input type="text" id="g" placeholder="الصف الرابع الابتدائي"></div>
+<div class="f"><label>المادة</label><input type="text" id="sub" placeholder="العلوم · الرياضيات · اللغة العربية"></div>
+<div class="f"><label>الموضوع</label><input type="text" id="top"></div>
+<div class="f"><label>المنهج</label><select id="cur"><option value="">اختر المنهج</option>
+<optgroup label="إقليمية"><option>المنهج الوطني السعودي</option><option>المنهج الوطني الكويتي</option><option>المنهج الوطني القطري</option><option>منهج وزارة التربية والتعليم الإماراتية</option><option>المنهج الوطني المصري</option><option>المنهج الوطني الأردني</option><option>المنهج الوطني العُماني</option><option>المنهج الوطني البحريني</option></optgroup>
+<optgroup label="أمريكية"><option>US Common Core (CCSS)</option><option>NGSS</option><option>AERO</option><option>Advanced Placement (AP)</option></optgroup>
+<optgroup label="بريطانية ودولية"><option>English National Curriculum</option><option>Cambridge Primary</option><option>Cambridge IGCSE</option><option>IB PYP</option><option>IB MYP</option><option>IB DP</option><option>CEFR</option></optgroup>
+<option>منهج آخر</option></select></div>
+<div class="f"><label>مدة الدرس <span class="h">بالدقائق</span></label><input type="number" id="dur" value="45" min="5" max="120"></div>
+<div class="f"><label>لغة المخرجات</label><select id="lang"><option value="ar">العربية</option><option value="en">English</option><option value="both">ثنائي اللغة</option></select></div>
+<div class="f"><label>عدد الشرائح</label><input type="number" id="n" value="10" min="3" max="30"></div>
+<div class="f"><label>عدد أقسام الأسئلة</label><input type="number" id="qs" value="3" min="1" max="8"></div>
+<div class="f w"><label>الأهداف التعليمية</label><textarea id="obj" placeholder="اكتب كل هدف في سطر"></textarea></div>
+</div>
+<h3 class="sec">أنواع أقسام الأسئلة <span class="h" style="font-weight:400;color:var(--muted)">اختر ما يناسب</span></h3>
+<div class="chips" id="ty"></div>
+<div class="row end"><button class="btn p" data-go="1">التالي: البرومت الرئيسي</button></div>
+</section>
+
+<section class="panel" id="p1" hidden>
+<div class="phead"><h2>البرومت الرئيسي</h2><p>ألصقه في ChatGPT أو Claude أو Gemini. ينفّذ أربع مراحل: تحليل، تبسيط، مخطط شرائح، مراجعة.</p></div>
+<div id="m"></div>
+<div class="row"><button class="btn" data-go="0">رجوع</button><button class="btn p" data-go="2">التالي: تخصيص البرومت</button></div>
+</section>
+
+<section class="panel" id="p2" hidden>
+<div class="phead"><h2>تخصيص البرومت</h2><p>غيّر الخيارات فيتحدّث البرومت فورًا.</p></div>
+<div class="seg"><button class="on" data-tab="0">شرائح PowerPoint</button><button data-tab="1">تقويم تفاعلي</button></div>
+
+<div id="tb0">
+<div class="note">أرفق الشعار والشخصية مع البرومت في أداة الذكاء الاصطناعي، فالصور لا تُنقل داخل النص.</div>
+<div class="note">يحتاج نمط الصور المولَّدة إلى أداة توليد صور، وهي متوفرة في ChatGPT. لا يولّد Claude الصور، وقد لا يتوفر ذلك في Gemini؛ لذلك تظهر هنا أزرار الأدوات المناسبة فقط.</div>
+<div class="g">
+<div class="f"><label>نمط الإخراج <span class="h">الصور أجمل، والنص الحقيقي قابل للتحرير</span></label><select id="mode"><option value="img">شرائح مصوّرة جاهزة (جمال أعلى)</option><option value="edit">شرائح قابلة للتحرير (نص حقيقي)</option></select></div>
+<div class="f"><label>لوحة الألوان</label><select id="pal"><option>ألوان زاهية دافئة (برتقالي وأصفر وأزرق)</option><option>ألوان البحر الهادئة (تركوازي وأزرق وأبيض)</option><option>ألوان الطبيعة (أخضر وبني فاتح وسماوي)</option><option>ألوان الفضاء (كحلي وبنفسجي وليموني)</option></select></div>
+<div class="f"><label>أسلوب الرسوم</label><select id="art"><option>كرتون ثنائي الأبعاد مسطّح</option><option>رسوم مائية ناعمة</option><option>ثلاثي الأبعاد لطيف</option><option>رسم بأقلام ملونة</option><option>سينمائي ثلاثي الأبعاد فاخر</option></select></div>
+<div class="f"><label>كثافة النص</label><select id="den"><option>قصير جدًا (١٢ كلمة كحد أقصى)</option><option>متوسط (٢٥ كلمة كحد أقصى)</option></select></div>
+<div class="f"><label>التشكيل</label><select id="tash"><option value="full">كامل</option><option value="part">جزئي للكلمات الملتبسة</option><option value="none">بدون</option></select></div>
+<div class="f w"><span class="chips"><label class="chip"><input type="checkbox" id="nt" checked>ملاحظات المعلم</label><label class="chip"><input type="checkbox" id="ft" checked>شعار واسم المدرسة في كل شريحة</label></span></div>
+<div class="f w"><label>إضافات خاصة <span class="h">اختياري</span></label><textarea id="ex0"></textarea></div>
+</div>
+<div id="o0" style="margin-top:22px"></div>
+</div>
+
+<div id="tb1" hidden>
+<div class="g">
+<div class="f"><label>الثيم</label><select id="th"><option>كحلي داكن مع سماوي وليموني</option><option>فاتح مرح بألوان الباستيل</option><option>ألوان الطبيعة الهادئة</option></select></div>
+<div class="f"><label>عدد الأسئلة في كل قسم</label><input type="number" id="qn" value="4" min="1" max="10"></div>
+<div class="f"><label>حجم الخط للسبورة</label><select id="fs"><option>28</option><option selected>32</option><option>40</option></select></div>
+<div class="f w"><span class="chips"><label class="chip"><input type="checkbox" id="snd" checked>صوت للإجابة</label><label class="chip"><input type="checkbox" id="anm" checked>حركة احتفالية</label><label class="chip"><input type="checkbox" id="rt" checked>إعادة المحاولة</label><label class="chip"><input type="checkbox" id="sh">ترتيب عشوائي</label></span></div>
+<div class="f w"><label>إضافات خاصة <span class="h">اختياري</span></label><textarea id="ex1"></textarea></div>
+</div>
+<div id="o1" style="margin-top:22px"></div>
+<div class="bld"><h3 class="sec">من ردّ الروبوت إلى ملف جاهز</h3>
+<p class="note">1) انسخ البرومت والصقه في الروبوت. 2) انسخ ردّه (JSON) والصقه هنا. 3) اضغط «معاينة» ثم «تحميل». يعمل الملف الناتج على السبورة الذكية دون الحاجة إلى الروبوت.</p>
+<textarea id="wj" dir="ltr" placeholder='{"title":"...","sections":[...]}' style="min-height:150px;font-family:var(--mono);font-size:12.5px"></textarea>
+<div class="row"><button class="btn" id="wpv" type="button">معاينة</button><button class="btn p" id="wdl" type="button">تحميل التقويم (.html)</button></div>
+<iframe id="wfr" hidden sandbox="allow-scripts" title="preview"></iframe></div>
+</div>
+<div class="dl" id="dall"></div>
+<div class="row"><button class="btn" data-go="1">رجوع</button></div>
+</section>
+
+</main>
+<div class="toast" id="tt"></div>
+
+<script>
+const $=i=>document.getElementById(i),V=i=>($(i).value||'').trim(),C=i=>$(i).checked;
+const TY=[['صح أو خطأ','True / False'],['اختر الإجابة الصحيحة','Multiple choice'],['أكمل الفراغ','Fill in the blank'],['وصّل بخط','Matching'],['رتّب الخطوات','Ordering'],['إجابة قصيرة','Short answer']];
+$('ty').innerHTML=TY.map((t,i)=>`<label class="chip"><input type="checkbox" value="${i}" ${i<2?'checked':''}>${t[0]}</label>`).join('');
+const pv=(f,b)=>$(f).onchange=e=>{const x=e.target.files[0],p=$(b);if(!x){p.className='pv';return}const r=new FileReader();r.onload=()=>{p.innerHTML=`<img src="${r.result}" alt=""><span>${x.name}</span>`;p.className='pv on'};r.readAsDataURL(x)};
+pv('logo','pvl');pv('char','pvc');
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const toast=m=>{const t=$('tt');t.textContent=m;t.className='toast on';setTimeout(()=>t.className='toast',1500)};
+const store={};let k=0;
+function card(h,tx,L,nb){const i=++k,e=UI=='en';store[i]=[h,tx];return `<div class="blk"><div class="bh"><b>${h}</b><span class="ba"><button class="btn sm" data-c="${i}">${L=='ar'?'نسخ':'Copy'}</button><button class="btn sm" data-d="${i}" data-x="txt">.txt</button><button class="btn sm" data-d="${i}" data-x="md">.md</button></span></div><pre class="${L=='ar'?'rtl':'ltr'}">${esc(tx)}</pre><div class="bf"><span>${e?'Copy and open:':'انسخ وافتح:'}</span>${BOTS.filter(b=>!nb||nb.includes(b[0])).map(b=>`<button class="btn sm c" data-o="${i}" data-u="${b[1]}">${b[0]}</button>`).join('')}<span>${e?'then paste (Ctrl+V)':'ثم الصق (Ctrl+V)'}</span></div></div>`}
+function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()});toast('تم النسخ · Copied')}
+function dl(name,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([(type=='text/plain'?'\ufeff':'')+txt],{type:type+';charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const fn=()=>(V('top')||'lesson').replace(/[\\\/:*?"<>|\s]+/g,'-').slice(0,40);
+function ALL(){const d=D();return [['master','البرومت الرئيسي','Master prompt'],['slides','برومت الشرائح','Slides prompt'],['ws','برومت التقويم','Assessment prompt']].flatMap(x=>['ar','en'].map(L=>[x[L=='ar'?1:2]+(L=='ar'?' · عربي':' · English'),T[x[0]](d,L)]))}
+function dAll(){const e=UI=='en';$('dall').innerHTML=`<b>${e?'Download all 6 prompts in one file:':'حمّل البرومتات الستة في ملف واحد:'}</b><button class="btn sm" data-da="txt">${e?'Plain text (.txt)':'نص عادي (.txt)'}</button><button class="btn sm" data-da="md">${e?'Markdown (.md)':'ملف (.md)'}</button>`}
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-c],button[data-d],button[data-o],button[data-da]');if(!b)return;const d=b.dataset;
+if(d.c)cp(store[d.c][1]);
+else if(d.o){cp(store[d.o][1]);window.open(d.u,'_blank','noopener')}
+else if(d.d){const [h,tx]=store[d.d],m=d.x=='md',kd=/Master|الرئيسي/.test(h)?'master':/Slides|الشرائح/.test(h)?'slides':'assessment',lg=/English/.test(h)?'en':'ar';dl(`${fn()}-${kd}-${lg}.${d.x}`,m?`# ${h}\n\n${tx}\n`:`${h}\n${'='.repeat(h.length)}\n\n${tx}\n`,m?'text/markdown':'text/plain')}
+else{const m=d.da=='md',A=ALL();dl(`${fn()}-all.${d.da}`,m?A.map(x=>`# ${x[0]}\n\n${x[1]}`).join('\n\n---\n\n'):A.map(x=>`${x[0]}\n${'='.repeat(x[0].length)}\n\n${x[1]}`).join('\n\n\n'),m?'text/markdown':'text/plain')}});
+
+function D(){const ty=[...document.querySelectorAll('#ty input:checked')].map(x=>+x.value);return{t:V('t'),s:V('s'),g:V('g'),sub:V('sub'),top:V('top'),cur:V('cur'),dur:V('dur')||'45',lang:V('lang'),n:V('n')||'10',qs:V('qs')||'3',obj:V('obj').split('\n').filter(Boolean).join('؛ '),cd:V('cd'),ty,logo:$('logo').files.length>0,ch:$('char').files.length>0||!!V('cd')}}
+const v=x=>x||'—';
+function tys(d,L){const a=d.ty.length?d.ty:[0,1];return a.map(i=>TY[i][L=='ar'?0:1]).join(L=='ar'?'، ':', ')}
+function ol(d,L){return L=='ar'?{ar:'العربية الفصحى',en:'الإنجليزية',both:'ثنائي اللغة (عربي وإنجليزي)'}[d.lang]:{ar:'Modern Standard Arabic',en:'English',both:'Bilingual (Arabic and English)'}[d.lang]}
+function blk(d,L){const r=L=='ar'?[['المعلم',d.t],['المدرسة',d.s],['الصف',d.g],['المادة',d.sub],['موضوع الدرس',d.top],['المنهج',d.cur],['الأهداف التعليمية',d.obj],['مدة الدرس',d.dur+' دقيقة']]:[['Teacher',d.t],['School',d.s],['Grade',d.g],['Subject',d.sub],['Lesson topic',d.top],['Curriculum',EN[d.cur]||d.cur],['Learning objectives',d.obj],['Duration',d.dur+' min']];return r.map(x=>`- ${x[0]}: ${v(x[1])}`).join('\n')}
+const H={ar:['## الدور','## السياق','## المهمة','## الصيغة'],en:['## Role','## Context','## Task','## Format']};
+function P(d,L,role,ctx,task,fmt){const h=H[L];return `${h[0]}\n${role}\n\n${h[1]}\n${blk(d,L)}${ctx?'\n'+ctx:''}\n\n${h[2]}\n${task}\n\n${h[3]}\n${fmt}`}
+
+const T={
+master(d,L){const a=L=='ar';return a?P(d,L,`أنت مصمّم تعليمي خبير بمنهج التصميم العكسي وتصنيف بلوم، وتكتب بلغة تناسب طلاب ${v(d.g)}.`,'',`نفّذ أربع مراحل متتابعة وانتظر كلمة «تابع» بين كل مرحلة:
+1) حلّل الدرس: الأهداف القابلة للقياس مع مستوى بلوم، المفاهيم والمصطلحات، المعرفة السابقة، الأخطاء الشائعة.
+2) بسّط المحتوى بلغة الطالب في ٤–٧ لقطات (فكرة واحدة لكل لقطة) مع مثال وتشبيه وسؤال، وثلاثة مستويات تمايز: دعم وأساسي وتحدٍّ.
+3) ابنِ مخطط ${d.n} شريحة موزّعة على ${d.dur} دقيقة، وصمّم ${d.qs} أقسام أسئلة من النوع: ${tys(d,L)}.
+4) راجع الجودة بدرجات من ٥ على التوافق مع الأهداف وملاءمة اللغة والتفاعل والتقويم، ثم اكتب النسخة النهائية.
+لا تخترع محتوى خارج المنهج المذكور، وضع أي إضافة تحت عنوان «اقتراحات».`,`لغة المخرجات: ${ol(d,L)}. عناوين ثابتة لكل مرحلة، وجداول مختصرة، دون حشو.`)
+:P(d,L,`You are an expert instructional designer using Backward Design and Bloom’s taxonomy, writing at a level suited to ${v(d.g)} students.`,'',`Run four stages and wait for the word “continue” between them:
+1) Analyze the lesson: measurable objectives with Bloom level, key concepts and vocabulary, prior knowledge, common misconceptions.
+2) Simplify the content into 4–7 chunks (one idea each) with an example, an analogy and a question, plus three differentiation levels: support, core, challenge.
+3) Build a ${d.n}-slide outline timed to ${d.dur} minutes, and design ${d.qs} question sections of these types: ${tys(d,L)}.
+4) Review quality out of 5 on objective alignment, language fit, interaction and assessment, then write the final version.
+Do not invent content outside the stated curriculum; put any addition under “Suggestions”.`,`Output language: ${ol(d,L)}. Fixed headings per stage, compact tables, no filler.`)},
+slides(d,L){const a=L=='ar',o=selT('pal',L),ar=selT('art',L),de=selT('den',L),ta=V('tash'),ex=V('ex0');
+const tsh={full:['كامل','full'],part:['جزئي للكلمات الملتبسة','partial, for ambiguous words only'],none:['بدون','none']}[ta][a?0:1];
+const ctx=a?`الهوية البصرية: ${o}، وأسلوب الرسوم: ${ar}.${d.ch?` الشخصية الكرتونية المرفقة${d.cd?' ('+d.cd+')':''} ترافق الطالب في الشرائح.`:''}${d.logo?' شعار المدرسة مرفق.':''}`:`Visual identity: ${o}; illustration style: ${ar}.${d.ch?` The attached cartoon character${d.cd?' ('+d.cd+')':''} guides the pupil through the slides.`:''}${d.logo?' The school logo is attached.':''}`;
+return a?P(d,L,`أنت مصمّم عروض تعليمية محترف ورسّام لكتب أطفال، تُتقن الإملاء العربي.`,ctx,`أنشئ ${d.n} شريحة PowerPoint بنسبة 16:9 بهذا التسلسل: غلاف، الأهداف، تمهيد جاذب، شرائح الشرح (فكرة واحدة لكل شريحة)، نشاط تفاعلي، ${d.qs} أقسام أسئلة (${tys(d,L)})، ملخص، تذكرة خروج.
+لكل شريحة: عنوان، نص ${de}، رسم يناسب عمر الطلاب ويشرح الفكرة${C('nt')?'، وملاحظات للمعلم بالزمن والتفاعل':''}.${C('ft')?'\nضع شعار المدرسة واسمها في تذييل كل شريحة.':''}
+قواعد الدقة العربية (إلزامية):
+1. كل كلمة عربية نصّ حقيقي قابل للتحرير، ولا تُكتب داخل صور مولَّدة.
+2. الاتجاه من اليمين لليسار، والخط Cairo أو Tajawal، والتشكيل: ${tsh}.
+3. لا تفصل الحروف ولا تعكس ترتيبها، وراجع كل كلمة بعد الكتابة وصحّح أي خطأ إملائي أو نحوي.
+4. الرسوم خالية من أي نص مكتوب بداخلها.
+5. تباين لوني عالٍ ونص مقروء من آخر الصف.`,`ملف .pptx جاهز، وإن تعذّر فشرائح مرتبة بقالب ثابت، ثم جدول مراجعة: رقم الشريحة | الهدف | التحقق الإملائي. لغة الشرائح: ${ol(d,L)}.${ex?'\nإضافات المعلم: '+ex:''}`)
+:P(d,L,`You are a professional educational presentation designer and children’s book illustrator with flawless Arabic spelling.`,ctx,`Create ${d.n} PowerPoint slides (16:9) in this order: cover, objectives, engaging hook, explanation slides (one idea each), interactive activity, ${d.qs} question sections (${tys(d,L)}), summary, exit ticket.
+Each slide: a title, ${de}, an age-appropriate illustration that explains the idea${C('nt')?', and teacher notes with timing and interaction':''}.${C('ft')?'\nPut the school logo and name in every slide footer.':''}
+Arabic accuracy rules (mandatory):
+1. Every Arabic word is real editable text, never baked into generated images.
+2. Right-to-left direction, Cairo or Tajawal font, diacritics (tashkeel): ${tsh}.
+3. Never split or reverse letters; proofread every word after writing and fix any spelling or grammar error.
+4. Illustrations contain no written text.
+5. High color contrast and text readable from the back of the room.`,`A ready .pptx file, or slides in a fixed template if that is not possible, then a review table: slide number | objective | spelling check. Slide language: ${ol(d,L)}.${ex?'\nTeacher additions: '+ex:''}`)},
+ws(d,L){const a=L=='ar',th=selT('th',L),qn=V('qn')||'4',fs=V('fs'),ex=V('ex1');
+const fb=[a?'لون أخضر وعلامة ✓ للصحيح وأحمر وعلامة ✗ للخطأ مع تلميح قصير':'green ✓ for correct, red ✗ for wrong with a short hint'];if(C('snd'))fb.push(a?'صوت قصير':'a short sound');if(C('anm'))fb.push(a?'حركة احتفالية عند الصواب':'a celebratory animation on correct answers');
+const ctx=a?`الهوية: ${th}.${d.logo?' شعار المدرسة مرفق؛ ضع وسم img بالمعرّف schoolLogo في الترويسة ليضع المعلم مصدره.':''}${d.ch?' استخدم الشخصية الكرتونية كمرشد في الترويسة.':''}`:`Identity: ${th}.${d.logo?' The school logo is attached; add an img with id schoolLogo in the header so the teacher can set its source.':''}${d.ch?' Use the cartoon character as a guide in the header.':''}`;
+return a?P(d,L,`أنت مطوّر واجهات تعليمية بخبرة HTML وCSS وJavaScript ومصمّم تجربة مستخدم للسبورة الذكية.`,ctx,`ابنِ تقويمًا تفاعليًا لهذا الدرس في ملف واحد index.html يحوي ${d.qs} أقسام أسئلة من الأنواع: ${tys(d,L)}، وفي كل قسم ${qn} أسئلة.
+السلوك المطلوب:
+- عند اختيار الإجابة تظهر النتيجة فورًا: ${fb.join('، ')}.
+- عدّاد نتيجة حيّ وشريط تقدّم وشاشة نتيجة نهائية${C('rt')?' مع زر إعادة المحاولة':''}.${C('sh')?'\n- ترتيب عشوائي للأسئلة والخيارات في كل محاولة.':''}
+- أزرار كبيرة (٦٠px على الأقل) وخط ${fs}px فأكثر، ويعمل باللمس والماوس.
+- اتجاه RTL وخط Cairo وتباين عالٍ ودون أي مكتبة أو رابط خارجي.
+- الأسئلة والإجابات في مصفوفة JavaScript واضحة ليعدّلها المعلم بسهولة.
+- كل النصوص بـ${ol(d,L)} وإملاؤها صحيح 100%.`,`الكود كاملًا في كتلة واحدة، ثم سطران يشرحان كيف يُعدَّل سؤال أو يُضاف.${ex?'\nإضافات المعلم: '+ex:''}`)
+:P(d,L,`You are an educational front-end developer (HTML, CSS, JavaScript) and a UX designer for smart boards.`,ctx,`Build an interactive assessment for this lesson in a single index.html file with ${d.qs} question sections of these types: ${tys(d,L)}, each with ${qn} questions.
+Required behavior:
+- The result appears immediately when an answer is chosen: ${fb.join(', ')}.
+- A live score counter, a progress bar and a final result screen${C('rt')?' with a retry button':''}.${C('sh')?'\n- Questions and options shuffle on every attempt.':''}
+- Large buttons (at least 60px) and ${fs}px+ text, working with touch and mouse.
+- RTL for Arabic text, Cairo font, high contrast, and no external library or link.
+- Questions and answers live in a clear JavaScript array the teacher can edit easily.
+- All text in ${ol(d,L)}, with 100% correct spelling.`,`The full code in one block, then two lines explaining how to edit or add a question.${ex?'\nTeacher additions: '+ex:''}`)}};
+
+function R1(){const d=D();$('m').innerHTML=card('البرومت الرئيسي · عربي',T.master(d,'ar'),'ar')+card('Master prompt · English',T.master(d,'en'),'en')}
+const SB=()=>V('mode')=='edit'?['Claude','ChatGPT']:['ChatGPT'];
+function R2(){const d=D();$('o0').innerHTML=card('برومت الشرائح · عربي',T.slides(d,'ar'),'ar',SB())+card('Slides prompt · English',T.slides(d,'en'),'en',SB());$('o1').innerHTML=card('برومت التقويم · عربي',T.ws(d,'ar'),'ar')+card('Assessment prompt · English',T.ws(d,'en'),'en');dAll()}
+const EB=['الخطوة 1 — بيانات الدرس','الخطوة 2 — البرومت الرئيسي','الخطوة 3 — تخصيص البرومت'];
+function go(i){if(i>0&&!(V('sub')&&V('top'))){toast(t('اكتب المادة والموضوع أولًا'));i=0}
+[0,1,2].forEach(j=>{$('p'+j).hidden=j!=i;document.querySelector(`.step[data-go="${j}"]`).classList.toggle('on',j==i)});CUR=i;$('eb').textContent=t(EB[i]);if(i==1)R1();if(i==2)R2();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('on',x==b));$('tb0').hidden=b.dataset.tab!='0';$('tb1').hidden=b.dataset.tab!='1'});
+$('p2').addEventListener('input',R2);$('p2').addEventListener('change',R2);
+const BOTS=[['Claude','https://claude.ai/new'],['ChatGPT','https://chatgpt.com/'],['Gemini','https://gemini.google.com/app']];
+let UI='ar',CUR=0;
+const EN={
+'مصمّم العروض التقديمية (الباوربوينت) الذكي':'Smart Presentation (PowerPoint) Designer','الرئيسية':'Home page',
+'أدخل بيانات الدرس مرة واحدة، فتحصل على البرومت الرئيسي بالعربية والإنجليزية، ثم برومت الشرائح وبرومت التقويم التفاعلي جاهزَين للنسخ.':'Enter the lesson details once to get the master prompt in Arabic and English, then ready-to-copy prompts for the slides and the interactive assessment.',
+'بيانات الدرس':'Lesson details','البرومت الرئيسي':'Master prompt','تخصيص البرومت':'Customize prompt',
+'الخطوة 1 — بيانات الدرس':'Step 1 — Lesson details','الخطوة 2 — البرومت الرئيسي':'Step 2 — Master prompt','الخطوة 3 — تخصيص البرومت':'Step 3 — Customize prompt',
+'اكتب المادة والموضوع أولًا':'Please enter the subject and topic first',
+'املأ الحقول التالية، وكل ما تكتبه ينتقل تلقائيًا إلى البرومتات.':'Fill in the fields below; everything you type flows into the prompts.',
+'الهوية':'Identity','اسم المعلم':'Teacher name','اسم المدرسة':'School name','شعار المدرسة':'School logo','اختياري':'optional','الشخصية الكرتونية':'Cartoon character','إن وجدت':'if any','وصف الشخصية':'Character description','اسمها وطبعها، اختياري':'name and personality, optional',
+'مثال: الأرنب «ريّان» فضولي ومرح':'e.g. Rayyan the rabbit, curious and playful',
+'الدرس':'The lesson','الصف':'Grade','المادة':'Subject','الموضوع':'Topic','المنهج':'Curriculum','مدة الدرس':'Lesson duration','بالدقائق':'in minutes','لغة المخرجات':'Output language','عدد الشرائح':'Number of slides','عدد أقسام الأسئلة':'Number of question sections','الأهداف التعليمية':'Learning objectives',
+'الصف الرابع الابتدائي':'Grade 4','العلوم · الرياضيات · اللغة العربية':'Science · Math · Arabic','اكتب كل هدف في سطر':'Write each objective on its own line',
+'اختر المنهج':'Choose the curriculum','إقليمية':'Regional','أمريكية':'American','بريطانية ودولية':'British & international',
+'المنهج الوطني السعودي':'Saudi National Curriculum','المنهج الوطني الكويتي':'Kuwaiti National Curriculum','المنهج الوطني القطري':'Qatari National Curriculum','منهج وزارة التربية والتعليم الإماراتية':'UAE Ministry of Education Curriculum','المنهج الوطني المصري':'Egyptian National Curriculum','المنهج الوطني الأردني':'Jordanian National Curriculum','المنهج الوطني العُماني':'Omani National Curriculum','المنهج الوطني البحريني':'Bahraini National Curriculum','منهج آخر':'Other curriculum',
+'العربية':'Arabic','ثنائي اللغة':'Bilingual',
+'أنواع أقسام الأسئلة':'Question section types','اختر ما يناسب':'choose what fits',
+'التالي: البرومت الرئيسي':'Next: Master prompt','رجوع':'Back','التالي: تخصيص البرومت':'Next: Customize prompt',
+'ألصقه في ChatGPT أو Claude أو Gemini. ينفّذ أربع مراحل: تحليل، تبسيط، مخطط شرائح، مراجعة.':'Paste it into ChatGPT, Claude or Gemini. It runs four stages: analysis, simplification, slide outline, review.',
+'غيّر الخيارات فيتحدّث البرومت فورًا.':'Change the options and the prompt updates instantly.','شرائح PowerPoint':'PowerPoint slides','تقويم تفاعلي':'Interactive assessment',
+'أرفق الشعار والشخصية مع البرومت في أداة الذكاء الاصطناعي، فالصور لا تُنقل داخل النص.':'Attach the logo and character along with the prompt in the AI tool; images cannot travel inside the text.',
+'لوحة الألوان':'Color palette','أسلوب الرسوم':'Illustration style','كثافة النص':'Text density','التشكيل':'Diacritics (tashkeel)',
+'ألوان زاهية دافئة (برتقالي وأصفر وأزرق)':'Warm vivid colors (orange, yellow, blue)','ألوان البحر الهادئة (تركوازي وأزرق وأبيض)':'Calm sea colors (turquoise, blue, white)','ألوان الطبيعة (أخضر وبني فاتح وسماوي)':'Nature colors (green, light brown, sky blue)','ألوان الفضاء (كحلي وبنفسجي وليموني)':'Space colors (navy, purple, lime)',
+'كرتون ثنائي الأبعاد مسطّح':'Flat 2D cartoon','رسوم مائية ناعمة':'Soft watercolor','ثلاثي الأبعاد لطيف':'Friendly 3D','رسم بأقلام ملونة':'Colored-pencil drawing',
+'قصير جدًا (١٢ كلمة كحد أقصى)':'Very short text (max 12 words)','متوسط (٢٥ كلمة كحد أقصى)':'Medium-length text (max 25 words)',
+'كامل':'Full','جزئي للكلمات الملتبسة':'Partial (ambiguous words only)','بدون':'None',
+'ملاحظات المعلم':'Teacher notes','شعار واسم المدرسة في كل شريحة':'School logo and name on every slide','إضافات خاصة':'Special additions',
+'الثيم':'Theme','عدد الأسئلة في كل قسم':'Questions per section','حجم الخط للسبورة':'Board font size',
+'كحلي داكن مع سماوي وليموني':'Dark navy with cyan and lime','فاتح مرح بألوان الباستيل':'Light and playful pastel','ألوان الطبيعة الهادئة':'Calm nature colors',
+'صوت للإجابة':'Answer sound','حركة احتفالية':'Celebratory animation','إعادة المحاولة':'Retry','ترتيب عشوائي':'Shuffle','نمط الإخراج':'Output mode','سينمائي ثلاثي الأبعاد فاخر':'Premium cinematic 3D','نموذج أولي للاعتماد قبل بقية الشرائح':'Approve a prototype slide first','الصور أجمل، والنص الحقيقي قابل للتحرير':'images look better; real text is editable','شرائح مصوّرة جاهزة (جمال أعلى)':'Ready image slides (best looks)','شرائح قابلة للتحرير (نص حقيقي)':'Editable slides (real text)',
+'من ردّ الروبوت إلى ملف جاهز':'From the chatbot reply to a ready file',
+'1) انسخ البرومت والصقه في الروبوت. 2) انسخ ردّه (JSON) والصقه هنا. 3) اضغط «معاينة» ثم «تحميل». يعمل الملف الناتج على السبورة الذكية دون الحاجة إلى الروبوت.':'1) Copy the prompt and paste it into the chatbot. 2) Copy its reply (JSON) and paste it here. 3) Press Preview, then Download. The resulting file runs on the smart board without the chatbot.',
+'معاينة':'Preview','تحميل التقويم (.html)':'Download assessment (.html)',
+'تعذّر قراءة JSON: تأكد أنك نسخت ردّ الروبوت كاملًا':'Could not read the JSON: make sure you copied the full chatbot reply'};
+Object.assign(EN,{"يحتاج نمط الصور المولَّدة إلى أداة توليد صور، وهي متوفرة في ChatGPT. لا يولّد Claude الصور، وقد لا يتوفر ذلك في Gemini؛ لذلك تظهر هنا أزرار الأدوات المناسبة فقط.":"The generated-images mode needs an image-generation tool, which ChatGPT provides. Claude does not generate images and Gemini may not offer it, so only the suitable tools’ buttons are shown here."});
+const t=s=>UI=='en'?(EN[s]||s):s;
+const selT=(id,L)=>{const o=$(id).selectedOptions[0],a=o.dataset.ar||o.textContent;if(L=='ar')return a;const x=EN[a]||a;return x.charAt(0).toLowerCase()+x.slice(1)};
+const NODES=[],ATT=[];
+(function(){document.querySelectorAll('option').forEach(o=>{o.dataset.ar=o.textContent;if(!o.hasAttribute('value'))o.value=o.textContent});
+const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))continue;if(EN[n.nodeValue.trim()])NODES.push([n,n.nodeValue])}
+document.querySelectorAll('[placeholder],optgroup').forEach(e=>{const a=e.hasAttribute('placeholder')?'placeholder':'label';ATT.push([e,a,e.getAttribute(a)])})})();
+function chips(){const c=[...document.querySelectorAll('#ty input')].map(x=>x.checked);$('ty').innerHTML=TY.map((x,i)=>`<label class="chip"><input type="checkbox" value="${i}" ${(c.length?c[i]:i<2)?'checked':''}>${x[UI=='ar'?0:1]}</label>`).join('')}
+function setUI(l){UI=l;const h=document.documentElement;h.lang=l;h.dir=l=='ar'?'rtl':'ltr';
+NODES.forEach(([n,o])=>{const k=o.trim();n.nodeValue=l=='en'?o.replace(k,EN[k]):o});
+ATT.forEach(([e,a,o])=>e.setAttribute(a,l=='en'?(EN[o]||o):o));
+$('ui').textContent=l=='ar'?'English':'العربية';$('eb').textContent=t(EB[CUR]);chips();R1();R2();
+try{localStorage.setItem('ls-lang',l)}catch(e){}}
+const WCSS=`:root{--fs:32px}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--ink);display:flex;flex-direction:column;background:radial-gradient(circle at 12% 8%,var(--g1),transparent 38%),radial-gradient(circle at 92% 92%,var(--g2),transparent 40%),var(--bg);background-attachment:fixed}
+body.t0{--bg:#120c47;--sf:#1b1464;--sf2:#251c80;--ink:#fff;--ac:#8bdd28;--ac2:#29bfe8;--ok:#2fbf71;--no:#ff6b6b;--g1:rgba(41,191,232,.28);--g2:rgba(139,221,40,.18);--sh:rgba(0,0,0,.4)}
+body.t1{--bg:#fff4dc;--sf:#fff;--sf2:#fff0e8;--ink:#2b2a4c;--ac:#ff7a59;--ac2:#4aa8ff;--ok:#2fbf71;--no:#ef5b5b;--g1:rgba(255,122,89,.22);--g2:rgba(74,168,255,.22);--sh:rgba(90,60,30,.18)}
+body.t2{--bg:#eaf5e4;--sf:#fff;--sf2:#f1f8ec;--ink:#1f3d2b;--ac:#3f8f4f;--ac2:#d9902a;--ok:#2f9e5b;--no:#d9534f;--g1:rgba(63,143,79,.22);--g2:rgba(224,163,58,.22);--sh:rgba(31,61,43,.18)}
+header{display:flex;align-items:center;gap:16px;padding:12px 26px;background:var(--sf);box-shadow:0 6px 24px var(--sh);border-bottom:4px solid var(--ac)}
+header img{height:64px;width:auto;border-radius:14px}.tt{flex:1;min-width:0}h1{margin:0;font-size:calc(var(--fs)*.9);color:var(--ac);line-height:1.3}.tt p{margin:0;opacity:.8;font-size:calc(var(--fs)*.55)}
+#sc{display:flex;gap:14px;align-items:center;font-size:calc(var(--fs)*.6);font-weight:700;background:var(--sf2);padding:8px 18px;border-radius:999px}
+.tools{display:flex;gap:8px}.tools button{min-height:48px;min-width:48px;padding:0 10px;font-size:20px;border-radius:14px;border:2px solid var(--ac2)}
+#bar{height:12px;background:rgba(127,127,127,.2)}#bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac2),var(--ac));transition:width .5s}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:26px;max-width:1240px;width:100%;margin:auto}
+.card{background:var(--sf);border-radius:30px;padding:30px 34px;box-shadow:0 16px 48px var(--sh);animation:in .35s}@keyframes in{from{opacity:0;transform:translateY(18px)}}
+.chip{display:inline-block;background:var(--ac2);color:#fff;border-radius:999px;padding:4px 20px;font-weight:700;font-size:calc(var(--fs)*.55)}
+h2{font-size:calc(var(--fs)*1.2);line-height:1.6;margin:16px 0 24px}.bl{display:inline-block;min-width:160px;border-bottom:6px dashed var(--ac)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}.opts.n2{grid-template-columns:1fr 1fr}
+button{font:inherit;cursor:pointer;color:var(--ink);background:var(--sf2);border:3px solid transparent;transition:transform .15s}
+.opts button{display:flex;align-items:center;gap:16px;font-size:var(--fs);min-height:84px;padding:12px 20px;border-radius:22px;text-align:start;box-shadow:0 4px 0 var(--sh)}
+.opts button i{flex:none;width:calc(var(--fs)*1.5);height:calc(var(--fs)*1.5);border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;background:var(--ac2);color:#fff;font-size:calc(var(--fs)*.8)}
+.opts button:hover:not(:disabled){transform:translateY(-3px);border-color:var(--ac2)}
+.good{background:var(--ok)!important;color:#fff!important;border-color:var(--ok)!important}.bad{background:var(--no)!important;color:#fff!important;border-color:var(--no)!important}.opts button:disabled:not(.good):not(.bad){opacity:.55}
+.pop{animation:pop .45s}@keyframes pop{50%{transform:scale(1.08)}}
+#fb{display:flex;align-items:center;gap:18px;background:var(--sf);border-radius:24px;padding:16px 24px;box-shadow:0 10px 30px var(--sh);border-inline-start:10px solid var(--no);animation:in .3s}#fb.ok{border-color:var(--ok)}
+#fb em{font-style:normal;font-size:56px}#fb img{height:84px;border-radius:50%}#fb div{flex:1}#fb strong{font-size:calc(var(--fs)*.9)}#fb p{margin:4px 0 0;font-size:calc(var(--fs)*.65);opacity:.9}
+#nx,.go{background:var(--ac);color:#fff;font-weight:700;font-size:var(--fs);min-height:72px;padding:0 36px;border-radius:20px}
+.end{text-align:center}.ring{width:180px;height:180px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ac) calc(var(--p)*1%),var(--sf2) 0)}.ring b{width:136px;height:136px;border-radius:50%;background:var(--sf);display:grid;place-items:center;font-size:40px}
+.big{font-size:64px}.brk{max-width:640px;margin:10px auto 24px;display:grid;gap:10px}.brk div{display:grid;grid-template-columns:1fr 2fr auto;gap:12px;align-items:center;font-size:calc(var(--fs)*.6)}.brk i{height:14px;border-radius:8px;background:var(--sf2);position:relative;overflow:hidden}.brk i:after{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:var(--w);background:var(--ok);border-radius:8px}
+.st,.cf{position:fixed;pointer-events:none;z-index:9}.st{font-size:32px;animation:fly 1s ease-out forwards}@keyframes fly{to{transform:translate(var(--x),var(--y));opacity:0}}
+.cf{top:-40px;font-size:34px;animation:fall 2.4s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.pic{display:flex;justify-content:center;align-items:center;gap:24px;margin:14px 0 0}
+.p3{width:min(clamp(130px,24vh,230px),calc((100% - 24px * (var(--n) - 1)) / var(--n)));height:auto;filter:drop-shadow(0 16px 20px var(--sh));animation:bob 3s ease-in-out infinite}.p3.tx{width:auto;font-size:clamp(100px,18vh,170px);line-height:1.1}
+.o3{height:1.7em;width:auto;vertical-align:middle;filter:drop-shadow(0 6px 8px var(--sh))}.o3.tx{height:auto;font-size:1.5em}
+@keyframes bob{50%{transform:translateY(-10px)}}@media(prefers-reduced-motion:reduce){.p3{animation:none}}
+@media(max-width:700px){.opts,.opts.n2{grid-template-columns:1fr}header{flex-wrap:wrap}}`;
+function ENGINE(D,O){
+const ar=O.lang!='en',T=ar?{nx:'التالي',fin:'النتيجة',rt:'أعد المحاولة',ok:['أحسنت!','ممتاز!','رائع!','عمل رائع!'],no:['حاول مرة أخرى','قريب جدًا!','لا بأس!'],sc:'النتيجة',q:'السؤال',h:'💡 ',L:['أ','ب','ج','د','هـ']}:{nx:'Next',fin:'Result',rt:'Try again',ok:['Well done!','Excellent!','Great job!','Awesome!'],no:['Try again next time','So close!','No worries!'],sc:'Score',q:'Question',h:'💡 ',L:['A','B','C','D','E']};
+const $=s=>document.querySelector(s),E=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])),R=a=>a[Math.floor(Math.random()*a.length)];
+let Q=[],S=[],i=0,sc=0,ans=false,AC,fs=+O.fs;
+const EM=O.em||{},RX=new RegExp(O.rx,'gu'),pic=(e,c)=>EM[e]?`<img class="${c}" src="${EM[e]}" alt="">`:`<span class="${c} tx">${e}</span>`;
+$('#ti').textContent=D.title||O.topic||'';$('#sb').textContent=[O.school,O.teacher].filter(Boolean).join(' · ');
+[['#lg',O.logo],['#ch',O.ch]].forEach(([s,u])=>{if(u){$(s).src=u;$(s).hidden=false}});
+const setF=n=>{fs=Math.max(20,Math.min(56,n));document.documentElement.style.setProperty('--fs',fs+'px')};setF(fs);
+const tl=document.createElement('div');tl.className='tools';tl.innerHTML='<button id="fm" type="button">A−</button><button id="fp" type="button">A+</button><button id="fz" type="button">⛶</button>';$('header').appendChild(tl);
+$('#fm').onclick=()=>setF(fs-3);$('#fp').onclick=()=>setF(fs+3);$('#fz').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
+document.addEventListener('keydown',e=>{if(/^[1-5]$/.test(e.key)&&!ans){const b=document.querySelectorAll('.opts button')[+e.key-1];if(b)b.click()}});
+const shuf=a=>a.sort(()=>Math.random()-.5);
+function build(){Q=[];S=[];D.sections.forEach((s,n)=>{S.push({t:s.title,c:0,n:s.questions.length});const qs=s.questions.slice();if(O.sh)shuf(qs);qs.forEach(q=>{const o=q.options.map((t,k)=>({t,c:k==q.answer}));if(O.sh&&s.type!='tf')shuf(o);Q.push({n,s:s.title,ty:s.type,q:q.q,p:q.pic||'',o,h:q.hint||'',w:q.why||''})})});i=0;sc=0;show()}
+function stat(){$('#sc').innerHTML='<span>'+T.q+' '+(i+1)+'/'+Q.length+'</span><b>⭐ '+sc+'</b>'}
+function show(){ans=false;const q=Q[i],ps=[...(String(q.p).match(RX)||[]),...(String(q.q).match(RX)||[])],qt=String(q.q).replace(RX,'').replace(/\s{2,}/g,' ').trim();
+$('#app').innerHTML=`<section class="card"><span class="chip">${E(q.s)}</span>${ps.length?`<div class="pic" style="--n:${ps.length}">${ps.map(e=>pic(e,'p3')).join('')}</div>`:''}<h2>${E(qt).replace(/_{2,}/g,'<b class="bl"></b>')}</h2><div class="opts n${q.o.length}">${q.o.map((x,k)=>`<button data-k="${k}"><i>${q.ty=='tf'?(k?'✖':'✔'):T.L[k]}</i><span>${E(x.t).replace(RX,e=>pic(e,'o3'))}</span></button>`).join('')}</div></section><div id="fb" hidden></div>`;
+$('#bar i').style.width=(i/Q.length*100)+'%';stat();document.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>pick(b))}
+function burst(b){const r=b.getBoundingClientRect();for(let n=0;n<10;n++){const s=document.createElement('span');s.className='st';s.textContent='⭐';s.style.left=(r.left+r.width/2)+'px';s.style.top=r.top+'px';s.style.setProperty('--x',(Math.random()*240-120)+'px');s.style.setProperty('--y',-(60+Math.random()*140)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
+function rain(){for(let n=0;n<40;n++){const s=document.createElement('span');s.className='cf';s.textContent=R(['⭐','🎉','✨','🌟']);s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),3200)}}
+function beep(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=ok?880:220;g.gain.value=.15;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+(ok?.18:.3))}catch(e){}}
+function pick(b){if(ans)return;ans=true;const q=Q[i],ok=q.o[+b.dataset.k].c;
+document.querySelectorAll('.opts button').forEach((x,j)=>{x.disabled=true;if(q.o[j].c)x.classList.add('good')});
+if(ok){sc++;S[q.n].c++;b.classList.add('pop');if(O.anm)burst(b)}else b.classList.add('bad');
+if(O.snd)beep(ok);stat();const f=$('#fb');f.hidden=false;f.className=ok?'ok':'no';
+f.innerHTML=`${O.ch?`<img src="${O.ch}" alt="">`:`<em>${ok?'✅':'💡'}</em>`}<div><strong>${R(ok?T.ok:T.no)}</strong><p>${E(ok?q.w:((q.h?T.h+q.h:'')+' '+q.w).trim())}</p></div><button id="nx" type="button">${i==Q.length-1?T.fin:T.nx}</button>`;
+$('#nx').onclick=()=>{i++;i<Q.length?show():end()};$('#nx').focus()}
+function end(){$('#bar i').style.width='100%';const p=Math.round(sc/Q.length*100),st=p>=90?3:p>=60?2:1;
+$('#app').innerHTML=`<section class="card end"><div class="ring" style="--p:${p}"><b>${p}%</b></div><div class="big">${'⭐'.repeat(st)}</div><h2>${T.sc}: ${sc} / ${Q.length}</h2><div class="brk">${S.map(s=>`<div><span>${E(s.t)}</span><i style="--w:${Math.round(s.c/s.n*100)}%"></i><b>${s.c}/${s.n}</b></div>`).join('')}</div>${O.rt?`<button id="rt" class="go" type="button">${T.rt}</button>`:''}</section>`;
+$('#sc').innerHTML='<b>⭐ '+sc+'</b>';if(O.rt)$('#rt').onclick=build;if(O.anm)rain()}
+build()}
+const J=o=>JSON.stringify(o).replace(/</g,'\\u003c');
+function wsHTML(W,O){const ar=O.lang!='en';return `<!DOCTYPE html><html lang="${ar?'ar':'en'}" dir="${ar?'rtl':'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(W.title||O.topic||'Assessment')}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet"><style>${WCSS}</style></head><body class="t${O.theme}"><header><img id="lg" hidden alt=""><div class="tt"><h1 id="ti"></h1><p id="sb"></p></div><img id="ch" hidden alt=""><div id="sc"></div></header><div id="bar"><i></i></div><main id="app"></main><script>(${ENGINE.toString()})(${J(W)},${J(O)})<\/script></body></html>`}
+const rd=f=>new Promise(r=>{if(!f)return r('');const x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)});
+// صور إيموجي ثلاثية الأبعاد (Microsoft Fluent 3D) تُضمَّن داخل الملف ليعمل دون إنترنت
+const EMX='(?:\\p{Regional_Indicator}{2}|\\p{Extended_Pictographic}(?:\\uFE0F|\\p{Emoji_Modifier})?(?:\\u200D\\p{Extended_Pictographic}(?:\\uFE0F|\\p{Emoji_Modifier})?)*)',EMU='https://cdn.jsdelivr.net/npm/@lobehub/fluent-emoji-3d@1.1.0/assets/',EMC={};
+async function em3(W){const all=W.sections.flatMap(s=>s.questions.flatMap(q=>[q.q,q.pic,...q.options].join(' ').match(new RegExp(EMX,'gu'))||[]));
+await Promise.all([...new Set(all)].filter(e=>!(e in EMC)).map(async e=>{const c=[...e].map(x=>x.codePointAt(0).toString(16)),n=c.filter(x=>x!='fe0f');EMC[e]='';
+for(const k of new Set([c.join('-'),n.join('-'),n.length==1?n[0]+'-fe0f':n.join('-')])){try{const r=await fetch(EMU+k+'.webp');if(r.ok){EMC[e]=await rd(await r.blob());break}}catch(x){}}}));
+const M={};all.forEach(e=>{if(EMC[e])M[e]=EMC[e]});return M}
+async function mk(){const raw=V('wj'),en=V('lang')=='en';let W;
+try{W=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1).replace(/[\u201c\u201d]/g,'\"').replace(/,\s*([}\]])/g,'$1'));if(!Array.isArray(W.sections)||!W.sections.length)throw 0;
+W.sections.forEach(s=>{if(!Array.isArray(s.questions)||!s.questions.length)throw 0;s.type=/^(tf|true|bool)/i.test(s.type||'')?'tf':(s.type||'mcq');s.questions.forEach(q=>{if(typeof q.answer=='boolean')q.answer=q.answer?0:1;if(typeof q.answer=='string'){const k=Array.isArray(q.options)?q.options.indexOf(q.answer):-1;q.answer=k>=0?k:+q.answer}if(s.type=='tf'&&!q.options)q.options=en?['True','False']:['صح','خطأ'];if(!Array.isArray(q.options)||q.options.length<2||!(q.answer>=0&&q.answer<q.options.length))throw 0})})}
+catch(e){toast(t('تعذّر قراءة JSON: تأكد أنك نسخت ردّ الروبوت كاملًا')+(e&&e.message?' ('+e.message.slice(0,50)+')':''));return null}
+return wsHTML(W,{em:await em3(W),rx:EMX,theme:$('th').selectedIndex,fs:+V('fs'),snd:C('snd'),anm:C('anm'),rt:C('rt'),sh:C('sh'),school:V('s'),teacher:V('t'),topic:V('top'),lang:en?'en':'ar',logo:await rd($('logo').files[0]),ch:await rd($('char').files[0])})}
+$('wpv').onclick=async()=>{const h=await mk();if(!h)return;const f=$('wfr');f.hidden=false;f.srcdoc=h;f.scrollIntoView?.({behavior:'smooth'})};
+$('wdl').onclick=async()=>{const h=await mk();if(h)dl(fn()+'-assessment.html',h,'text/html')};
+{const old=T.slides;T.slides=(d,L)=>old(d,L)+(L=='ar'?`
+
+قواعد التصميم والصياغة الإلزامية (استُخلصت من نتائج سابقة ضعيفة):
+- الخط: العناوين 44 نقطة فأكثر والنص 28 نقطة فأكثر، ولا يقل أي نص عن 24 نقطة.
+- استثمر مساحة الشريحة: لا يبقى أكثر من ثلثها فارغًا، ووزّع المحتوى في بطاقات أو عمودين.
+- لكل شريحة رسم مختلف ومناسب لفكرتها؛ يُمنع تكرار الرسم نفسه في عدة شرائح.
+- ملاحظات المعلم تُكتب في جزء الملاحظات (Speaker Notes)، وليس داخل الشريحة.
+- شرائح الأسئلة تعرض كل سؤال بخياراته بوضوح، ولا تستخدم رموزًا فارغة مثل «؟» بدل المحتوى.
+- عربية فصحى مبسّطة سليمة بلا عامية، والتزم بمصطلحات المنهج وبتعدية الأفعال الصحيحة (يتعرّف إلى، يستنتج أنّ).`:`
+
+Mandatory design and wording rules (learned from earlier weak results):
+- Fonts: titles 44 pt or larger, body 28 pt or larger, and no text under 24 pt.
+- Use the slide area: never leave more than a third empty; spread content over cards or two columns.
+- Each slide gets a different illustration that fits its idea; never repeat the same drawing across slides.
+- Teacher notes go in the Speaker Notes pane, never on the slide itself.
+- Question slides show each question with its options clearly; never use empty symbols such as “?” in place of content.
+- Clear, correct language, using the curriculum’s terminology.`)}
+T.ws=function(d,L){const a=L=='ar',qn=V('qn')||'4',M=['tf','mcq','fill','mcq','mcq','mcq'],ty=d.ty.length?d.ty:[0,1],ex=V('ex1');
+const sec=Array.from({length:+d.qs},(_,i)=>`${i+1}) ${M[ty[i%ty.length]]}`).join(a?'، ':', ');
+const sch='{"title":"","lang":"'+(d.lang=='en'?'en':'ar')+'","sections":[{"title":"","type":"tf|mcq|fill","questions":[{"q":"","pic":"","options":["",""],"answer":0,"hint":"","why":""}]}]}';
+return a?P(d,L,`أنت معلم خبير في كتابة الأسئلة التقويمية لطلاب ${v(d.g)}، وتتقن الإملاء العربي.`,'',`اكتب أسئلة تقويم تفاعلي لهذا الدرس: ${d.qs} أقسام بالأنواع التالية بالترتيب: ${sec}، وفي كل قسم ${qn} أسئلة.
+قواعد الأنواع: tf = صح أو خطأ وخياراتها ["صح","خطأ"]؛ mcq = اختيار من متعدد بثلاثة إلى أربعة خيارات؛ fill = جملة فيها فراغ مكتوب _____ وخياراتها كلمات.
+قواعد الجودة:
+1. answer هو رقم الخيار الصحيح ويبدأ العدّ من 0، ونوّع موضع الإجابة الصحيحة.
+2. مشتّتات منطقية، وسؤال واحد لكل فكرة، بلغة بسيطة تناسب العمر.
+3. hint تلميح قصير يظهر عند الخطأ، وwhy تفسير من جملة واحدة يظهر بعد كل إجابة.
+4. عربية فصحى سليمة وإملاء دقيق، وراجع كل جملة قبل الإرسال.
+5. pic إيموجي واحد أو أكثر يمثّل الصورة (مثل 🐱 أو 🍎🍎🍎 للعدّ) حين يعتمد السؤال على صورة، ويُعرض صورةً ثلاثية الأبعاد كبيرة فوق السؤال؛ لا تضع الإيموجي داخل q، واتركه فارغًا إن لم يلزم.
+مهم: لا تنشئ ملفًا ولا تكتب أي شرح. ضع كائن JSON صالحًا داخل كتلة كود واحدة (\`\`\`json) ولا تكتب شيئًا خارجها، واستخدم علامات الاقتباس المستقيمة \" فقط، بهذا الشكل:
+${sch}`,`كائن JSON فقط، وسيحوّله الاستوديو إلى ملف HTML تفاعلي. لغة النص: ${ol(d,L)}.${ex?'\nإضافات المعلم: '+ex:''}`)
+:P(d,L,`You are an expert teacher who writes assessment questions for ${v(d.g)} students, with flawless spelling.`,'',`Write the questions of an interactive assessment for this lesson: ${d.qs} sections of these types, in order: ${sec}, each with ${qn} questions.
+Type rules: tf = true or false with options ["True","False"]; mcq = multiple choice with three to four options; fill = a sentence containing a blank written as _____ with words as options.
+Quality rules:
+1. answer is the zero-based index of the correct option; vary the position of the correct answer.
+2. Plausible distractors, one idea per question, simple language suited to the age.
+3. hint is a short tip shown after a wrong answer, and why is a one-sentence explanation shown after every answer.
+4. Proofread every sentence before sending.
+5. pic is one or more emoji standing for the picture (such as 🐱, or 🍎🍎🍎 for counting) whenever the question relies on a picture; it is shown as a large 3D image above the question. Never put the emoji inside q, and leave pic empty when not needed.
+Important: create no file and write no explanation. Put one valid JSON object inside a single code block (\`\`\`json) and nothing outside it, using only straight double quotes, in exactly this shape:
+${sch}`,`JSON object only; the Studio turns it into an interactive HTML file. Text language: ${ol(d,L)}.${ex?'\nTeacher additions: '+ex:''}`)};
+
+function IMG(d,L){const a=L=='ar',o=selT('pal',L),ar=selT('art',L),de=selT('den',L),ex=V('ex0'),n=d.n,B=5,
+tsh={full:['بالتشكيل الكامل','fully vowelled'],part:['بتشكيل الكلمات الملتبسة فقط','vowelling only ambiguous words'],none:['بلا تشكيل','without vowel marks']}[V('tash')][a?0:1],
+ft=C('ft')?(a?` تذييل مقروء باسم المدرسة (${v(d.s)}) واسم المعلم (${v(d.t)}).${d.logo?' اترك في زاويته السفلية اليسرى مساحة فارغة صغيرة للشعار ولا ترسمه بنفسك؛ سيُلصق الشعار الأصلي المرفق عند التجميع.':''}`:` A legible footer with the school name (${v(d.s)}) and teacher name (${v(d.t)}).${d.logo?' Leave a small empty area in its bottom-left corner for the logo and do not draw it yourself; the original attached logo will be pasted in during assembly.':''}`):'',
+ch=d.ch?(a?` الشخصية الكرتونية المرفقة${d.cd?' ('+d.cd+')':''} بالهوية والنسب والحجم والموضع نفسها في كل شريحة، دون أن تحجب المحتوى.`:` The attached cartoon character${d.cd?' ('+d.cd+')':''} keeps the same identity, proportions, size and position on every slide, never covering content.`):'';
+return a?P(d,L,`أنت مخرج فني متخصص في المشاهد التعليمية المصوّرة ومدقق لغوي عربي في آنٍ واحد، تنتج لطلاب ${v(d.g)} شرائح تبدو كصفحات كتاب ${v(d.sub)} تفاعلي فاخر أو لقطات من فيلم تعليمي، لا كقوالب PowerPoint تقليدية.`,`الهوية البصرية: ألوان ${o}، وأسلوب الرسوم ${ar}.${ch}${ft}`,`قاعدة حاسمة: كل شريحة صورة تُولَّد بأداة توليد الصور. يُمنع بناء الشرائح برمجيًا (python-pptx أو غيره) أو رسمها بأشكال وصناديق نصية؛ وتُستخدم البرمجة فقط لتجميع الصور الجاهزة في الملف النهائي. إن لم تتوفر أداة توليد الصور أو فشلت فتوقف وأخبرني بدل الرجوع إلى شرائح برمجية. ولا تسألني أسئلة أثناء التنفيذ، ولا تنتظر موافقتي إلا في الموضعين المبيّنين أدناه (اعتماد الشريحة الأولى، وكلمة «تابع»)؛ اتخذ القرار الأنسب وأكمل.
+أنتج ${n} شريحة بالضبط (لا أكثر ولا أقل) بهذه المراحل:
+1) كتاب النصوص: جدول لكل شريحة: الرقم | القالب | العنوان | النصوص الحرفية النهائية (${de}) | وصف المشهد | ملاحظات المعلم. التسلسل: غلاف، أهداف، تمهيد جاذب، شرائح الشرح (فكرة واحدة لكل شريحة)، نشاط، ${d.qs} أقسام أسئلة (${tys(d,L)}) تعرض الأسئلة وخياراتها فعليًا، ملخص، تذكرة خروج. دقّق النص لغويًا وعلميًا قبل أي توليد، والصيغ والرموز بأرقام سفلية صحيحة مثل H₂O.
+2) دليل الأسلوب (يُلصق حرفيًا في كل أمر توليد):
+- مشهد تعليمي لكل شريحة بتكوين مختلف (رسم مكبّر، مقطع عرضي، مقارنة، عملية بأسهم، بطاقات، سؤال بخيارات كبيرة)، ويشغل المشهد الرئيسي 50–65% من مساحة شرائح الشرح.
+- عمق وإضاءة وتسلسل بصري واضح، ولوحة لونية متناسقة محدودة بلا ازدحام.
+- رسوم علمية دقيقة: الاتجاهات والأسهم والتسميات والعلاقات صحيحة.
+- إطار مستدير الزوايا، وشارة «ن من ${n}» في الزاوية، وشريط علوي باسم الدرس.
+- خط عربي عريض واضح بتباين عالٍ.
+- يُمنع: المستطيلات النصية البسيطة، والأيقونات البدائية، والخلفيات المسطحة الخالية من مشهد تعليمي، والفقاعات أو المساحات الفارغة.
+3) الشريحة الأولى للاعتماد: نفّذ المرحلتين 1 و2 ثم هذه المرحلة في رد واحد دون توقف بينها. ولّد الشريحة رقم 1 فقط (الغلاف) بالهوية الكاملة وبنسبة 16:9، واعرضها عليّ ملف PNG، ثم توقف وانتظر كلمة «اعتمد» أو ملاحظاتي. إن طلبتُ تعديلًا فأعد توليدها مرة واحدة فقط.
+4) الإنتاج بعد الاعتماد: ولّد الشرائح من 2 إلى ${n} بالأسلوب المعتمد دون تغييره مع تنويع التكوين، على دفعات من ${B} شرائح. كل شريحة صورة مستقلة 16:9 بأعلى دقة تُعرض ملف PNG منفصلًا مرقّمًا. تنتهي كل دفعة (عدا الأخيرة) بسطر واحد: «تمت الشرائح س–ص من ${n}، اكتب: تابع»، ثم تتوقف حتى أكتب «تابع». أمر كل صورة = دليل الأسلوب + القالب + النصوص بين علامات تنصيص + هذه القاعدة: «انسخ النصوص حرفيًا دون إضافة أو حذف أو تغيير أي حرف، بالعربية من اليمين إلى اليسار بحروف متصلة صحيحة وبلا أي مسافة داخل الكلمة الواحدة ${tsh}، والأرقام والرموز كما هي، ولا تكتب أي نص غير مذكور».
+5) الفحص والتسليم: بعد الشريحة الأخيرة قارن نص كل صورة بكتاب النصوص. أعد توليد الشريحة مرة واحدة فقط، وفقط إذا كان فيها خطأ واضح في كلمة أو معلومة علمية؛ وما عدا ذلك فاعتمدها. لا تكرر تحسين الشريحة نفسها ولا تعتذر عن عجزك عن التحقق من تفصيل صغير. ثم ابنِ بنفسك ملف .pptx بنسبة 16:9، كل شريحة فيه صورتها الجاهزة كاملة بلا قص (Contain) ودون إعادة رسم أو إضافة نصوص برمجية فوقها${d.logo&&C('ft')?'، وألصق الشعار المرفق الأصلي في مساحته بالتذييل':''}${C('nt')?'، وضع في ملاحظات كل شريحة النص الحرفي الكامل وملاحظات المعلم مع نص بديل (Alt text)':''}.`,`سلّم ملف PPTX واحدًا جاهزًا للتنزيل. معيار النجاح: تبدو كل شريحة كصفحة من كتاب تعليمي تفاعلي فاخر، ومعلوماتها واضحة وقابلة للتدريس. إن عجزت عن أي مرحلة فاذكر ذلك صراحةً ولا تتجاوزها بصمت. لغة نصوص الشرائح: ${ol(d,L)}.${ex?'\nإضافات المعلم: '+ex:''}`)
+:P(d,L,`You are an art director for illustrated educational scenes and an Arabic proofreader in one, producing for ${v(d.g)} students slides that look like pages of a premium interactive ${v(d.sub)} book or stills from an educational film, never like conventional PowerPoint templates.`,`Visual identity: ${o}; illustration style: ${ar}.${ch}${ft}`,`Decisive rule: every slide is an image generated by the image-generation tool. Building slides programmatically (python-pptx or similar) or drawing them with shapes and text boxes is forbidden; code is used only to assemble the finished images into the final file. If the image tool is unavailable or fails, stop and tell me instead of falling back to programmatic slides. Do not ask me questions during execution, and do not wait for my approval except at the two points described below (approving the first slide, and the word “continue”); make the best decision and continue.
+Produce exactly ${n} slides (no more, no fewer) in these stages:
+1) Text book: a table for every slide: number | layout | title | final verbatim texts (${de}) | scene description | teacher notes. Sequence: cover, objectives, engaging hook, explanation slides (one idea each), activity, ${d.qs} question sections (${tys(d,L)}) displaying the actual questions and options, summary, exit ticket. Proofread language and science before any generation, with formulas and symbols in correct subscripts such as H₂O.
+2) Style bible (pasted verbatim into every generation command):
+- One educational scene per slide, each with a different composition (large close-up, cross-section, comparison, process with arrows, cards, question with large options), the main scene taking 50–65% of explanation slides.
+- Depth, lighting and a clear visual hierarchy, with a limited harmonious color palette and no clutter.
+- Scientifically accurate visuals: directions, arrows, labels and relationships are correct.
+- Rounded frame, a badge reading “n of ${n}” in the corner, and a top ribbon with the lesson name.
+- Bold, clear Arabic typography with high contrast.
+- Forbidden: plain text rectangles, primitive icons, flat backgrounds without an educational scene, empty bubbles or blank areas.
+3) First slide for approval: run stages 1 and 2 and this stage in one reply without pausing between them. Generate slide 1 only (the cover) with the full identity at 16:9 and show it to me as a PNG file, then stop and wait for the word “approve” or my notes. If I ask for a change, regenerate it once only.
+4) Production after approval: generate slides 2 to ${n} in the approved style without changing it, while varying the composition, in batches of ${B} slides. Each slide is its own 16:9 image at the highest resolution, shown as a separate numbered PNG file. Every batch except the last ends with one line: “Slides x–y of ${n} done; type: continue”, then stop until I type “continue”. Each image command = style bible + layout + the texts in quotation marks + this rule: “Copy the texts verbatim without adding, deleting or changing any character, in correct connected right-to-left Arabic with no space inside any single word, ${tsh}, with numbers and symbols unchanged, and write no text that is not listed.”
+5) Check and delivery: after the last slide, compare each image’s text with the text book. Regenerate a slide once only, and only if it has a clearly wrong word or scientific fact; otherwise accept it. Never keep refining the same slide, and do not apologize for being unable to verify a small detail. Then build yourself a 16:9 .pptx in which each slide is its finished image shown in full without cropping (Contain), with no redrawing and no programmatic text on top${d.logo&&C('ft')?', pasting the original attached logo into its footer area':''}${C('nt')?', and put the full verbatim text and teacher notes in each slide’s notes with alt text':''}.`,`Deliver one PPTX file ready to download. Success criterion: every slide looks like a page from a premium interactive educational book, with clear information that can be taught. If you cannot perform any stage, say so explicitly instead of skipping it silently. Slide text language: ${ol(d,L)}.${ex?'\nTeacher additions: '+ex:''}`)}
+{const prev=T.slides;T.slides=(d,L)=>$('mode').value=='edit'?prev(d,L):IMG(d,L)}
+
+
+$('ui').onclick=()=>setUI(UI=='ar'?'en':'ar');
+try{if(localStorage.getItem('ls-lang')=='en')setUI('en')}catch(e){}
+</script>
+</body>
+</html>

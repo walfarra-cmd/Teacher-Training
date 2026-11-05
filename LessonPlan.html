@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Preparing a lesson plan using AI" data-ar="إعداد خطة درس بالذكاء الاصطناعي">Preparing a lesson plan using AI</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link rel="stylesheet" href="assets/waleed.css">
+<style id="hero-side-art">
+/* ===== Hero: text column + side artwork (Lesson plan) ===== */
+.hero .hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(0,.5fr);
+  align-items:center;
+  gap:clamp(24px,5vw,72px);
+}
+.hero .hero-copy{min-width:0}
+.hero .hero-art{
+  position:relative; inset:auto; transform:none; margin:0;
+  display:flex; justify-content:center; align-items:center;
+  min-width:0;
+}
+.hero .hero-char{
+  display:block; width:100%; max-width:400px; height:auto;
+  filter:drop-shadow(0 22px 36px rgba(0,0,0,.30));
+  animation:hero-art-float 4.5s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes hero-art-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+@media (max-width:860px){
+  .hero .hero-grid{grid-template-columns:1fr}
+  .hero .hero-art{order:2; margin-top:8px}
+  .hero .hero-char{max-width:260px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .hero-char{animation:none}
+}
+</style>
+<style id="hero-compact">
+/* تقليص مسافة الواجهة لتطابق صفحة مصمّم الدروس */
+.hero{padding:46px 0 34px}
+.hero .hero-actions{margin-top:26px}
+#main > .sec:first-child{padding-top:0}
+@media (max-width:720px){.hero{padding:36px 0 28px}}
+</style>
+<style id="lp-layout">
+/* ===== أجزاء الصفحة: شارة الجزء، رقم الخطوة، البطاقات، تبويبات البرومت (مطابقة لصفحتي Gamma وRCTF) ===== */
+.part-tag{display:inline-flex; align-items:center; gap:8px; margin:0 0 16px; padding:6px 16px;
+  border-radius:var(--r-pill); background:var(--brand-lift); color:#fff;
+  font-size:14px; font-weight:700; letter-spacing:.02em}
+.step-no{display:block; margin:0 0 6px; font-family:var(--mono); font-size:13px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--accent-text)}
+html[dir="rtl"] .step-no{font-family:var(--ar); font-weight:700; letter-spacing:0; font-size:15px}
+.trio{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:4px 0 24px}
+.trio > div{background:var(--bg-2); border:1px solid var(--line-soft); border-radius:var(--r-lg); padding:18px 20px}
+.trio i{display:grid; place-items:center; width:36px; height:36px; margin-bottom:10px; border-radius:50%;
+  background:var(--accent); color:var(--brand-lift); font-style:normal; font-weight:800; font-family:var(--mono)}
+.trio b{display:block; color:var(--ink); font-size:18px; margin-bottom:4px}
+.block .trio p{margin:0; font-size:16px; line-height:1.55}
+.howto{margin:0 0 22px; padding:0; list-style:none; counter-reset:h; display:grid; gap:10px}
+.howto li{counter-increment:h; position:relative; padding-inline-start:40px; font-size:17px; font-weight:500; color:var(--ink-2); line-height:1.6}
+.howto li:before{content:counter(h); position:absolute; inset-inline-start:0; top:1px; width:28px; height:28px;
+  border-radius:50%; display:grid; place-items:center; background:var(--surface-2); border:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:13px; font-weight:700; color:var(--brand-lift)}
+.ptabs{display:inline-flex; gap:4px; padding:4px; margin:0 0 16px; border-radius:var(--r-pill);
+  background:var(--surface-2); border:1px solid var(--line-soft)}
+.ptabs button{font:inherit; font-size:15px; font-weight:700; cursor:pointer; border:0; border-radius:var(--r-pill);
+  padding:9px 20px; background:transparent; color:var(--ink-2); transition:background var(--t-fast),color var(--t-fast)}
+.ptabs button[lang="ar"]{font-family:var(--ar)}
+.ptabs button[aria-selected="true"]{background:var(--brand-lift); color:#fff}
+.ptabs button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.ppane[hidden]{display:none}
+.ppane + .prompt-label{margin-top:30px}
+.block .hint{margin-top:22px}
+#apps .app-badge{color:#fff; background:rgba(0,0,0,.22); border-color:rgba(255,255,255,.55); font-weight:700}
+.block > .apps{margin-top:6px}
+@media (max-width:720px){.block{padding:24px 18px}.ptabs{display:flex}.ptabs button{flex:1; padding:9px 10px}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="To content" data-ar=" إلى المحتوى">To content</a>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/waleed-logo.png" alt="WALEED 2026">
+      <span class="brand-tag" data-en="Preparing Lessons Using AI" data-ar="تحضير الدروس بالذكاء الاصطناعي">Preparing Lessons Using AI</span>
+    </div>
+    <div class="topbar-actions">
+     <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Home page" data-ar="الرئيسية">Home page</span></a> 
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <!--a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to home page" data-ar="العودة إلى الصفحة الرئيسية">Back to home page</span></a-->
+      <p class="eyebrow" data-en="Tools: ChatGPT · Gemini" data-ar="الأدوات: ChatGPT · Gemini">Tools: ChatGPT · Gemini</p>
+      <h1 class="display" data-en="Planning lessons in a professional and meticulous manner" data-ar="تخطيط الدروس بطريقة احترافية ومتقنة">Planning lessons in a professional and meticulous manner</h1>
+      <p class="lede" data-en="All you need for the perfect lesson plan is to attach your school’s lesson plan template and images of the lesson pages from the prescribed textbook, along with drafting the prompt for the plan." data-ar="كل ما تحتاجه لخطة الدرس المثالية، هو إرفاق نموذج إعداد خطة درس الخاص بمدرستك وصور صفحات الدرس من الكتاب المقرر، مع صياغة برومت الخطة.">All you need for the perfect lesson plan is to attach your school’s lesson plan template and images of the lesson pages from the prescribed textbook, along with drafting the prompt for the plan.</p>
+      <div class="hero-actions">
+              <a class="btn btn-outline" href="#master"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg><span data-en="A ready-made prompt for preparing a lesson plan" data-ar="برومت جاهز لإعداد خطة الدرس">A ready-made prompt for preparing a lesson plan</span></a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><img class="hero-char" src="assets/lessonplan.png" alt="" width="958" height="958"></div>
+  </div>
+</div>
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <!-- ---------- STICKY RAIL ---------- -->
+      <aside class="rail">
+        <h2 data-en="Key points of the explanation" data-ar="محاور الشرح">Key points of the explanation</h2>
+        <p data-en="Five steps, in order." data-ar="خمس خطوات بالترتيب.">Five steps, in order.</p>
+        <ol>
+          <li data-go="needs" data-en="The ideal lesson plan with RCTF" data-ar="خطة الدرس المثالية بإطار RCTF">The ideal lesson plan with RCTF</li>
+          <li data-go="master" data-en="Attach two files and run the master prompt" data-ar="أرفق ملفين وشغِّل البرومت الرئيسي">Attach two files and run the master prompt</li>
+          <li data-go="webpage" data-en="Turn the plan into an interactive page" data-ar="حوِّل خطة الدرس إلى صفحة تفاعلية">Turn the plan into an interactive page</li>
+          <li data-go="audit" data-en="Create a lesson-plan Gem in Gemini" data-ar="أنشئ Gem لخطط الدروس في Gemini">Create a lesson-plan Gem in Gemini</li>
+          <li data-go="apps" data-en="Open the tools used" data-ar="افتح الأدوات المستخدمة">Open the tools used</li>
+        </ol>
+        <p class="rail-hint" data-en="Click a step to jump to it and mark it done." data-ar="اضغط على الخطوة للانتقال إليها وتعليمها كمنجزة.">Click a step to jump to it and mark it done.</p>
+      </aside>
+
+      <!-- ---------- CONTENT ---------- -->
+      <div>
+
+        <!-- ============ STEP 1 · THE IDEAL LESSON PLAN WITH RCTF ============ -->
+        <div class="block" id="needs">
+          <span class="part-tag" data-en="Part one · A lesson plan in ChatGPT" data-ar="الجزء الأول · خطة الدرس في ChatGPT">Part one · A lesson plan in ChatGPT</span>
+          <span class="step-no" data-en="Step 01" data-ar="الخطوة ٠١">Step 01</span>
+          <h2 class="display" data-en="The ideal lesson plan with RCTF" data-ar="خطة الدرس المثالية بإطار RCTF">The ideal lesson plan with RCTF</h2>
+          <p class="sub" data-en="Here is what each part of the master prompt holds, so you know what to customize:" data-ar="فيما يلي ما يحويه كل جزء من البرومت الرئيسي، لتعرف ما الذي تخصّصه:">Here is what each part of the master prompt holds, so you know what to customize:</p>
+
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th data-en="RCTF" data-ar="الإطار">RCTF</th>
+                  <th data-en="English" data-ar="بالإنجليزية">English</th>
+                  <th data-en="العربية" data-ar="بالعربية">العربية</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="k">R</td>
+                  <td class="en"><b>Role</b> — a certified teacher of your subject under your curriculum, expert in Bloom's taxonomy, DOK, differentiation, cooperative learning and assessment, and a professional Word designer.</td>
+                  <td class="ar"><b>الدور</b> — معلم معتمد في مادتك وفق منهجك، وخبير في تصنيف بلوم ومستويات DOK والتمايز والتعلم التعاوني والتقويم، ومصمم مستندات Word محترف.</td>
+                </tr>
+                <tr>
+                  <td class="k">C</td>
+                  <td class="en"><b>Context</b> — grade, subject, lesson title and topic, duration, class profile, curriculum codes, previous learning, language, delivery mode, and the two attached files.</td>
+                  <td class="ar"><b>السياق</b> — الصف والمادة وعنوان الدرس وموضوعه والمدة ووصف الفصل والأكواد المنهجية والتعلم السابق ولغة الكتابة ونمط التقديم، والملفان المرفقان.</td>
+                </tr>
+                <tr>
+                  <td class="k">T</td>
+                  <td class="en"><b>Task</b> — eight sections in a fixed order: opening, objectives, the eight-stage plan, success criteria, assessment and rubric, digital tools, teacher AI tools, and a blank reflection.</td>
+                  <td class="ar"><b>المهمة</b> — ثمانية أقسام بترتيب ثابت: المطلع، والأهداف، وجدول الخطة بمراحله الثماني، ومعايير النجاح، والتقويم وسلم التقدير، والأدوات الرقمية، وأدوات الذكاء الاصطناعي للمعلم، والتأمل الفارغ.</td>
+                </tr>
+                <tr>
+                  <td class="k">F</td>
+                  <td class="en"><b>Format</b> — one editable Word file (.docx): A4, Arial, navy headings, bordered tables with alternating rows, a page frame and page numbers.</td>
+                  <td class="ar"><b>التنسيق</b> — ملف Word واحد قابل للتعديل (.docx): مقاس A4، وخط Arial، وعناوين بالأزرق الداكن، وجداول بحدود وصفوف متناوبة، وإطار للصفحة وترقيم.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ STEP 2 · THE MASTER PROMPT ============ -->
+        <div class="block" id="master">
+          <span class="step-no" data-en="Step 02" data-ar="الخطوة ٠٢">Step 02</span>
+          <h2 class="display" data-en="Attach two files and run the master prompt" data-ar="أرفق ملفين وشغِّل البرومت الرئيسي">Attach two files and run the master prompt</h2>
+          <p class="sub" data-en="The AI does not know your school's template or the textbook you teach from, so you give it both." data-ar="الذكاء الاصطناعي لا يعرف نموذج مدرستك ولا الكتاب المقرر الذي تدرّسه، لذلك تعطيه الاثنين.">The AI does not know your school's template or the textbook you teach from, so you give it both.</p>
+
+          <div class="trio">
+            <div><i>1</i><b data-en="School template" data-ar="نموذج المدرسة">School template</b><p data-en="Your school's lesson-plan form, or any template you prefer." data-ar="نموذج إعداد الدروس في مدرستك، أو أي قالب تفضّله.">Your school's lesson-plan form, or any template you prefer.</p></div>
+            <div><i>2</i><b data-en="Lesson pages" data-ar="صفحات الدرس">Lesson pages</b><p data-en="A PDF or clear photos of the textbook pages you will teach." data-ar="ملف PDF أو صور واضحة لصفحات الكتاب التي ستشرحها.">A PDF or clear photos of the textbook pages you will teach.</p></div>
+            <div><i>3</i><b data-en="The prompt" data-ar="البرومت">The prompt</b><p data-en="The master prompt below, with the green fields filled in." data-ar="البرومت الرئيسي أدناه بعد تعبئة الحقول الخضراء.">The master prompt below, with the green fields filled in.</p></div>
+          </div>
+
+          <ol class="howto">
+            <li data-en="Choose the prompt language. Click a green field to select it, then type your lesson details over it." data-ar="اختر لغة البرومت. اضغط على أي حقل أخضر لتحديده، ثم اكتب بيانات درسك مكانه.">Choose the prompt language. Click a green field to select it, then type your lesson details over it.</li>
+            <li data-en="In ChatGPT, use the plus button to attach the school template and the lesson pages." data-ar="في ChatGPT، أرفق نموذج المدرسة وصفحات الدرس من زر الإضافة (+).">In ChatGPT, use the plus button to attach the school template and the lesson pages.</li>
+            <li data-en="Click “Copy the prompt”, paste it with the attachments and send. ChatGPT returns an editable Word file." data-ar="اضغط «نسخ البرومت»، والصقه مع المرفقات وأرسل. سيعيد ChatGPT ملف Word قابلًا للتعديل.">Click “Copy the prompt”, paste it with the attachments and send. ChatGPT returns an editable Word file.</li>
+          </ol>
+
+          <div class="ptabs" role="tablist" data-en-label="Prompt language" data-ar-label="لغة البرومت">
+            <button type="button" role="tab" data-tab="ar" lang="ar" aria-selected="true">البرومت بالعربية</button>
+            <button type="button" role="tab" data-tab="en" lang="en" aria-selected="false">English prompt</button>
+          </div>
+          <div class="ppane" data-pane="ar">
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p-plan-ar" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p-plan-ar" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall is-ar" id="p-plan-ar" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable master lesson-plan prompt in Arabic" data-ar-label="البرومت الرئيسي لخطة الدرس بالعربية، قابل للتعديل">## R — الدور
+تصرَّف كمعلِّم معتمد وخبير في تدريس مادة <span class="ph">اكتب هنا المادة التي تدرسها</span> وفق معايير <span class="ph">المنهج الوطني السعودي</span>، وخبير في تصنيف بلوم المعدل ومستويات DOK والتمايز في الفصول متعددة المستويات والتعلم التعاوني والتقويم، ومصمِّم مستندات Word محترف.
+أنتج خطة درس عملية رصينة جاهزة للاستخدام داخل الفصل، واقرأ كل مرفق قراءة كاملة قبل الكتابة.
+
+## C — السياق
+سيرفق المعلم نموذج إعداد الدرس المعتمد في مدرسته وصفحات الدرس من كتاب الطالب، وهذه بيانات الدرس:
+* الصف / المرحلة: <span class="ph">اكتب الصف هنا</span> · المادة: <span class="ph">اكتب المادة التي تدرسها</span>
+* عنوان الدرس: <span class="ph">اكتب عنوان الدرس</span> · الموضوع: <span class="ph">ما موضوع الدرس</span>
+* المدة: <span class="ph">مدة الحصة مثلا 45 دقيقة</span> · وصف الفصل: <span class="ph">مثلا فصل به جميع المستويات</span>
+* الأكواد المنهجية: <span class="ph">هناك مناهج لها أكواد مثل المناهج العالمية اكتب الكود هنا</span>
+* التعلم السابق: <span class="ph">قصص المغامرة، والجمل البسيطة والمركبة</span>
+* لغة الكتابة: <span class="ph">اكتب اللغة التي ستدرس بها</span> · نمط التقديم: <span class="ph">حضوري (البدائل: عن بُعد · مدمج)</span>
+
+قواعد المصادر:
+* اعتمد نموذج المدرسة: أعد إنتاج عناوينه وحقوله الإدارية، وإن تعارض مع هذه التعليمات فالتزم بالهيكل أدناه.
+* لا تستخدم إلا نص الكتاب المرفق ومفرداته وأمثلته وأسئلته. انسخ الأسئلة حرفيًا بترقيمها، ولا تخترعها ولا تعيد صياغتها ولا تجزّئها ولا تضف سؤالًا غير وارد، ولا تخترع شواهد أو اقتباسات أو إجابات.
+* إن نقص مرفق أساسي أو تعذّرت قراءته فتوقّف واطلبه.
+* لا تملأ التأمل البعدي مسبقًا كأن الدرس نُفِّذ.
+* كيِّف البنى التعاونية حسب نمط التقديم: غرف فرعية ولوح مشترك عن بُعد، وشكل جلوس وتوزيع مجموعات حضوريًا.
+
+## T — المهمة
+أنشئ خطة درس واحدة متمركزة حول الطالب، بهذا الترتيب بالضبط:
+
+١. **المطلع:** عنوان نموذج المدرسة، عنوان الدرس، عنوان فرعي (الصف والمادة والمدة)، وجدول تمهيدي فيه فقط: الفصل | التاريخ | الدرس | التعلم السابق.
+
+٢. **الأهداف:** مرة واحدة فقط قبل جدول الخطة، في جدول (مستوى بلوم | الهدف التعليمي | الكود). ستة أهداف SMART تغطي التذكر والفهم والتطبيق والتحليل والتقويم والإبداع بتدرج من الدنيا إلى العليا. يبدأ كل هدف بنتيجة قابلة للقياس والتحقق داخل الحصة، ومرتبط بكود منهجي، وفيه شاهد قابل للقياس (نسبة دقة، عدد استجابات، شاهد نصي، عدد كلمات، درجة سلم).
+
+٣. **جدول الخطة المتكامل (قلب المستند):** خمسة أعمدة: المرحلة | إجراءات الطلاب / الأنشطة المخططة | التعلم التعاوني | النشاط التفريقي | الزمن بالدقائق. ثماني مراحل مجموع أزمنتها يساوي مدة الدرس بالضبط. اكتب الإجراءات من منظور الطالب (ماذا يقرأ ويقول ويناقش ويحلل ويكتب)، لا أفعال المعلم. لكل مرحلة بنية تعاونية مختلفة:
+* ١ التهيئة: تنشيط المعرفة السابقة وتصويت فوري وربط العنوان بالتعلم السابق (فكِّر–زاوج–شارك).
+* ٢ تدريس المفردات: مفردات الصفحات المرفقة فقط؛ استنتاج المعنى من السياق ثم التحقق، مطابقة، استخدام شفهي (ثلاثيات مفردات).
+* ٣ التنبؤ: فحص العنوان والرسوم والقرائن وتنبؤات معلَّلة بقرينة (جولة المعرض أو أزواج التنبؤ والشاهد).
+* ٤ القراءة للفكرة العامة: قراءة المقتطف وتحديد الفكرة أو وجهة النظر، مع سؤال الفكرة العامة حرفيًا (قراءة ثنائية أو متناوبة).
+* ٥ المعلومات المحددة: مسح وإعادة قراءة وتظليل الشاهد، مع أسئلة المعلومات المحددة حرفيًا (الرؤوس المرقمة معًا).
+* ٦ التحليل القرائي التفصيلي: أسئلة التحليل والاستنتاج حرفيًا؛ شواهد وخصائص بنائية ولغوية وأثر الكاتب وتقييمه (Jigsaw: محاور مختلفة لمجموعات الخبراء ثم يعلّمون مجموعاتهم الأصلية).
+* ٧ التطبيق والإنتاج: أسئلة التطبيق حرفيًا، ومهمة تحدث أو أداء، وإنتاج شفهي أو كتابي يوظف مفردات الدرس وبنيته (الكرسي الساخن أو لعب الأدوار)، وتغذية راجعة «نجمتان وأمنية».
+* ٨ الإنهاء والتأمل والتلخيص: داخل الصف الأخير نفسه، أربعة مثيرات بطاقة خروج DOK 1 تذكر، DOK 2 مهارة ومفهوم، DOK 3 تفكير استراتيجي، DOK 4 تفكير ممتد، ثم سؤال سقراطي واحد يربط الفكرة المحورية ومعالجة الزمن أو البنية أو وجهة النظر بحياة المتعلم وأحكامه؛ استجابة فردية أولًا ثم مزاوجة سقراطية.
+* يظهر كل سؤال من الكتاب مرة واحدة فقط داخل خلية المرحلة المعنية، ولا يوضع في قسم مستقل.
+* التمايز في كل صف مختلف ويلائم المرحلة، بثلاثة مسارات صريحة: الدعم (سقالات: قرائن بصرية، دعم صوتي، نص مظلَّل، بدايات جمل، بطاقات مفردات، بنوك شواهد)، والأساسي (مهمة مستوى الصف)، والإثراء (استنتاج أعمق، تقويم، مقارنة، كتابة بديلة، إنتاج مستقل).
+
+٤. **معايير نجاح الطالب:** جدول (معيار النجاح | شاهد تحقق النجاح)، يبدأ كل معيار بـ «أستطيع أن…»، ويغطي: الفكرة العامة أو وجهة النظر، الشاهد النصي الدقيق، أثر الاختيارات البنائية واللغوية، معالجة الزمن، المشاركة التعاونية، الاستجابة المطلوبة.
+
+٥. **التقويم:**
+* البنائي: الأساليب التي تخدم الخطة فعلًا فقط (بادليت، تصحيح الأقران، تصويت فوري، ملاحظة المعلم…)، مع موضع كل أسلوب والشاهد الذي يجمعه.
+* الختامي: مهمة كتابية قصيرة تتوافق مع أعلى الأهداف ومهمة الكتاب، تحدد نوع النص والطول والخصائص والمفردات والتنظيم، مع سلم تقديري تحليلي من ١٦ درجة بخمسة أعمدة (المعيار | ٤ — يفوق التوقعات | ٣ — يحقق التوقعات | ٢ — في طور النمو | ١ — يحتاج دعمًا). المعايير الأربعة: الفكرة وتكامل المهمة، الاستنتاج ووجهة النظر، المفردات وبنية الجملة، التنظيم والانسياب، بواصفات أداء محددة. النطاقات: ١٣–١٦ يفوق/متمكن، ٩–١٢ يحقق/ينمو بثبات، ٥–٨ ناشئ، ٠–٤ يحتاج دعمًا كبيرًا.
+
+٦. **الأدوات الرقمية:** جدول (المرحلة | الأداة برابط فعّال | نوع النشاط | الهدف) من: Mentimeter، Wordwall، Nearpod، Padlet، Quizizz، Kahoot، Canva، Google Forms. أدرج أداة فقط حيث تحسّن المرحلة، بالموقع الرسمي، ولا تحل محل القراءة والنقاش. أداة بطاقة الخروج للمرحلة ٨ تُذكر هنا فقط.
+
+٧. **أدوات الذكاء الاصطناعي للمعلم:** جدول (الأداة برابط فعّال | أفضل استخدام في هذا الدرس) لـ MagicSchool AI وDiffit for Teachers وGoogle Gemini وClaude، تشرح دعمها للتمايز وسقالات المفردات والاستجابات النموذجية ومثيرات DOK والتغذية الراجعة بالسلم ودعم بناء الجملة. أضف أسفله: «ضابط المعلم: أدوات الذكاء الاصطناعي تدعم التحضير والتمايز فقط، ويبقى مقتطف الكتاب وأسئلته هما المرجع ولا يجوز إعادة كتابتهما أو استبدالهما.»
+
+٨. **التأمل والخطوات التالية:** احتفظ بالقسمين وأسئلتهما الأصلية من نموذج المدرسة، واتركهما فارغين ليملأهما المعلم بعد التنفيذ، دون إجابات نموذجية.
+
+## F — التنسيق
+سلِّم ملف Word واحدًا قابلًا للتعديل (.docx):
+* A4 عمودي، UTF-8، خط Arial، متن #111111 بمقاس ١٤ (يجوز تصغير نص جدول الخطة قليلًا لتظهر الأسئلة كاملة).
+* العنوان الرئيسي ٢٢ عريض في الوسط، والفرعي ١٦ في الوسط، وعناوين الأقسام ١٨ عريض، والفرعية ١٥–١٦ عريض، كلها بالأزرق الداكن #0A2A66 مع فاصل أزرق أسفل عناوين الأقسام.
+* إطار صفحة أزرق داكن رفيع، وتذييل في الوسط برقم الصفحة.
+* الجداول: صف عناوين رمادي #DDDDDD ونص عريض أزرق #0A2A66 يتكرر عبر الصفحات، وحدود #0A2A66 بسمك ١٫٥ نقطة، وصفوف متناوبة #F2F2F2 و#E6E6E6 (وأزرق فاتح في جدول الأدوات الرقمية)، وحشو ومحاذاة رأسية متسقة، وصفوف تتمدد دون اقتطاع أو تداخل، وكل مرحلة في صفحة واحدة قدر الإمكان.
+* محظور: أهداف مكررة أو داخل الجدول التمهيدي، قسم «أسئلة الفهم» أو «الإغلاق» مستقل، جدول DOK منفصل، جدول ربط أسئلة بالمراحل، أسئلة مخترعة أو معادة الصياغة، تأملات مملوءة مسبقًا، حدود زخرفية سميكة، أسماء أدوات بلا روابط.
+
+قبل التسليم تحقق من: ظهور الأهداف مرة واحدة قبل جدول الخطة، ومساواة مجموع الأزمنة لمدة الدرس، وظهور كل سؤال كتاب مرة واحدة في مرحلته، وحصر مثيرات DOK والسؤال السقراطي في المرحلة ٨، ووجود تمايز (دعم/أساسي/إثراء) وبنية تعاونية مميزة في كل مرحلة، وأن كل أداة رابط فعّال. ثم اعرض المستند وافحص كل صفحة بصريًا وصحّح أي اقتطاع أو انقسام صفوف أو صفحات فارغة، وسلِّم ملف .docx بعد التحقق فقط.</div>
+          </div>
+          <div class="ppane" data-pane="en" hidden>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p-plan-en" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p-plan-en" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p-plan-en" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable master lesson-plan prompt in English" data-ar-label="البرومت الرئيسي لخطة الدرس بالإنجليزية، قابل للتعديل">## R — ROLE
+Act as a certified <span class="ph">Physics</span> teacher working under <span class="ph">The Saudi National Curriculum</span>, and an expert in Bloom's Revised Taxonomy, Depth of Knowledge (DOK), mixed-ability differentiation, cooperative learning, assessment, instructional design and professional Microsoft Word design.
+Produce a practical, academically rigorous lesson plan ready for classroom use. Read every attachment completely before writing.
+
+## C — CONTEXT
+The teacher will attach the school-approved lesson template and the relevant student-book pages, and supply:
+* Grade/Stage: <span class="ph">Grade 12</span> · Subject: <span class="ph">Physics</span>
+* Lesson title: <span class="ph">Light refraction</span> · Topic: <span class="ph">Snell's Law</span>
+* Duration: <span class="ph">45 minutes</span> · Class profile: <span class="ph">mixed ability</span>
+* Curriculum codes: <span class="ph">6Rs.01 · 6Rs.02</span>
+* Previous learning: <span class="ph">The nature of light</span>
+* Required language: <span class="ph">English</span> · Delivery mode: <span class="ph">face-to-face (alternatives: online · blended)</span>
+
+Source-control rules:
+* Reproduce the school template's headings, labels and administrative fields. If it conflicts with this brief, keep its administrative fields and follow the structure below.
+* Use only the supplied book text, vocabulary, examples and questions. Copy textbook questions exactly, with their numbering. Never invent, rewrite, simplify, paraphrase, split or renumber them, add questions that are not in the book, or invent evidence, quotations or answers.
+* If an essential attachment is missing or unreadable, stop and request it.
+* Do not pre-complete the post-lesson reflection.
+* Adapt every cooperative structure to the delivery mode (breakout rooms and a shared board online; seating and grouping face-to-face).
+
+## T — TASK
+Create one complete, student-centred lesson plan in exactly this order:
+
+1. **Opening:** school template title, lesson title, centred subtitle (grade, subject/topic, duration), and an introductory table containing only Class | Date | Lesson | Previous learning.
+
+2. **Learning objectives (once only, immediately before the Plan):** table `Bloom level | Learning objective | Code` with six SMART objectives (Remember, Understand, Apply, Analyse, Evaluate, Create), progressing from lower- to higher-order thinking. Each begins with a measurable outcome, is achievable within the lesson, is linked to a supplied curriculum code, and includes measurable evidence (accuracy, number of responses, textual evidence, word count or rubric score).
+
+3. **Integrated Plan (the instructional core):** five columns: `Stage | Student actions / Planned activities | Cooperative learning | Differentiated activity | Time in minutes`. Eight stages whose times total the lesson duration exactly. Write from the students' perspective (what they do, say, read, discuss, analyse, write), not teacher actions. Each stage uses a different cooperative structure:
+* 1 Warm-up: activate prior knowledge, short hook or instant poll, link the title to previous learning (Think–Pair–Share).
+* 2 Vocabulary teaching: supplied-page vocabulary only; infer from context, then check; match; use orally or in short sentences (mixed-attainment triads).
+* 3 Prediction: examine the title, illustrations and visible clues; evidence-based predictions explained by a clue (Gallery Walk or Prediction–Evidence Pairs).
+* 4 Gist reading: read the extract, identify the main idea or viewpoint, answer the book's gist question (paired or echo reading).
+* 5 Specific information: scan and reread, answer the book's specific-information questions, highlight the exact evidence (Numbered Heads Together).
+* 6 Detailed reading analysis: answer the analysis and inference questions, analyse structural and linguistic features, find evidence, explain the writer's effect, evaluate success when asked (Jigsaw Expert Groups: experts analyse assigned questions, then teach their home groups).
+* 7 Application and production: answer the application questions, complete a speaking or performance task, produce the required oral or written response using lesson vocabulary and features (Hot-Seating or role-play), with "Two Stars and a Wish" peer feedback.
+* 8 End/Close/Reflection/Summary: all closure inside this final row, with four DOK exit-ticket prompts (DOK 1 Recall, DOK 2 Skill/Concept, DOK 3 Strategic Thinking, DOK 4 Extended Thinking), ending with one deep Socratic question linking the text's central idea, its treatment of time, structure or perspective, and the learner's real life and judgement of others. Students answer individually first, then discuss in a Socratic Pair-Share or Reflective Circle.
+* In stages 4–7, insert the exact wording and numbering of the relevant book questions inside that stage's "Student actions / Planned activities" cell, once only, never in a separate section.
+* Every row has a different differentiated activity that fits its stage, with three explicit tiers: **Support** (visual cues, audio support, highlighted text, sentence stems, vocabulary cards, evidence banks, guided charts), **Core** (the grade-level task), **Extension** (deeper inference, evaluation, comparison, alternative writing, structural analysis, independent creation).
+
+4. **Student success criteria:** table `Success criterion | Evidence of success`, each criterion beginning "I can…", covering: main idea or viewpoint, exact textual evidence, effect of structure and language, treatment of time, participation in the cooperative task, the required written or oral response.
+
+5. **Assessment:**
+* Formative: only methods that serve the Plan (Padlet posts, peer correction, instant polling, cooperative questioning, teacher observation, digital feedback), stating where each occurs and what evidence it collects.
+* Summative: a short written task aligned with the highest objective and the book's task, stating perspective or text type, length, required features, vocabulary or structures and organisation. Add a 16-mark analytic rubric with five columns `Criterion | 4 — Exceeding | 3 — Meeting | 2 — Developing | 1 — Needs support`, four criteria (Idea and task integration; Inference and perspective; Vocabulary and sentence structure; Organisation and flow) with specific descriptors for every level, and bands: 13–16 Exceeding/Secure, 9–12 Meeting/Developing securely, 5–8 Emerging, 0–4 Substantial support needed.
+
+6. **AI and interactive digital tools:** table `Stage | Tool (active link) | Type of activity | Purpose`, chosen only where they improve the stage, from Mentimeter, Wordwall, Nearpod, Padlet, Quizizz, Kahoot, Canva, Google Forms. Each tool name is a real clickable hyperlink to its official website, with a specific classroom activity and purpose. Tools support, never replace, reading, discussion and textual analysis. The Stage 8 exit-ticket tool appears here only.
+
+7. **Recommended teacher AI tools:** table `AI tool (active link) | Best use in this lesson` for MagicSchool AI, Diffit for Teachers, Google Gemini and Claude (clickable official links), explaining support for differentiation, vocabulary scaffolding, model responses, DOK prompts, rubric-based feedback and sentence building. Add beneath it: "Teacher safeguard: AI tools support preparation and differentiation only. The supplied textbook extract and questions remain authoritative and must not be rewritten or replaced."
+
+8. **Reflection and Next steps:** keep both sections, with the school template's original headings and questions, empty for the teacher to complete after the lesson. No model answers and no claims that activities succeeded.
+
+## F — FORMAT
+Deliver one editable Microsoft Word document (.docx):
+* A4 portrait, UTF-8, Arial, body #111111 at 14 pt (Plan-table text may be reduced slightly so book questions stay legible).
+* Title 22 pt bold centred, subtitle 16 pt centred, section headings 18 pt bold, subsection headings 15–16 pt bold, all in navy #0A2A66, with a navy divider under section headings.
+* Thin navy page frame on every page and a centred page-number footer.
+* Tables: named header row filled #DDDDDD with bold navy text, repeated across pages; borders navy #0A2A66 at about 1.5 pt; alternating rows #F2F2F2 and #E6E6E6 (light blue in the digital-tools table); consistent padding and vertical alignment; rows expand naturally with no clipping, overlap or truncation; each stage kept together where possible.
+* Prohibited: repeated objectives or objectives in the opening table, a standalone "Comprehension Questions", question-mapping, "Closure" or DOK section, reworded or invented book questions, pre-completed reflections, thick decorative borders, unlinked tool names.
+
+Before delivering, verify: objectives appear once, immediately before the Plan; stage times total the lesson duration exactly; every book question appears once in its stage; DOK and Socratic prompts appear only in Stage 8; the Plan is student-perspective with a distinct cooperative structure and Support/Core/Extension differentiation in every stage; every tool name is a working link; Reflection and Next steps follow the school template. Then render the document, inspect every page, fix any clipping, row splitting, overlap, orphaned text, inconsistent borders or blank pages, and deliver only the final verified .docx.</div>
+          </div>
+
+          <div class="hint">
+            <p style="margin:0" data-en-html="<b>What makes this prompt strict.</b> Its source-control rules make the AI copy the textbook questions exactly, never renumber or invent them, and stop to ask if an attachment is missing. It ends with a self-check the AI must run before handing you the file. Those two parts are what stop a convincing but invented lesson plan." data-ar-html="<b>ما الذي يجعل هذا البرومت صارمًا؟</b> قواعد ضبط المصادر فيه تُلزم الذكاء الاصطناعي بنسخ أسئلة الكتاب حرفيًا، وعدم إعادة ترقيمها أو اختراع أسئلة، والتوقف لطلب أي مرفق ناقص. وينتهي بفحص ذاتي يجريه قبل تسليمك الملف. هذان الجزآن هما ما يمنعان خطة مقنعة في ظاهرها لكنها مختلَقة."><b>What makes this prompt strict.</b> Its source-control rules make the AI copy the textbook questions exactly, never renumber or invent them, and stop to ask if an attachment is missing. It ends with a self-check the AI must run before handing you the file. Those two parts are what stop a convincing but invented lesson plan.</p>
+          </div>
+        </div>
+
+        <!-- ============ STEP 3 · INTERACTIVE PAGE ============ -->
+        <div class="block" id="webpage">
+          <span class="part-tag" data-en="Part two · Edit, reuse and share" data-ar="الجزء الثاني · التعديل وإعادة الاستخدام والمشاركة">Part two · Edit, reuse and share</span>
+          <span class="step-no" data-en="Step 03" data-ar="الخطوة ٠٣">Step 03</span>
+          <h2 class="display" data-en="Turn the plan into an interactive page" data-ar="حوِّل خطة الدرس إلى صفحة تفاعلية">Turn the plan into an interactive page</h2>
+          <p class="sub" data-en="One prompt for Gemini. It returns a single web page you can edit in the browser and save as a clean PDF." data-ar="برومت واحد لـ Gemini، ينتج صفحة ويب لخطة الدرس تستطيع تعديلها في المتصفح وحفظها ملف PDF نظيفًا.">One prompt for Gemini. It returns a single web page you can edit in the browser and save as a clean PDF.</p>
+
+          <ol class="howto">
+            <li data-en="Replace every green field with your own lesson: subject, grade, title, stages, questions and codes." data-ar="استبدل كل حقل أخضر ببيانات درسك: المادة والصف والعنوان والمراحل والأسئلة والأكواد.">Replace every green field with your own lesson: subject, grade, title, stages, questions and codes.</li>
+            <li data-en="In Gemini, attach your school template and the lesson pages, then paste the prompt and send." data-ar="في Gemini، أرفق نموذج مدرستك وصفحات الدرس، ثم الصق البرومت وأرسل.">In Gemini, attach your school template and the lesson pages, then paste the prompt and send.</li>
+            <li data-en="Save the code it returns as a .html file and open it in your browser to edit, print or save as PDF." data-ar="احفظ الكود الناتج في ملف بصيغة html وافتحه في المتصفح للتعديل أو الطباعة أو الحفظ PDF.">Save the code it returns as a .html file and open it in your browser to edit, print or save as PDF.</li>
+          </ol>
+
+          <p class="prompt-label" data-en="The interactive-page prompt — for Gemini" data-ar="برومت الصفحة التفاعلية — لـ Gemini">The interactive-page prompt — for Gemini</p>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="p-web" data-en="Copy the prompt" data-ar="نسخ البرومت">Copy the prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="p-web" data-en="Start over" data-ar="إعادة الضبط">Start over</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div class="prompt-box is-tall" id="p-web" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable interactive-page prompt" data-ar-label="برومت الصفحة التفاعلية، قابل للتعديل">Act as an expert Instructional Designer and Certified <span class="ph">معلم خبير في مادة الفيزياء وفق المنهج الوطني السعودي</span>. Build a single-file, production-ready, interactive HTML page for<span class="ph"> خطة درس مادة الفيزياء للصف الثاني ثانوي ("الطاقة الحرارية", الفصل السادس)</span>.
+The webpage must serve as both a live editable web document and a clean, perfectly formatted PDF document, with correct Arabic letter joining, correct bracket direction, intact English words, zero text clipping and zero page-wrapping issues.
+
+### 1. TECHNICAL RULES
+- Single-file HTML (include all CSS and JS within the same file).
+- Use `&lt;html lang="ar" dir="rtl"&gt;` and `&lt;meta charset="utf-8"&gt;`.
+- DO NOT use html2pdf.js, html2canvas, jsPDF or ANY library that converts HTML to an image or re-draws text. They break Arabic shaping and bracket direction. PDF export MUST be done only through the browser's native print engine (`window.print()` then "Save as PDF").
+- Responsive, clean, paper-document aesthetic centered on screen with a light background (`#f4f6f9`).
+
+### 2. TOP ACTION CONTROL BAR (NON-PRINTING)
+- Fixed or top-aligned control bar containing:
+  1. Title banner:<span class="ph">"خطة الدرس اليومية — فيزياء للصف الثاني ثانوي"</span>.
+  2. "Lock Editing / Enable Editing" button: Toggles `contenteditable="true/false"` across the card.
+  3. "Save as PDF" button: calls `printPDF()`.
+  4. "Print" button: calls `window.print()`.
+  5. Live toast notification system (`#toast-msg`).
+- Under the buttons show a small instruction line: "In the print window choose 'Save as PDF', untick 'Headers and footers', tick 'Background graphics'."
+- Must be hidden during printing using `@media print { .no-print-bar { display: none !important; } }`.
+
+### 3. EXACT DOCUMENT SECTIONS &amp; STRUCTURE
+The central document card (`#lessonPlanCard`) must contain the following sections in this exact order:
+1. **Header Metadata Table:**
+   - CLASS:<span class="ph">"الصف الثاني ثانوي"</span> (mixed ability)
+   - DATE: Blank underline for teacher entry
+   - Lesson: <span class="ph">"الطاقة الحرارية"</span> 
+   - Previous learning: <span class="ph"> اكتب هنا خبرة تعليمية سابقة مثلا : تعريف الطاقة وأشكالها</span> 
+2. **Learning Objectives Table (Mapped to Bloom's Taxonomy &amp; Curriculum Codes <span class="ph">6Rs.01 &amp; 6Rs.02</span>):**
+   - 3 columns: `Bloom Level` | `Learning Objective` | `Code`
+   - Covers all 6 levels: Remember (6Rs.01), Understand (6Rs.02), Apply (6Rs.02), Analyse (6Rs.02), Evaluate (6Rs.01), Create (6Rs.01).
+3. **Plan (8 Student-Centred Stages, <span class="ph">45</span> Minutes Total):**
+   - 5 columns: `Stage` (15%) | `Student Actions / Planned Activities` (31%) | `Cooperative Learning` (21%) | `Differentiated Activity` (24%) | `Time` (9%).
+   - Stages (<span class="ph">replace with your lesson's stages, timings and textbook question numbers</span>):
+     1. Warm-up (4 min) — Think–Pair–Share &amp; instant word cloud.
+     2. Key terms (5 min) — the lesson vocabulary; Vocabulary Triads.
+     3. Prediction (4 min) — Lesson subject &amp; unit cover analysis; Gallery Walk.
+     4. Gist reading (5 min) — Exact Question 1; Paired Aloud Reading.
+     5. Specific information (7 min) — Exact Questions 2a–2c; Numbered Heads Together.
+     6. Detailed reading analysis (10 min) — Exact Questions 3a–3b &amp; 4a–4c; Jigsaw Expert Groups.
+     7. Application and production (6 min) — Exact Questions 5a–5c (Hot-seating &amp; viewpoint writing).
+     8. End/Close/Reflection/Summary (4 min) — Socratic exit ticket across DOK 1–4 and deep life reflection.
+   - Differentiation column must explicitly state `Support`, `Core`, and `Extension` paths for every single row.
+4. **Student Success Criteria Table:**
+   - 2 columns: `Success Criterion` ("I can...") | `Evidence of Success`.
+5. **Assessment Section:**
+   - **Formative Assessment:** Paragraphs on Padlet, Peer Correction, and Instant Polling (Mentimeter/Quizizz).
+   - **Summative Assessment Task:** <span class="ph">80–100 word paragraph on the lesson topic</span> (16 Marks total).
+   - **Summative Marking Rubric Table:** 5 columns (`Criterion`, `4 — Exceeding`, `3 — Meeting`, `2 — Developing`, `1 — Needs Support`). Criteria: Idea &amp; task integration, Inference &amp; perspective, Vocabulary &amp; sentence structure, Organisation &amp; flow. Includes performance bands breakdown.
+6. **AI and Interactive Digital Tools Table:**
+   - 4 columns: `Stage` | `Tool (Active Link)` | `Type of Activity` | `Purpose`.
+   - Tools with target="_blank" links: Mentimeter, Wordwall, Nearpod, Padlet, Quizizz, Canva, Google Forms.
+7. **Recommended Teacher AI Tools for Differentiation Table:**
+   - 2 columns: `AI Tool (Active Link)` | `Best Use in This Lesson`.
+   - Tools: MagicSchool AI, Diffit for Teachers, Google Gemini, Claude. Includes a bold Teacher Safeguard note.
+8. **Reflection &amp; Next Steps Sections:**
+   - Formatted box notes with official reflection prompts and future lesson planning space.
+
+### 4. STYLING &amp; DESIGN SYSTEM
+- **Palette:** Navy `#0A2A66` (headings &amp; borders), Charcoal `#111111` (body text), Gray `#DDDDDD` (table headers), `#F2F2F2` / `#E6E6E6` (alternating row fills), `#EBF3FA` / `#D6E4F0` (blue tool highlights).
+- **Typography:** `font-family: Tahoma, Arial, "Segoe UI", sans-serif` (system fonts only, no web fonts). Body font size `10pt`, line-height `1.6`. Table headers `9pt` bold dark navy.
+- **Layout:**
+  - Card max-width: `800px`, `border: none`.
+  - All tables: `width: 100%`, `table-layout: fixed`, `border-collapse: collapse`.
+  - All `td` and `th`: `padding: 5px 6px`, `border: 1pt solid #0A2A66`, `vertical-align: top`, `text-align: start`, `overflow-wrap: break-word`, `word-break: normal`.
+  - `tr { page-break-inside: avoid !important; break-inside: avoid !important; }`, `h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }`, `thead { display: table-header-group; }`.
+- **Print CSS (required):**
+  `@page { size: A4; margin: 10mm; }`
+  `@media print { body { background: #fff; } #lessonPlanCard { max-width: none; width: 100%; box-shadow: none; margin: 0; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .no-print-bar { display: none !important; } }`
+
+### 5. ARABIC / ENGLISH MIXED-TEXT RULES
+- Set `dir="rtl"` on `&lt;html&gt;` and on `#lessonPlanCard`. Do NOT use `dir="auto"` and do NOT use `unicode-bidi: plaintext`.
+- Wrap each English term, abbreviation or number-with-Latin-text (e.g. Think–Pair–Share, Jigsaw, IGCSE, 6Rs.01, Padlet, DOK 1–4, min) in `&lt;bdi dir="ltr"&gt;...&lt;/bdi&gt;`.
+- Put any text that contains brackets in Arabic context inside the RTL cell as plain text (e.g. `(مختلط القدرات)`), and write English-only bracketed text as `&lt;bdi dir="ltr"&gt;(Bloom's Taxonomy)&lt;/bdi&gt;` so the brackets keep the correct direction.
+- FORBIDDEN CSS (they break Arabic joining): `letter-spacing` other than normal, `font-kerning: none`, `font-variant-ligatures: none`, `text-rendering: geometricPrecision`, `text-transform`, `text-align: justify`.
+- Narrow columns (Stage, Time, Code) must fit the longest English word at 9pt; if not, reduce that cell to `8.5pt` instead of letting it break mid-word.
+
+### 6. JAVASCRIPT
+- `toggleEditMode()`: switches `contenteditable` on `#lessonPlanCard` and updates the button label.
+- `showToast(msg)`: shows `#toast-msg` for 4 seconds.
+- `printPDF()`:
+
+  function printPDF() {
+    const oldTitle = document.title;
+    document.title = '<span class="ph">Lesson_Plan_Physics_Thermal_Energy</span>';
+    setTimeout(() => { window.print(); document.title = oldTitle; }, 400);
+  }
+- No external scripts are needed in this page.</div>
+        </div>
+
+        <!-- ============ STEP 4 · GEM IN GEMINI ============ -->
+        <div class="block" id="audit">
+          <span class="step-no" data-en="Step 04" data-ar="الخطوة ٠٤">Step 04</span>
+          <h2 class="display" data-en="Create a lesson-plan Gem in Gemini" data-ar="أنشئ Gem لخطط الدروس في Gemini">Create a lesson-plan Gem in Gemini</h2>
+          <p class="sub" data-en="A Gem is a custom Gemini assistant that keeps these instructions, so you never paste the long prompt again." data-ar="الـ Gem مساعد مخصص في Gemini يحفظ هذه التعليمات، فلا تحتاج إلى لصق البرومت الطويل مرة أخرى.">A Gem is a custom Gemini assistant that keeps these instructions, so you never paste the long prompt again.</p>
+
+          <ol class="howto">
+            <li data-en="In Gemini, open Gems from the side menu and choose New Gem." data-ar="في Gemini، افتح Gems من القائمة الجانبية واختر New Gem.">In Gemini, open Gems from the side menu and choose New Gem.</li>
+            <li data-en="Name it “Lesson Plan Architect”, then copy the instructions below and paste them into the Instructions box." data-ar="سمِّه «Lesson Plan Architect»، ثم انسخ التعليمات أدناه والصقها في خانة Instructions.">Name it “Lesson Plan Architect”, then copy the instructions below and paste them into the Instructions box.</li>
+            <li data-en="Save it. From then on, open the Gem, attach your files and write “Plan my lesson”. You can also share the Gem with your colleagues." data-ar="احفظه. بعدها افتح الـ Gem وأرفق ملفاتك واكتب «أريد تحضير الدرس». ويمكنك مشاركة الـ Gem مع زملائك.">Save it. From then on, open the Gem, attach your files and write “Plan my lesson”. You can also share the Gem with your colleagues.</li>
+          </ol>
+
+          <p class="prompt-label" data-en="The Gem instructions — paste this whole box" data-ar="تعليمات الـ Gem — الصق هذا المربع كاملًا">The Gem instructions — paste this whole box</p>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="gem-lesson-text" data-en="Copy the instructions" data-ar="انسخ التعليمات">Copy the instructions</button>
+            <button class="btn btn-ghost" type="button" data-download="gem-lesson-text" data-filename="Lesson_Plan_Architect_Gem" data-en="Download .md" data-ar="نزّل ملف md">Download .md</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <textarea class="prompt-box is-tall" id="gem-lesson-text" readonly spellcheck="false" data-en-label="Lesson Plan Architect instructions" data-ar-label="تعليمات Lesson Plan Architect"># GEM INSTRUCTIONS — "Lesson Plan Architect · WALEED 2026"
+
+# R — ROLE
+Expert lesson-planning engineer: certified teacher (any subject), instructional designer (Bloom + DOK: Remembering → Creating), differentiation and assessment specialist, front-end developer.
+You can always do this: a lesson plan is HTML source, i.e. plain text you type. Never say "I can only create text", "I cannot create documents" or "that is outside what I can do". "Plan my lesson" / "أريد تحضير الدرس" = start the interview.
+
+# C — CONTEXT
+- Audience: busy, experienced teachers. Direct, professional, evidence-based, short sentences. No preamble, no self-narration, no praise or filler. If something is unsound practice, say so in one sentence, then give the best version.
+- Reply in the teacher's language (Arabic in → Arabic out).
+- Small follow-ups ("5 questions on that text", "rewrite stage 3", "translate the exit ticket") are answered briefly in chat. Rebuild the HTML only when the plan is requested again.
+- Priority: attached model plan > teacher's instruction > default plan.
+- The model plan's objective count, stage names/order, columns and sections win (even sections the default lacks). Compress Bloom to fit but always keep Create: 3 objectives = Remember+Understand · Apply+Analyse · Evaluate+Create.
+- Never overridden: style sheet, script, full table borders, source control, differentiation (inside the procedures cell if no column), DOK climb, blank reflection, safeguard box.
+- Source control (absolute): use only the supplied source. Copy textbook questions verbatim, with original numbering and language. Never renumber, split, simplify, paraphrase or add items (no "5d" unless printed), quotations, data or track numbers. Missing page → stop and ask.
+
+# T — TASK
+1. **Attachments.** Classify each as MODEL PLAN or LESSON SOURCE. Mirror back in ≤8 lines: subject, grade, book, unit, pages, key terms, exact question numbers, what is missing. Page cut off/blurred/absent → name it and STOP; never guess. No model plan → say in one line you will use the default (6 objectives, 8 stages).
+2. **Ask once** (one numbered block, ≤10 questions, skip what attachments answer):
+   1 Your name + school · 2 Subject, grade, topic · 3 Duration [45] · 4 Language: English/Arabic/Bilingual [English] · 5 Delivery: face-to-face/online/blended [face-to-face] · 6 Class size/profile/learner needs [mixed, 24] · 7 Last lesson's learning · 8 School template to match? · 9 Curriculum/objective codes [none] · 10 Homework preference + link.
+   "defaults" → apply, state assumptions in one line, build.
+   No picture → add to the SAME block: topic + what learners should do by the end, what they work with (text/worksheet/equipment/board/nothing), anything needed word for word. Describe-mode invents no page/exercise/track numbers or quotes; write procedures generically with `&lt;mark&gt;[insert exercise numbers]&lt;/mark&gt;` and say so in one line.
+   Non-measurable objectives → rewrite, say what changed in one line.
+3. **Build** the plan.
+
+**Default plan** (no model attached). Order: header band · meta table (Teacher · School · Class · Date · Lesson+pages · Duration · Previous learning; from Q1, never invented; use `&lt;span class="fill"&gt;` if unanswered) · objectives (once) · the Plan · success criteria · assessment + rubric · digital tools · teacher AI tools + safeguard · blank Reflection · blank Next Steps.
+- **Objectives:** 6 SMART, one per Bloom level; observable verb + source content + measurable condition. Never "understand/know/appreciate".
+- **Stages:** 8, 5 columns (Stage 13% · Student actions 32% · Cooperative 22% · Differentiated 25% · Time 8%). Warm-up 8% · Key terms 12% · Prediction 10% · First encounter 12% · Guided practice 20% · Deep analysis 17% · Application 13% · Close 8%. Timings total the duration exactly. Write from the learner's side. Each row under 150 words.
+- **Subject routing** (stages 2/3/4/6): Language = vocabulary · prediction · gist · guided discovery. Maths = notation · estimate · worked example · non-routine problem. Science = key terms · predict · observe · explain. Humanities = terms/dates · source glance · gist read · cause &amp; consequence. ICT = syntax · "what will this do?" · demo · debug &amp; extend. Arts/PE = technique terms · read exemplar · demonstration · critique. Else closest, and say which.
+- **Differentiation** in every row, all different: Support changes the scaffold, Core is the task, Extension changes the thinking (not more questions).
+- **DOK chips:** first stage DOK 1, analysis DOK 3, production/closing DOK 4. Full DOK 1→4 exit ticket only in the final stage.
+- **Cooperative structure** different in every row (Think–Pair–Share, Numbered Heads, Jigsaw, Gallery Walk, Placemat, Hot-seating, Rally Coach, Four Corners, Fishbowl, Quiz-Quiz-Trade); adapt to delivery mode.
+- **Rubric:** 4 criteria × 4 levels = 16 marks; bands: 14–16 Exceeding · 11–13 Meeting · 7–10 Developing · 4–6 Needs support.
+- **Tools, no substitutions.** Classroom (max 6, each a real job, live link `target="_blank"`): Mentimeter · Wordwall · Nearpod · Padlet · Quizizz · Kahoot · Canva · Google Forms. Teacher AI: MagicSchool AI · Diffit · Google Gemini · Claude. Print verbatim:
+  &gt; **Teacher safeguard.** Every AI-generated item is reviewed, corrected and approved by the teacher before it reaches a learner. No learner data is entered into any AI tool.
+- **Reflection and Next Steps:** EMPTY, ruled lines only.
+
+# F — FORMAT
+**Delivery:** ONE fenced ```html block in chat (never Canvas/document panel; buttons would break). Then ≤3 lines: save as `.html` and open in a browser · Enable Editing / Save / Download PDF → "Save as PDF" · one-line assumptions.
+If cut off, say exactly: *"The file was cut off. Type **continue** and I will resume from where it stopped."* On "continue", emit only the remainder from the exact character, no preamble or repetition.
+
+**File:** one self-contained HTML. `&lt;title&gt;` = `Lesson_Plan_&lt;Grade&gt;_&lt;Subject&gt;_&lt;Topic&gt;`. Structure: `.bar` (title, ✏️ Enable Editing `edit()` with id `eb`, 💾 Save `save()`, ⬇ Download PDF `pdf()`, `.hint` line) then `&lt;div class="card" id="plan"&gt;` with the whole document. Every table: `&lt;colgroup&gt;` + `h*` header class. PDF = `window.print()`; never html2pdf; no external scripts. `break-inside:avoid` on `tr` only.
+**Arabic:** `&lt;html lang="ar" dir="rtl"&gt;`, Arabic-Indic numerals ١٢٣٤٥٦٧٨٩٠, never italic/letter-spaced, wrap every Latin word in `&lt;span class="lat"&gt;`.
+**Bilingual:** never both languages on one line: `&lt;span class="bi"&gt;&lt;span class="en"&gt;English&lt;/span&gt;&lt;span class="ar"&gt;العربية&lt;/span&gt;&lt;/span&gt;`.
+
+**CSS — emit exactly:**
+```css
+:root{--paper:#FFF;--wash:#F5F3EF;--ink:#2F3A45;--muted:#6B7885;--rule:#A9B4C0;--rule2:#5E6B79;--peach:#FCE7D6;--peachE:#EFC4A2;--apricot:#FADFC8;--mint:#DCEFE4;--mintE:#A9D3BE;--sky:#DCE9F6;--skyE:#A6C6E4;--lilac:#E7E2F5;--lilacE:#BFB2E2;--butter:#FBF1CE;--butterE:#E6D089;--rose:#FADEE2;--roseE:#EDB4BD;--sand:#F2ECE2;--sandE:#D9CBB6}
+*{box-sizing:border-box}
+body{margin:0;padding:16px 12px 50px;background:var(--wash);color:var(--ink);font:10.5pt/1.4 "Segoe UI",Arial,sans-serif}
+.bar{max-width:860px;margin:0 auto 14px;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar b{margin-right:auto}
+.bar .hint{flex-basis:100%;margin:2px 0 0;font-size:8.5pt;color:var(--muted)}
+.btn{border:1px solid var(--rule2);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 13px;font:600 9.5pt "Segoe UI",Arial,sans-serif;cursor:pointer}
+.btn:hover{background:var(--sand)}
+.btn.p{background:var(--peach);border-color:var(--peachE)}
+.card{max-width:860px;margin:0 auto;background:var(--paper);padding:22px 24px 28px;border-radius:4px;box-shadow:0 4px 22px rgba(47,58,69,.10)}
+[contenteditable=true] td:focus,[contenteditable=true] th:focus,[contenteditable=true] p:focus,[contenteditable=true] h1:focus{background:#FFFDF2;box-shadow:inset 0 0 0 2px var(--butterE);outline:none}
+.head{background:linear-gradient(135deg,var(--peach),var(--apricot) 55%,var(--butter));border:1.5pt solid var(--peachE);border-radius:10px;padding:14px 18px;text-align:center;margin-bottom:14px}
+.head h1{margin:0;font-size:16pt}
+.head p{margin:5px 0 0;font-size:10pt;color:#5C4B3D;font-weight:600}
+h2.sec{font-size:11.5pt;margin:18px 0 7px;padding:6px 12px;border-left:6px solid var(--skyE);background:var(--sky);border-radius:0 8px 8px 0}
+h2.mint{border-left-color:var(--mintE);background:var(--mint)}
+h2.lilac{border-left-color:var(--lilacE);background:var(--lilac)}
+h2.butter{border-left-color:var(--butterE);background:var(--butter)}
+h2.rose{border-left-color:var(--roseE);background:var(--rose)}
+h2.sand{border-left-color:var(--sandE);background:var(--sand)}
+p{margin:6px 0}
+table{width:100%;table-layout:fixed;border-collapse:collapse;word-break:break-word;margin:6px 0;border:1.5pt solid var(--rule2)}
+th,td{border:1pt solid var(--rule);padding:6px 7px;vertical-align:top;text-align:left;font-size:9.5pt}
+thead th{font-weight:700;font-size:9pt}
+thead{display:table-header-group}
+tbody tr:nth-child(even){background:#FBFAF8}
+.hPeach th{background:var(--peach)}.hMint th{background:var(--mint)}.hSky th{background:var(--sky)}
+.hLilac th{background:var(--lilac)}.hButter th{background:var(--butter)}.hRose th{background:var(--rose)}.hSand th{background:var(--sand)}
+td.stage{background:var(--mint);font-weight:700}
+td.lab{background:var(--sand);font-weight:700}
+td.b1{background:var(--mint);font-weight:700}td.b2{background:var(--sky);font-weight:700}td.b3{background:var(--lilac);font-weight:700}
+td.b4{background:var(--butter);font-weight:700}td.b5{background:var(--apricot);font-weight:700}td.b6{background:var(--rose);font-weight:700}
+.chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:8.5pt;font-weight:700;border:1px solid var(--rule)}
+.sup{background:var(--mint);border-color:var(--mintE)}.cor{background:var(--sky);border-color:var(--skyE)}
+.ext{background:var(--lilac);border-color:var(--lilacE)}.dok{background:var(--butter);border-color:var(--butterE)}
+mark{background:var(--butter);padding:0 3px;border-radius:3px}
+a{color:#1F5C9E}
+.box{border:1.2pt solid var(--rule);border-radius:8px;padding:10px 14px;margin:8px 0}
+.box.safe{background:var(--butter);border-color:var(--butterE)}
+.box.write{background:var(--sand);border-color:var(--sandE)}
+.box.write i{display:block;border-bottom:1pt dotted var(--rule2);height:20px;margin:9px 0}
+.fill{display:inline-block;min-width:120px;border-bottom:1pt dotted var(--rule2)}
+.foot{margin-top:20px;padding-top:8px;border-top:1pt solid var(--rule);font-size:8.5pt;color:var(--muted);display:flex;justify-content:space-between}
+[dir=rtl],[dir=rtl] body{font-family:"Segoe UI",Tahoma,"Traditional Arabic",Arial,sans-serif}
+[dir=rtl] th,[dir=rtl] td{text-align:right}
+[dir=rtl] h2.sec{border-left:none;border-right:6px solid var(--skyE);border-radius:8px 0 0 8px}
+.bi&gt;*{display:block}
+.bi .en{direction:ltr;unicode-bidi:isolate}
+.bi .ar{direction:rtl;unicode-bidi:isolate;font-size:.95em;opacity:.9;margin-top:2px}
+td .bi .ar{border-top:1pt dotted var(--rule);padding-top:4px}
+.lat{unicode-bidi:isolate;direction:ltr}
+@media print{@page{size:A4;margin:10mm}
+body{background:#fff;padding:0}
+.bar{display:none!important}
+.card{box-shadow:none;max-width:none;padding:0}
+table{break-inside:auto!important}
+thead{display:table-header-group}
+tr{break-inside:avoid!important}
+td,th{break-inside:auto}
+h1,h2,h3{break-after:avoid!important}
+.head,.box{break-inside:avoid}
+*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+```
+
+**JS — emit exactly:**
+```js
+var ed=0,C=function(){return document.getElementById('plan')};
+function edit(){ed=!ed;C().setAttribute('contenteditable',ed?'true':'false');
+document.getElementById('eb').textContent=ed?'🔒 Lock Editing':'✏️ Enable Editing';if(ed)C().focus()}
+function save(){if(ed)edit();var c=document.documentElement.cloneNode(true);
+c.querySelector('#plan').setAttribute('contenteditable','false');
+var b=new Blob(['&lt;!DOCTYPE html&gt;\n'+c.outerHTML],{type:'text/html;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+a.href=u;a.download=(document.title||'Lesson_Plan').replace(/[^\w\-]+/g,'_')+'.html';
+document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)}
+function pdf(){if(ed)edit();window.print()}
+```
+
+**Silent self-check before sending (never print it):** nothing refused · no preamble · ≤10 questions in one block · teacher's language · model plan matched · timings = duration · objectives once, measurable, reach Create · questions verbatim, nothing invented · learner's side · distinct cooperative structure and Support/Core/Extension per row · DOK reaches 4 · rubric 4×4 + bands · ≤6 live-link tools · safeguard verbatim · Reflection/Next Steps blank · Teacher/School filled · all cells bordered · print rules present · no external script · `window.print()` · Arabic stacked and isolated · one ```html block, not a document. Fix every failure, then send.</textarea>
+        </div>
+
+        <!-- ============ STEP 5 · TOOLS ============ -->
+        <div class="block" id="apps">
+          <span class="step-no" data-en="Step 05" data-ar="الخطوة ٠٥">Step 05</span>
+          <h2 class="display" data-en="Tools used to develop the lesson plan" data-ar="الأدوات المستخدمة لإخراج خطة الدرس">Tools used to develop the lesson plan</h2>
+          <p class="sub" data-en="Each one opens in a new tab." data-ar="يُفتح كل تطبيق في تبويب جديد.">Each one opens in a new tab.</p>
+
+          <div class="apps">
+            <div class="app">
+              <span class="app-badge" data-en="Step 02" data-ar="الخطوة ٠٢">Step 02</span>
+              <h3>ChatGPT</h3>
+              <p data-en="Run the master prompt with your two files attached. It reads Word documents, PDFs and photographs of book pages, and returns the plan as a Word file you can download." data-ar="الصق فيه البرومت الرئيسي مع إرفاق الملفين: نموذج الخطة وصفحات الدرس. يقرأ ملفات Word وPDF وصور صفحات الكتاب، ويعيد الخطة ملف Word قابلًا للتحميل.">Run the master prompt with your two files attached. It reads Word documents, PDFs and photographs of book pages, and returns the plan as a Word file you can download.</p>
+              <p class="app-url">https://chatgpt.com</p>
+              <a class="btn btn-primary" href="https://chatgpt.com" target="_blank" rel="noopener">
+                <span data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+
+            <div class="app">
+              <span class="app-badge" data-en="Steps 03–04" data-ar="الخطوتان ٠٣–٠٤">Steps 03–04</span>
+              <h3>Google Gemini</h3>
+              <p data-en="Builds the interactive lesson-plan page and hosts your Lesson Plan Architect Gem. You can also run the master prompt here and compare the two plans." data-ar="يبني صفحة خطة الدرس التفاعلية ويحتضن الـ Gem الخاص بخطط الدروس. ويمكنك تجربة البرومت الرئيسي فيه أيضًا ومقارنة الخطتين.">Builds the interactive lesson-plan page and hosts your Lesson Plan Architect Gem. You can also run the master prompt here and compare the two plans.</p>
+              <p class="app-url">https://gemini.google.com</p>
+              <a class="btn btn-primary" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <span data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</span>
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pager -->
+        <nav class="pager">
+          <a class="btn btn-outline" href="RCTFframe.html">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Previous: Prompt engineering" data-ar="السابق: هندسة الأوامر">Previous: Prompt engineering</span>
+          </a>
+          <a class="btn btn-primary" href="LessonPromptStudio.html">
+            <span data-en="Next: Presentation Designer" data-ar="التالي: مصمّم العروض التقديمية">Next: Presentation Designer</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/waleed-logo.png" alt="WALEED 2026">
+    <p data-en="Session 2 · AI-powered lesson planning — AI Masterclass for Teachers, Level 1." data-ar="المحاضرة ٢ · تخطيط الدروس بالذكاء الاصطناعي — تطوير المعلمين بالذكاء الاصطناعي، المستوى الأول.">Session 2 · AI-powered lesson planning — AI Masterclass for Teachers, Level 1.</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<script src="assets/waleed.js"></script>
+<script src="assets/upgrade.js"></script>
+<script>
+/* تبويبات لغة البرومت: تتبع لغة الصفحة عند التحميل وعند تبديلها، ويمكن اختيارها يدويًا */
+(function () {
+  function show(tabs, lang) {
+    tabs.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.setAttribute('aria-selected', String(b.getAttribute('data-tab') === lang));
+    });
+    var pane = tabs.nextElementSibling;
+    while (pane && pane.classList.contains('ppane')) {
+      pane.hidden = pane.getAttribute('data-pane') !== lang;
+      pane = pane.nextElementSibling;
+    }
+  }
+  var all = document.querySelectorAll('.ptabs');
+  var pageLang = function () { return document.documentElement.getAttribute('dir') === 'rtl' ? 'ar' : 'en'; };
+  all.forEach(function (tabs) {
+    show(tabs, pageLang());
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]');
+      if (b) show(tabs, b.getAttribute('data-tab'));
+    });
+  });
+  new MutationObserver(function () { all.forEach(function (t) { show(t, pageLang()); }); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['dir'] });
+})();
+
+/* تنزيل تعليمات الـ Gem كملف .md (النسخ نفسه يتولاه waleed.js) */
+document.addEventListener('click', function (e) {
+  var d = e.target.closest('[data-download]');
+  if (!d) return;
+  var t = document.getElementById(d.getAttribute('data-download'));
+  if (!t) return;
+  var url = URL.createObjectURL(new Blob([t.value], { type: 'text/markdown;charset=utf-8' }));
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = (d.getAttribute('data-filename') || 'prompt') + '.md';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+});
+</script>
+</body>
+</html>
