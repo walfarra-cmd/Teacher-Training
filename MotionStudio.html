@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motion Studio · استوديو الموشن جرافيك</title>
+<link href="assets/logo.png" type="image/x-icon" rel="icon">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Anton&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120c47;--bg-2:#170f55;--surface:#1b1464;--surface-2:#251c80;--line:#3a31a0;--line-soft:#2d2590;--ink:#fff;--ink-2:#d6dcf5;--muted:#a3b5b2;--cyan:#29bfe8;--lime:#8bdd28;--navy:#1b1464;--red:#ff5b5b;--r:12px;--ar:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--ar);min-height:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--lime);color:var(--navy)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.topbar{background:rgba(27,20,100,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft);position:sticky;top:0;z-index:8}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;direction:ltr}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:Anton,Impact,sans-serif;letter-spacing:.04em;color:var(--lime);font-size:19px}
+.brand img{height:42px;width:auto;display:block}
+.brand small{font:500 12px var(--mono);color:var(--cyan);margin-inline-start:10px;letter-spacing:.1em}
+.acts{display:flex;gap:8px;align-items:center}.acts .btn{margin:0;white-space:nowrap}.acts svg{width:17px;height:17px;flex:none}
+a.btn{text-decoration:none;color:inherit}
+html[lang=en] .hero h1,html[lang=en] .phead h2{font-family:Anton,Impact,sans-serif;font-weight:400;letter-spacing:.01em}
+@media(max-width:700px){.brand small{display:none}}
+.hero{position:relative;overflow:hidden;padding:46px 0 34px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none}
+.o1{width:300px;height:300px;background:var(--cyan);top:-120px;inset-inline-start:-60px}
+.o2{width:260px;height:260px;background:var(--lime);opacity:.22;bottom:-130px;inset-inline-end:8%}
+.eyebrow{font:500 13px var(--mono);letter-spacing:.14em;color:var(--cyan);margin:0 0 10px}
+html[dir=rtl] .eyebrow{font-family:var(--ar);letter-spacing:0;font-weight:700;font-size:15px}
+.hero h1{position:relative;margin:0 0 12px;font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.35;color:var(--lime)}
+.hero p.lede{position:relative;margin:0;max-width:66ch;color:var(--ink-2);font-size:18px}
+.flow{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.flow span{border:1px solid var(--line);background:var(--bg-2);border-radius:999px;padding:6px 14px;font-size:13.5px;color:var(--ink-2)}
+.flow span.e{background:var(--lime);color:var(--navy);border-color:var(--lime);font-weight:700}
+.steps{display:flex;gap:6px;padding:8px;background:rgba(27,20,100,.88);border:1px solid var(--line-soft);border-radius:18px;margin-bottom:22px}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 12px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;color:var(--ink-2);font-weight:700}
+.step .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--mono);background:var(--surface-2);color:var(--lime);flex:none}
+.step.on{background:rgba(139,221,40,.12);border-color:var(--line);color:var(--ink)}.step.on .n{background:var(--lime);color:var(--navy)}
+.panel{background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:34px;margin-bottom:60px}
+.panel[hidden]{display:none}
+.phead h2{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);color:var(--lime);line-height:1.4}
+.phead p{margin:0 0 6px;color:var(--ink-2)}
+h3.sec{margin:30px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line-soft);font-size:16px;color:var(--cyan)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px 16px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}.f.w{grid-column:1/-1}
+label{font-size:13px;font-weight:600;color:var(--ink-2)}
+.h{font-weight:400;color:var(--muted);font-size:12px}
+input[type=text],input[type=number],select,textarea{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 13px;width:100%;min-height:44px;font-size:15px}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+select option{background:#1b1464;color:#fff}
+input[type=file]{width:100%;background:var(--bg-2);border:1.5px dashed var(--line);border-radius:var(--r);padding:12px;font-size:13px;color:var(--muted)}
+.pv{display:none;align-items:center;gap:10px;margin-top:6px;font-size:12.5px;color:var(--muted)}.pv.on{display:flex}.pv img{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg-2);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px}
+.chip:has(input:checked){border-color:var(--lime);color:var(--lime);background:rgba(139,221,40,.1)}
+.chip input{accent-color:var(--lime);width:16px;height:16px;margin:0}
+.ty .chip{padding:10px 16px;font-weight:700}.ty .chip input{position:absolute;opacity:0;pointer-events:none}.ty .chip i{font-style:normal;font-size:20px}
+.ty .chip:focus-within{outline:2px solid var(--cyan);outline-offset:2px}
+.row{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}.row.end{justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 20px;border-radius:12px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:700;transition:transform .16s,box-shadow .16s,background .16s}
+.btn:hover{box-shadow:0 8px 22px rgba(41,191,232,.3);transform:translateY(-1px)}
+.btn.p{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+.btn.sm{min-height:38px;padding:6px 14px;font-size:14px}
+.btn.c{border-color:var(--cyan);color:var(--cyan);min-height:34px;padding:4px 13px;font-size:13px}
+.btn.rec{border-color:var(--red);color:var(--red)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{background:transparent;border:0;padding:9px 18px;cursor:pointer;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--cyan);color:var(--navy)}
+.blk{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:var(--surface-2);border-bottom:1px solid var(--line-soft)}
+.bh b{font-size:14px;color:var(--lime)}
+.ba{display:flex;gap:6px;flex-wrap:wrap}
+.bf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
+pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font:13.5px/1.9 var(--ar);color:var(--ink-2);max-height:420px;overflow:auto}
+pre.rtl{direction:rtl;text-align:right}pre.ltr{direction:ltr;text-align:left;font-family:var(--mono);font-size:12.5px}
+.note{background:var(--bg-2);border:1px solid var(--line-soft);border-inline-start:4px solid var(--cyan);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
+.note.warn{border-inline-start-color:var(--lime)}
+.note[hidden]{display:none}
+.note ol{margin:6px 0 0;padding-inline-start:20px}
+.scs{display:grid;gap:10px;margin-top:16px}
+.sc{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:start;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:14px;padding:12px 16px}
+.sc .e{font-size:34px;line-height:1.2;grid-row:span 2}
+.sc small{font:500 12px var(--mono);color:var(--cyan)}
+.sc b{color:var(--lime);font-size:16px;margin-inline-start:6px}
+.sc p{margin:0;color:var(--ink-2);font-size:14px}
+.ai{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--ink-2)}
+.ai audio{height:40px;max-width:100%}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block;animation:bl 1s infinite}@keyframes bl{50%{opacity:.2}}
+.times{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.times .f label{font-size:12px}
+.times input[readonly]{opacity:.55}
+.tap{margin-top:16px;background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:18px}
+.tap[hidden]{display:none}
+.tapnow{font-size:15px;color:var(--ink-2);margin:0 0 12px}.tapnow b{color:var(--lime)}
+.tapbtn{width:100%;min-height:96px;font-size:22px}
+#stage{margin-top:18px}
+details.pro{margin-top:30px;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:16px;padding:6px 18px}
+details.pro summary{cursor:pointer;font-weight:700;color:var(--cyan);padding:10px 0}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;max-width:90vw;background:var(--lime);color:var(--navy);font-weight:700;padding:10px 22px;border-radius:999px;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;z-index:20;text-align:center}
+.toast.on{opacity:1;transform:none}
+@media(max-width:700px){.panel{padding:22px}.step .t{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+<a class="brand" href="index.html"><img src="assets/waleed1-logo.png" alt="Waleed 2026" onerror="this.style.display='none'"><span>MOTION STUDIO<small>PROMPT + ENGINE</small></span></a>
+<div class="acts"><a class="btn sm" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span data-en="Home page">الرئيسية</span></a><button class="btn sm" id="ui" type="button" title="English / العربية">English</button></div>
+</div></header>
+
+<div class="hero"><i class="orb o1"></i><i class="orb o2"></i><div class="wrap">
+<p class="eyebrow" id="eb">الخطوة 1 — بيانات الإعلان</p>
+<h1 data-en="Motion Graphics Announcement Studio">استوديو الموشن جرافيك للإعلانات المدرسية</h1>
+<p class="lede" data-en="Describe the announcement once: a school trip, a competition, karate training, the exam timetable… You get an RCTF prompt that writes the script in Arabic or English, a voice-over prompt, and then the studio turns the voice and the script into synced animated scenes that you export as a video.">صِف الإعلان مرة واحدة: رحلة مدرسية، مسابقة، تدريب كاراتيه، موعد الاختبارات… فتحصل على برومت RCTF يكتب السيناريو بالعربية أو الإنجليزية، وبرومت للتعليق الصوتي، ثم يحوّل الاستوديو الصوت والسيناريو إلى مشاهد متحركة متزامنة تصدّرها فيديو.</p>
+<div class="flow"><span data-en="Announcement details">بيانات الإعلان</span><span data-en="RCTF script">سيناريو RCTF</span><span data-en="Voice-over">التعليق الصوتي</span><span data-en="Synced motion">موشن متزامن</span><span class="e" data-en="Ready video">فيديو جاهز</span></div>
+</div></div>
+
+<main class="wrap">
+<nav class="steps">
+<button class="step on" data-go="0"><span class="n">1</span><span class="t" data-en="Announcement">الإعلان</span></button>
+<button class="step" data-go="1"><span class="n">2</span><span class="t" data-en="Script">السيناريو</span></button>
+<button class="step" data-go="2"><span class="n">3</span><span class="t" data-en="Voice-over">التعليق الصوتي</span></button>
+<button class="step" data-go="3"><span class="n">4</span><span class="t" data-en="Motion & export">الموشن والتصدير</span></button>
+</nav>
+
+<!-- Step 1 -->
+<section class="panel" id="p0">
+<div class="phead"><h2 data-en="Announcement details">بيانات الإعلان</h2><p data-en="Fill in only what you know. The prompt forbids the AI from inventing any date, price or number you did not write.">املأ ما تعرفه فقط؛ فالبرومت يمنع الذكاء الاصطناعي من اختراع أي تاريخ أو سعر أو رقم لم تكتبه.</p></div>
+<h3 class="sec" data-en="Announcement type">نوع الإعلان</h3>
+<div class="chips ty" id="types"></div>
+<div class="g" id="otherBox" style="margin-top:14px"><div class="f w"><label for="oth"><span data-en="Announcement type in detail">نوع الإعلان بالتفصيل</span> <span class="h" data-en="filled in automatically; edit it to be more specific, e.g. Mid-term exams for the first term">يُعبّأ تلقائيًا، وعدّله لتفصيل أدق، مثل: اختبارات منتصف الفصل الأول</span></label><input type="text" id="oth" placeholder="مثال: حملة تبرع بالكتب" data-en-ph="e.g. Book donation drive"></div></div>
+<h3 class="sec" data-en="The details">التفاصيل</h3>
+<div class="g">
+<div class="f w"><label for="ti"><span data-en="Event title">عنوان الفعالية</span> <span class="h" data-en="required">مطلوب</span></label><input type="text" id="ti"></div>
+<div class="f"><label for="org" data-en="School or organizer">المدرسة أو الجهة المنظِّمة</label><input type="text" id="org"></div>
+<div class="f"><label for="logo"><span data-en="Logo">الشعار</span> <span class="h" data-en="optional, appears in the video">اختياري، يظهر في الفيديو</span></label><input type="file" id="logo" accept="image/*"><div class="pv" id="pvl"></div></div>
+<div class="f"><label for="dt" data-en="Date">التاريخ</label><input type="text" id="dt" placeholder="الخميس 15 نوفمبر" data-en-ph="Thursday 15 November"></div>
+<div class="f"><label for="tm" data-en="Time">الوقت</label><input type="text" id="tm" placeholder="7:30 صباحًا" data-en-ph="7:30 am"></div>
+<div class="f"><label for="pl" data-en="Place">المكان</label><input type="text" id="pl"></div>
+<div class="f"><label for="au" data-en="Audience">الفئة المستهدفة</label><input type="text" id="au" placeholder="طلاب الصف السادس" data-en-ph="Grade 6 students"></div>
+<div class="f w"><label for="de"><span data-en="Highlights">التفاصيل والمزايا</span> <span class="h" data-en="one per line">كل معلومة في سطر</span></label><textarea id="de"></textarea></div>
+<div class="f w"><label for="rq"><span data-en="What participants need">المطلوب من المشاركين</span> <span class="h" data-en="one per line, optional">كل بند في سطر، اختياري</span></label><textarea id="rq" placeholder="موافقة ولي الأمر&#10;وجبة خفيفة وماء" data-en-ph="Parent consent form&#10;A snack and water"></textarea></div>
+<div class="f"><label for="rg" data-en="Registration or contact">التسجيل أو التواصل</label><input type="text" id="rg" placeholder="لدى رائد النشاط قبل الثلاثاء" data-en-ph="With the activities lead before Tuesday"></div>
+<div class="f"><label for="ct"><span data-en="Closing line">عبارة الختام</span> <span class="h" data-en="optional">اختياري</span></label><input type="text" id="ct" placeholder="لا تفوّت المغامرة!" data-en-ph="Don't miss the adventure!"></div>
+</div>
+<h3 class="sec" data-en="Direction">الإخراج</h3>
+<div class="g">
+<div class="f"><label for="src" data-en="Source of the information">مصدر المعلومات</label><select id="src"><option value="fields" data-en="The fields above only">الحقول السابقة فقط</option><option value="file" data-en="I will attach a file with the event details (PDF, image or document)">سأرفق ملفًا بتفاصيل الفعالية (PDF أو صورة أو مستند)</option></select></div>
+<div class="f"><label for="lg" data-en="Script language">لغة السيناريو</label><select id="lg"><option value="ar" data-en="Arabic">العربية</option><option value="en" data-en="English">الإنجليزية</option><option value="both" data-en="Arabic with English on screen">عربي مع ترجمة إنجليزية على الشاشة</option></select></div>
+<div class="f"><label for="du" data-en="Video length">مدة الفيديو</label><select id="du"><option value="15" data-en="15 seconds (a story)">15 ثانية (ستوري)</option><option value="30" selected data-en="30 seconds">30 ثانية</option><option value="45" data-en="45 seconds">45 ثانية</option><option value="60" data-en="60 seconds">60 ثانية</option><option value="auto" data-en="Automatic, as the content needs">تلقائية حسب المحتوى</option></select></div>
+<div class="f"><label for="tn" data-en="Tone">النبرة</label><select id="tn"><option value="0" data-en="enthusiastic and exciting">حماسية ومشوّقة</option><option value="1" data-en="formal yet friendly">رسمية ودودة</option><option value="2" data-en="calm and clear">هادئة وواضحة</option><option value="3" data-en="playful and child-friendly">مرحة تناسب الأطفال</option></select></div>
+<div class="f"><label for="vo" data-en="Narrator voice">صوت المعلّق</label><select id="vo"><option value="m" data-en="male">رجل</option><option value="f" data-en="female">امرأة</option></select></div>
+</div>
+<p class="note warn" id="srcNote" hidden style="margin-top:16px" data-en="Attach the file with the prompt in Claude, ChatGPT or Gemini. The fields become optional; anything you type in them overrides the file. After reading the script, review the facts the AI extracted from the file.">أرفق الملف مع البرومت في Claude أو ChatGPT أو Gemini. تصبح الحقول اختيارية، وما تكتبه فيها يتقدّم على ما في الملف. وبعد قراءة السيناريو راجع المعلومات التي استخرجها الذكاء الاصطناعي من الملف.</p>
+<div class="row end"><button class="btn p" data-go="1" data-en="Next: The script">التالي: السيناريو</button></div>
+</section>
+
+<!-- Step 2 -->
+<section class="panel" id="p1" hidden>
+<div class="phead"><h2 data-en="The script">السيناريو</h2><p data-en="Copy the prompt into Claude, ChatGPT or Gemini. It returns the script as JSON scenes; paste that reply below.">انسخ البرومت إلى Claude أو ChatGPT أو Gemini، فيعيد السيناريو مشاهد بصيغة JSON، ثم الصق الرد في الأسفل.</p></div>
+<div id="pr"></div>
+<h3 class="sec" data-en="Paste the chatbot reply">الصق ردّ الروبوت</h3>
+<textarea id="js" dir="ltr" placeholder='{"title":"...","scenes":[...]}' style="min-height:150px;font-family:var(--mono);font-size:12.5px"></textarea>
+<div class="row"><button class="btn p" id="rd" type="button" data-en="Read the script">قراءة السيناريو</button><button class="btn" id="smp" type="button" data-en="Load a ready example">تحميل مثال جاهز</button></div>
+<div class="scs" id="scs"></div>
+<div class="row"><button class="btn" data-go="0" data-en="Back">رجوع</button><button class="btn p" data-go="2" data-en="Next: Voice-over">التالي: التعليق الصوتي</button></div>
+</section>
+
+<!-- Step 3 -->
+<section class="panel" id="p2" hidden>
+<div class="phead"><h2 data-en="Voice-over">التعليق الصوتي</h2><p data-en="Generate the narration in Google AI Studio, record it in your own voice, or skip it and preview without sound.">ولّد التعليق في Google AI Studio، أو سجّله بصوتك، أو تخطَّه وعاين بلا صوت.</p></div>
+<p class="note warn" id="noData" data-en="Read a script in step 2 first (or load the ready example).">اقرأ السيناريو في الخطوة 2 أولًا (أو حمّل المثال الجاهز).</p>
+<div id="ttsBox">
+<div class="note"><b data-en="Steps in Google AI Studio:">الخطوات في Google AI Studio:</b><ol><li data-en="Open Generate speech and keep Single-speaker audio.">افتح Generate speech واترك الوضع Single-speaker audio.</li><li id="vsug"></li><li data-en="Paste the style instructions in the Style instructions box and the script in the Text box.">الصق تعليمات الأسلوب في خانة Style instructions، والنص في خانة Text.</li><li data-en="Press Run, listen, then download the file and upload it below.">اضغط Run واستمع، ثم نزّل الملف وارفعه في الأسفل.</li></ol></div>
+<div id="tts"></div>
+</div>
+<h3 class="sec" data-en="The audio file">ملف الصوت</h3>
+<div class="g">
+<div class="f"><label for="af" data-en="Upload the audio (WAV, MP3, M4A…)">ارفع الملف الصوتي (WAV أو MP3 أو M4A…)</label><input type="file" id="af" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"></div>
+<div class="f"><label data-en="Or record in your own voice">أو سجّل بصوتك</label><div class="chips"><button class="btn sm rec" id="mic" type="button"><span class="dot" id="micDot" hidden></span><span id="micT">● تسجيل</span></button><button class="btn sm" id="noAud" type="button" data-en="Remove the audio">إزالة الصوت</button></div></div>
+</div>
+<div class="ai" id="audInfo"></div>
+<div class="row"><button class="btn" data-go="1" data-en="Back">رجوع</button><button class="btn p" data-go="3" data-en="Next: Motion & export">التالي: الموشن والتصدير</button></div>
+</section>
+
+<!-- Step 4 -->
+<section class="panel" id="p3" hidden>
+<div class="phead"><h2 data-en="Motion & export">الموشن والتصدير</h2><p data-en="The studio builds the scenes and syncs them to the voice. Press play, adjust, then export a video.">يبني الاستوديو المشاهد ويزامنها مع الصوت. شغّل وعدّل، ثم صدّر الفيديو.</p></div>
+<div class="g">
+<div class="f"><label for="theme" data-en="Visual identity">الهوية البصرية</label><select id="theme">
+<option value="site" data-en="Navy, cyan and lime">كحلي وسماوي وليموني</option>
+<option value="sport" data-en="Sporty black, red and yellow">رياضي: أسود وأحمر وأصفر</option>
+<option value="calm" data-en="Formal green and gold">رسمي: أخضر وذهبي</option>
+<option value="fun" data-en="Festive purple, pink and orange">احتفالي: بنفسجي ووردي وبرتقالي</option>
+<option value="sea" data-en="Sea blue and turquoise">بحري: أزرق وتركوازي</option>
+<option value="light" data-en="Light and warm">فاتح ودافئ</option></select></div>
+<div class="f"><label for="sty" data-en="Motion style">أسلوب الحركة</label><select id="sty"><option value="cine" data-en="Cinematic explainer">سينمائي توضيحي</option><option value="pop" data-en="Lively and colourful">حيوي وملوّن</option></select></div>
+<div class="f"><label data-en="Options">الخيارات</label><span class="chips"><label class="chip"><input type="checkbox" id="cc" checked><span data-en="Captions with word highlighting">ترجمة سفلية تُبرز الكلمة</span></label></span></div>
+</div>
+<h3 class="sec" data-en="Syncing scenes to the voice">مزامنة المشاهد مع الصوت</h3>
+<div class="seg" id="sync"><button data-m="smart" class="on" data-en="Smart sync (pauses)">تزامن ذكي (الوقفات)</button><button data-m="words" data-en="By word count">حسب عدد الكلمات</button><button data-m="tap" data-en="Tap to sync">تزامن يدوي بالضغط</button></div>
+<p class="note" id="syncNote" style="margin-top:12px"></p>
+<div class="tap" id="tap" hidden>
+<p class="tapnow" id="tapNow"></p>
+<div class="row" style="margin-top:0"><button class="btn p" id="tapGo" type="button" data-en="Start listening">ابدأ الاستماع</button><button class="btn" id="tapX" type="button" data-en="Cancel">إلغاء</button></div>
+<button class="btn tapbtn" id="tapN" type="button" disabled style="margin-top:12px" data-en="Next scene ▶ (or Space)">المشهد التالي ◀ (أو مفتاح المسافة)</button>
+</div>
+<div id="stage"></div>
+<div class="times" id="times"></div>
+<div class="row"><button class="btn" id="exH" type="button" data-en="Download a playable HTML file">تنزيل ملف HTML تشغيلي</button></div>
+<p class="note" style="margin-top:14px" data-en="Export video records the motion in real time with its sound (MP4 when the browser supports it, otherwise WebM). Keep this tab open and visible until the download starts.">«تصدير فيديو» يسجّل الموشن مع صوته في الزمن الحقيقي (MP4 إن دعمه المتصفح، وإلا WebM). أبقِ التبويب مفتوحًا وظاهرًا حتى يبدأ التنزيل.</p>
+<details class="pro"><summary data-en="Studio-grade level: a prompt for a custom-built motion piece">مستوى الاستوديو: برومت لبناء موشن مخصّص بالكامل</summary>
+<p class="note" data-en="This prompt hands the same script and the same timings to Claude, Gemini or ChatGPT to build a bespoke HTML motion piece. Attach the audio file and the logo with it.">يعطي هذا البرومت السيناريو نفسه والتوقيت نفسه إلى Claude أو Gemini أو ChatGPT ليبني موشن HTML مخصّصًا. أرفق معه ملف الصوت والشعار.</p>
+<div id="pro"></div></details>
+<div class="row"><button class="btn" data-go="2" data-en="Back">رجوع</button></div>
+</section>
+</main>
+<div class="toast" id="tt"></div>
+
+<script>
+/* ==========================================================================
+   STUDIO — self-contained motion engine + player.
+   Also stringified into the exported HTML, so it must not touch page globals.
+   ========================================================================== */
+function STUDIO(host,D,O){
+'use strict';
+O=O||{};
+const W=1920,H=1080,AR=D.lang!=='en',UA=(O.ui||(AR?'ar':'en'))==='ar';
+const FA='Cairo,"Segoe UI",Tahoma,Arial,sans-serif',FE='"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+const THS={
+ site:{bg0:'#0a0631',bg1:'#221889',a:'#8bdd28',b:'#29bfe8',ink:'#ffffff',soft:'rgba(255,255,255,.8)',dark:'#120c47',card:'rgba(255,255,255,.09)'},
+ sport:{bg0:'#060609',bg1:'#3d0a12',a:'#ff3d3d',b:'#ffc61a',ink:'#ffffff',soft:'rgba(255,255,255,.8)',dark:'#140405',card:'rgba(255,255,255,.08)'},
+ calm:{bg0:'#04221b',bg1:'#0f5443',a:'#e9c46a',b:'#8fd9c0',ink:'#ffffff',soft:'rgba(255,255,255,.82)',dark:'#05251e',card:'rgba(255,255,255,.09)'},
+ fun:{bg0:'#220d55',bg1:'#74208f',a:'#ffb21e',b:'#ff5fa8',ink:'#ffffff',soft:'rgba(255,255,255,.84)',dark:'#25105a',card:'rgba(255,255,255,.1)'},
+ sea:{bg0:'#021b31',bg1:'#0a5f8e',a:'#3be3ff',b:'#9cf7d0',ink:'#ffffff',soft:'rgba(255,255,255,.82)',dark:'#021f36',card:'rgba(255,255,255,.09)'},
+ light:{bg0:'#fff9ef',bg1:'#ffd9b0',a:'#ff6a3d',b:'#2f6bff',ink:'#1d1b3a',soft:'rgba(29,27,58,.78)',dark:'#ffffff',card:'rgba(29,27,58,.07)'}};
+const T0=THS[O.theme]||THS.site;let T=T0;
+const L10={play:UA?'تشغيل':'Play',pause:UA?'إيقاف':'Pause',replay:UA?'إعادة':'Replay',exp:UA?'⬇ تصدير فيديو':'⬇ Export video',rec:UA?'● جارٍ التسجيل… أبقِ التبويب ظاهرًا':'● Recording… keep this tab visible',
+ nosup:UA?'متصفحك لا يدعم تسجيل الفيديو؛ جرّب Chrome أو Edge.':'Your browser cannot record video; try Chrome or Edge.',done:UA?'تم التصدير ✓':'Exported ✓',chip:UA?'إعلان موشن جرافيك · 16:9 · 1080p':'Motion graphics announcement · 16:9 · 1080p',show:UA?'تشغيل العرض السينمائي':'Play the cinematic show',scenes:UA?'مشاهد':'scenes',voice:UA?'تعليق صوتي':'voice-over',novoice:UA?'بلا صوت':'no sound'};
+if(!document.getElementById('mgcss')){const s=document.createElement('style');s.id='mgcss';s.textContent=
+'.mg{background:#0b0730;border:1px solid #3a31a0;border-radius:16px;overflow:hidden;font-family:Cairo,system-ui,sans-serif}'+
+'.mg-stage{position:relative;aspect-ratio:16/9;background:#000}.mg canvas{width:100%;height:100%;display:block}'+
+'.mg-big{position:absolute;inset:0;margin:auto;width:104px;height:104px;border-radius:50%;border:0;background:rgba(139,221,40,.93);color:#120c47;font-size:40px;cursor:pointer;box-shadow:0 12px 40px rgba(0,0,0,.45);transition:transform .15s}.mg-big:hover{transform:scale(1.07)}.mg-big[hidden]{display:none}'+
+'.mg-msg{position:absolute;top:14px;inset-inline:0;margin:auto;width:max-content;max-width:90%;background:rgba(0,0,0,.72);color:#fff;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px}.mg-msg[hidden]{display:none}.mg-msg.r{background:#e53935}'+
+'.mg-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#1b1464;color:#fff;direction:ltr;flex-wrap:wrap}'+
+'.mg-bar button{min-height:40px;min-width:40px;padding:0 12px;border-radius:10px;border:1px solid #3a31a0;background:#251c80;color:#fff;font:700 14px Cairo,system-ui,sans-serif;cursor:pointer}.mg-bar button.on{background:#29bfe8;color:#120c47;border-color:#29bfe8}.mg-bar .mg-ex{background:#8bdd28;color:#120c47;border-color:#8bdd28}'+
+'.mg-tm{font:600 13px ui-monospace,Menlo,Consolas,monospace;color:#d6dcf5;min-width:92px;text-align:center}'+
+'.mg-tl{flex:1 1 180px;position:relative;height:28px;display:flex;align-items:center}.mg-tl input{width:100%;accent-color:#8bdd28;margin:0;position:relative;z-index:1}.mg-tk{position:absolute;top:3px;width:3px;height:22px;border-radius:2px;background:rgba(41,191,232,.75);pointer-events:none}'+
+'.mg:fullscreen{display:flex;flex-direction:column;border:0;border-radius:0}.mg:fullscreen .mg-stage{flex:1;aspect-ratio:auto}.mg:fullscreen canvas{object-fit:contain}'+
+'.mg.busy .mg-bar{pointer-events:none;opacity:.55}'+'.mg-po{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4%;text-align:center;color:#fff;padding:4%}.mg-po[hidden]{display:none}'+'.mg-po-chip{border:1px solid;border-radius:999px;padding:4px 16px;font:700 clamp(11px,1.3vw,15px) Cairo,sans-serif}.mg-po h2{margin:0;font:900 clamp(24px,4.6vw,64px)/1.25 Cairo,sans-serif;max-width:90%}'+'.mg-po p{margin:0;font:600 clamp(13px,1.7vw,22px) Cairo,sans-serif;opacity:.8}.mg-po button{border:0;border-radius:14px;color:#120c47;font:800 clamp(14px,1.8vw,22px) Cairo,sans-serif;padding:.7em 1.6em;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-top:1%}'+'.mg-po small{font:600 clamp(10px,1.1vw,13px) Cairo,sans-serif;opacity:.65}.mg-sn{display:flex;gap:4px;flex-wrap:wrap}.mg-sn button{min-width:34px;min-height:34px;padding:0 8px;font-size:13px}.mg-sn button.on{background:#ee7b30;border-color:#ee7b30;color:#120c47}';document.head.appendChild(s)}
+host.innerHTML='<div class="mg" tabindex="0"><div class="mg-stage"><canvas></canvas><button class="mg-big" type="button" aria-label="'+L10.play+'">▶</button><div class="mg-msg" hidden></div></div><div class="mg-bar"><button class="mg-pp" type="button" title="'+L10.play+'">▶</button><button class="mg-rp" type="button" title="'+L10.replay+'">↺</button><span class="mg-tm">0:00 / 0:00</span><div class="mg-tl"><input type="range" min="0" max="1000" value="0" aria-label="timeline"></div><button class="mg-cc" type="button">CC</button><button class="mg-fs" type="button" title="Fullscreen">⛶</button><button class="mg-ex" type="button">'+L10.exp+'</button></div></div>';
+const q=s=>host.querySelector(s),MG=q('.mg'),cv=q('canvas'),X=cv.getContext('2d'),BIG=q('.mg-big'),MSG=q('.mg-msg'),PP=q('.mg-pp'),TM=q('.mg-tm'),RG=q('.mg-tl input');
+cv.width=W;cv.height=H;
+/* ---------- helpers ---------- */
+const cl=(v,a,b)=>Math.max(a===undefined?0:a,Math.min(b===undefined?1:b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+const eo=t=>1-Math.pow(1-t,3),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,eob=t=>{const c=1.70158;return t<=0?0:1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+const hexA=(h,a)=>{const n=parseInt(h.slice(1),16);return 'rgba('+(n>>16)+','+(n>>8&255)+','+(n&255)+','+a+')'};
+const isAr=s=>/[؀-ۿ]/.test(s),toL=s=>String(s).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)),toA=s=>String(s).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const fmt=s=>{s=Math.max(0,s);return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')};
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);X.beginPath();X.moveTo(x+r,y);X.arcTo(x+w,y,x+w,y+h,r);X.arcTo(x+w,y+h,x,y+h,r);X.arcTo(x,y+h,x,y,r);X.arcTo(x,y,x+w,y,r);X.closePath()}
+let sd=11;const rnd=()=>(sd=sd*16807%2147483647)/2147483647;
+const PT=Array.from({length:70},()=>({x:rnd()*W,y:rnd()*H,r:1.5+rnd()*3.5,s:12+rnd()*40,ph:rnd()*6.28,c:rnd()<.5}));
+/* ---------- data + timing ---------- */
+const SC=(D.scenes||[]).filter(Boolean),N=SC.length;
+const wc=s=>String(s||'').trim().split(/\s+/).filter(Boolean).length;
+let DUR=+O.dur||0;
+if(!(DUR>0)){const tw=SC.reduce((a,s)=>a+wc(s.narration),0);DUR=Math.max(8,tw/(AR?2.1:2.5)+N*.7)}
+let ST=Array.isArray(O.times)&&O.times.length===N?O.times.map(Number):null;
+if(!ST||ST.some((v,i)=>!isFinite(v)||(i&&v<=ST[i-1])||v>=DUR)){const w=SC.map(s=>String(s.narration||'').length+12),tot=w.reduce((a,b)=>a+b,0)||1;let acc=0;ST=w.map(x=>{const v=acc/tot*DUR;acc+=x;return v})}
+if(N)ST[0]=0;
+const SEG=SC.map((s,i)=>{const a=ST[i],b=i<N-1?ST[i+1]:DUR,len=b-a,ws=String(s.narration||'').trim().split(/\s+/).filter(Boolean);
+ const s0=a+Math.min(.15,len*.05),s1=Math.max(s0+.3,b-Math.min(.45,len*.15)),tl=ws.reduce((x,w)=>x+w.length+1,0)||1;let c=0;
+ return {a,b,words:ws.map(w=>{const wa=s0+c/tl*(s1-s0);c+=w.length+1;return {w,a:wa,b:s0+c/tl*(s1-s0)}})}});
+let LOGO=null;if(O.logo){LOGO=new Image();LOGO.onload=()=>{dirty=true};LOGO.src=O.logo}
+let CC=O.cc!==false;
+/* ---------- text ---------- */
+const TXA=AR?1730:190,ALN=AR?'right':'left',VX=AR?530:1390,TMAX=880;
+function toks(s,rtl){const raw=String(s||'').trim().split(/\s+/).filter(Boolean);if(!rtl)return raw;const out=[];raw.forEach(w=>{if(!isAr(w)&&out.length&&!isAr(out[out.length-1]))out[out.length-1]+=' '+w;else out.push(w)});return out}
+function wrap(tk,size,wt,max){X.font=wt+' '+size+'px '+FA;const sp=size*.28,lines=[];let cur=[],cw=0;
+ tk.forEach(w=>{const ww=X.measureText(w).width;if(cur.length&&cw+sp+ww>max){lines.push({t:cur,w:cw});cur=[];cw=0}cw=cur.length?cw+sp+ww:ww;cur.push({w,ww})});if(cur.length)lines.push({t:cur,w:cw});return {lines,sp}}
+function nLines(s,size,wt,max,rtl){return s?wrap(toks(s,rtl===undefined?AR:rtl),size,wt,max).lines.length:0}
+const clean=s=>String(s||'').replace(/[^\p{L}\p{N}]/gu,'');
+function kin(s,cx,cy,o){const rtl=o.rtl===undefined?AR:o.rtl,tk=toks(s,rtl);if(!tk.length)return 0;const wt=o.wt||900,size=o.size,{lines,sp}=wrap(tk,size,wt,o.max||1500),lh=size*(o.lh||1.22),al=o.align||'center';
+ const acc=clean(o.accent);let y=cy-(lines.length-1)*lh/2,k=0;
+ X.save();X.font=wt+' '+size+'px '+FA;X.textBaseline='middle';X.textAlign='center';X.shadowColor=O.theme==='light'?'rgba(120,60,20,.12)':'rgba(0,0,0,.28)';X.shadowBlur=18;X.shadowOffsetY=6;
+ lines.forEach(Ln=>{const x0=al==='center'?cx-Ln.w/2:al==='right'?cx-Ln.w:cx;let xr=x0+Ln.w,xl=x0;
+  Ln.t.forEach(tk=>{let xc;if(rtl){xc=xr-tk.ww/2;xr-=tk.ww+sp}else{xc=xl+tk.ww/2;xl+=tk.ww+sp}
+   const p=cl((o.lt-(o.delay||0)-k*(o.step===undefined?.08:o.step))/.55);k++;if(p<=0)return;const e=eob(p);
+   X.globalAlpha=Math.min(1,p*1.7)*(o.alpha===undefined?1:o.alpha);X.direction=isAr(tk.w)?'rtl':'ltr';
+   X.fillStyle=acc&&clean(tk.w).includes(acc)?(o.acol||T.a):(o.color||T.ink);
+   X.save();X.translate(xc,y+(1-e)*size*.55);const sc=.7+.3*e;X.scale(sc,sc);X.fillText(tk.w,0,0);X.restore()});y+=lh});
+ X.restore();return lines.length*lh}
+function headSize(s){const n=String(s||'').length;return n>30?80:n>20?94:108}
+function emo(e,x,y,size,lt,d){const p=eob(cl((lt-(d||0))/.6));if(p<=0)return;X.save();X.translate(x,y+Math.sin(lt*2.1)*10);X.scale(p,p);X.rotate(Math.sin(lt*1.4)*.05);
+ X.fillStyle='#000';X.font=size+'px '+FE;X.textAlign='center';X.textBaseline='middle';X.direction='ltr';X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=30;X.shadowOffsetY=14;X.fillText(e||'✨',0,0);X.restore()}
+function disc(x,y,r,lt){const p=eob(cl(lt/.7));if(p<=0)return;const rg=X.createRadialGradient(x,y,0,x,y,r*1.7);rg.addColorStop(0,hexA(T.b,.32));rg.addColorStop(1,hexA(T.b,0));
+ X.fillStyle=rg;X.beginPath();X.arc(x,y,r*1.7*p,0,7);X.fill();X.fillStyle=T.card;X.beginPath();X.arc(x,y,r*p,0,7);X.fill();
+ X.save();X.translate(x,y);X.rotate(lt*.5);X.strokeStyle=T.a;X.lineWidth=9;X.lineCap='round';const g=eo(cl((lt-.2)/.8));
+ for(let k=0;k<6;k++){const a0=k*Math.PI/3;X.beginPath();X.arc(0,0,(r+36)*p,a0,a0+Math.PI/5*g);X.stroke()}X.restore();
+ for(let k=0;k<3;k++){const a=lt*.9+k*2.1;X.fillStyle=k%2?T.a:T.b;X.beginPath();X.arc(x+Math.cos(a)*(r+92)*p,y+Math.sin(a)*(r+92)*p,13-k*3,0,7);X.fill()}}
+function textBlock(sc,lt,cy){const hs=headSize(sc.headline),hl=nLines(sc.headline,hs,900,TMAX),h2=sc.headline2?nLines(sc.headline2,46,700,TMAX,false):0,sl=nLines(sc.sub,52,700,TMAX);
+ const hH=hl*hs*1.22,h2H=h2?h2*46*1.3+14:0,sH=sl?sl*52*1.4+18:0;let y=cy-(hH+h2H+44+sH)/2;
+ kin(sc.headline,TXA,y+hH/2,{size:hs,max:TMAX,align:ALN,lt,delay:.15,accent:sc.accent});y+=hH;
+ if(h2){kin(sc.headline2,TXA,y+14+h2*46*1.3/2,{size:46,wt:700,max:TMAX,align:ALN,lt,delay:.5,step:.03,color:T.soft,rtl:false});y+=h2H}
+ const uw=230*eo(cl((lt-.55)/.5));if(uw>1){X.fillStyle=T.a;rr(AR?TXA-uw:TXA,y+16,uw,11,6);X.fill()}y+=44;
+ if(sl)kin(sc.sub,TXA,y+sH/2,{size:52,wt:700,max:TMAX,align:ALN,lt,delay:.75,step:.04,color:T.soft})}
+function numParts(big){const s=String(big||''),m=s.match(/[\d٠-٩]+(?:[.,٫][\d٠-٩]+)?/);if(!m)return null;return {n:parseFloat(toL(m[0]).replace(/[,٫]/,'.')),ar:/[٠-٩]/.test(m[0]),dec:/[.,٫]/.test(m[0]),pre:s.slice(0,m.index).trim(),suf:s.slice(m.index+m[0].length).trim()}}
+function numText(P,p){let v=P.n*p;v=P.dec?v.toFixed(1):String(Math.round(v));return P.ar?toA(v):v}
+/* ---------- scenes ---------- */
+function calV(sc,lt){const p=eob(cl(lt/.65));if(p>0){X.save();X.translate(VX,540);X.rotate(-.04+.04*p);X.scale(1,p);X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=50;X.shadowOffsetY=24;
+  X.fillStyle='#ffffff';rr(-230,-250,460,500,44);X.fill();X.shadowColor='transparent';X.save();rr(-230,-250,460,500,44);X.clip();X.fillStyle=T.a;X.fillRect(-230,-250,460,140);X.restore();
+  X.fillStyle='#14102e';[-120,120].forEach(x=>{X.beginPath();X.arc(x,-250,16,0,7);X.fill()});
+  X.font='800 50px '+FA;X.textAlign='center';X.textBaseline='middle';X.direction=AR?'rtl':'ltr';X.fillText(sc.tag||(AR?'موعدنا':'Save the date'),0,-178);
+  const P=numParts(sc.big);if(P){X.fillStyle='#14102e';X.direction='ltr';X.font='900 '+(String(sc.big).length>4?150:230)+'px '+FA;X.fillText((P.pre?P.pre+' ':'')+numText(P,eo(cl((lt-.4)/.9))),0,50);
+   if(P.suf){X.font='700 44px '+FA;X.fillStyle='#4a4672';X.direction=AR?'rtl':'ltr';X.fillText(P.suf,0,190)}}
+  else{X.font='190px '+FE;X.direction='ltr';X.fillText(sc.emoji||'📅',0,60)}X.restore()}}
+function mapV(sc,lt){const p=eob(cl(lt/.6));if(p>0){X.save();X.translate(VX,540);X.scale(p,p);X.fillStyle=T.card;X.strokeStyle=hexA(T.b,.55);X.lineWidth=4;rr(-330,-270,660,540,40);X.fill();X.stroke();
+  X.save();rr(-330,-270,660,540,40);X.clip();X.lineCap='round';
+  [[-330,-120,330,-40,26],[-330,140,330,90,20],[-140,-270,-60,270,22],[150,-270,110,270,18]].forEach((r,k)=>{const g=eo(cl((lt-.2-k*.12)/.7));X.strokeStyle=hexA(T.ink,.22);X.lineWidth=r[4];X.beginPath();X.moveTo(r[0],r[1]);X.lineTo(lerp(r[0],r[2],g),lerp(r[1],r[3],g));X.stroke()});
+  [[-300,-250,130,100],[180,-250,120,150],[-300,160,140,90],[160,170,140,80],[-20,-20,100,90]].forEach((b,k)=>{X.globalAlpha=cl((lt-.6-k*.08)/.4)*.55;X.fillStyle=k%2?T.b:T.a;rr(b[0],b[1],b[2],b[3],14);X.fill()});X.globalAlpha=1;X.restore();
+  const dp=cl((lt-.45)/.7),py=lerp(-520,0,eob(dp));
+  for(let k=0;k<3;k++){const rp=((lt-1.1-k*.45)%1.4+1.4)%1.4/1.4;if(lt>1.1){X.strokeStyle=hexA(T.a,(1-rp)*.9);X.lineWidth=5;X.beginPath();X.ellipse(30,30,30+rp*170,(30+rp*170)*.38,0,0,7);X.stroke()}}
+  if(dp>0){X.save();X.translate(30,py-30);X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=24;X.shadowOffsetY=12;X.fillStyle=T.a;X.beginPath();X.arc(0,-90,70,Math.PI*.82,Math.PI*2.18);X.lineTo(0,60);X.closePath();X.fill();
+   X.shadowColor='transparent';X.fillStyle='#ffffff';X.beginPath();X.arc(0,-90,30,0,7);X.fill();X.restore()}X.restore()}}
+function ringV(sc,lt){const P=numParts(sc.big),g=eo(cl((lt-.3)/1.3)),ap=eob(cl(lt/.6));
+ if(ap>0){X.save();X.translate(VX,520);X.scale(ap,ap);const rg=X.createRadialGradient(0,0,0,0,0,400);rg.addColorStop(0,hexA(T.b,.3));rg.addColorStop(1,hexA(T.b,0));X.fillStyle=rg;X.beginPath();X.arc(0,0,400,0,7);X.fill();
+  X.lineWidth=28;X.strokeStyle=hexA(T.ink,.12);X.beginPath();X.arc(0,0,240,0,7);X.stroke();X.strokeStyle=T.a;X.lineCap='round';X.beginPath();X.arc(0,0,240,-Math.PI/2,-Math.PI/2+6.283*g);X.stroke();
+  X.fillStyle=T.ink;X.textAlign='center';X.textBaseline='middle';X.direction='ltr';
+  if(P){const tx=(P.pre?P.pre+' ':'')+numText(P,g);X.font='900 '+(tx.length>5?120:170)+'px '+FA;X.fillText(tx,0,P.suf?-20:0);if(P.suf){X.font='700 46px '+FA;X.fillStyle=T.soft;X.direction=AR?'rtl':'ltr';X.fillText(P.suf,0,110)}}
+  else{X.font='170px '+FE;X.fillText(sc.emoji||'⭐',0,0)}X.restore()}}
+const R={
+hook(sc,lt){const cx=960,cy=400;
+ for(let k=0;k<3;k++){const p=cl((lt-k*.16)/1.3);if(p>0&&p<1){X.strokeStyle=hexA(k%2?T.b:T.a,(1-p)*.8);X.lineWidth=14*(1-p)+2;X.beginPath();X.arc(cx,cy,60+eo(p)*820,0,7);X.stroke()}}
+ for(let k=0;k<26;k++){const p=cl(lt/1.2);if(p>=1)break;const a=k/26*6.283+.3,d=eo(p)*(300+(k%5)*70);X.globalAlpha=1-p;X.fillStyle=k%2?T.a:T.b;X.beginPath();X.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,7+(k%3)*3,0,7);X.fill()}X.globalAlpha=1;
+ emo(sc.emoji,cx,cy,280,lt,0);
+ const y2=sc.headline2?790:0;kin(sc.headline,960,700,{size:Math.min(124,headSize(sc.headline)+16),max:1650,lt,delay:.35,accent:sc.accent});
+ if(y2)kin(sc.headline2,960,y2,{size:46,wt:700,max:1500,lt,delay:.7,step:.03,color:T.soft,rtl:false});
+ kin(sc.sub,960,y2?868:840,{size:54,wt:700,max:1500,lt,delay:.85,step:.04,color:T.soft})},
+info(sc,lt){disc(VX,520,250,lt);emo(sc.emoji,VX,520,220,lt,.12);textBlock(sc,lt,520)},
+date(sc,lt){calV(sc,lt);
+ textBlock(sc,lt,520)},
+place(sc,lt){mapV(sc,lt);
+ textBlock(sc,lt,520)},
+list(sc,lt,L){const it=(Array.isArray(sc.items)?sc.items:[]).slice(0,4),n=Math.max(1,it.length);
+ disc(VX,540,220,lt);emo(sc.emoji,VX,540,190,lt,.1);
+ const hs=Math.min(92,headSize(sc.headline));kin(sc.headline,TXA,250,{size:hs,max:TMAX,align:ALN,lt,delay:.1,accent:sc.accent});
+ const step=Math.max(.45,(L*.68-.7)/n);
+ it.forEach((s,k)=>{const ti=.7+k*step,p=eo(cl((lt-ti)/.5));if(p<=0)return;const y=410+k*130,x=AR?TXA-860:TXA,dx=(1-p)*(AR?160:-160);
+  X.save();X.globalAlpha=p;X.translate(dx,0);X.fillStyle=T.card;X.strokeStyle=hexA(T.b,.5);X.lineWidth=3;rr(x,y,860,106,30);X.fill();X.stroke();
+  const ccx=AR?TXA-58:TXA+58,cp=eob(cl((lt-ti-.15)/.45));X.fillStyle=T.a;X.beginPath();X.arc(ccx,y+53,30*cp,0,7);X.fill();
+  if(cp>.5){X.strokeStyle=T.dark;X.lineWidth=7;X.lineCap='round';X.lineJoin='round';X.beginPath();X.moveTo(ccx-13,y+54);X.lineTo(ccx-3,y+64);X.lineTo(ccx+14,y+42);X.stroke()}X.restore();
+  kin(String(s),AR?TXA-112:TXA+112,y+53,{size:50,wt:700,max:700,align:ALN,lt:lt-ti,delay:.1,step:.03,alpha:p})})},
+number(sc,lt){ringV(sc,lt);
+ textBlock(sc,lt,520)},
+cta(sc,lt){emo(sc.emoji,960,270,170,lt,0);
+ kin(sc.headline,960,480,{size:Math.min(116,headSize(sc.headline)+8),max:1650,lt,delay:.2,accent:sc.accent});
+ if(sc.headline2)kin(sc.headline2,960,575,{size:46,wt:700,max:1500,lt,delay:.5,step:.03,color:T.soft,rtl:false});
+ const lab=sc.sub||(AR?'سجّل الآن':'Sign up now');X.font='800 64px '+FA;const tw=X.measureText(lab).width,pw=tw+160,ph=132,py=sc.headline2?740:715,ap=eob(cl((lt-.6)/.5));
+ if(ap>0){for(let k=0;k<2;k++){const rp=((lt-1.1-k*.6)%1.2+1.2)%1.2/1.2;if(lt>1.1){const e=1+rp*.35;X.strokeStyle=hexA(T.a,(1-rp)*.8);X.lineWidth=5;rr(960-pw*e/2,py-ph*e/2,pw*e,ph*e,ph*e/2);X.stroke()}}
+  const s=ap*(1+(lt>1.1?.035*Math.sin(lt*5):0));X.save();X.translate(960,py);X.scale(s,s);X.shadowColor=hexA(T.a,.55);X.shadowBlur=50;X.fillStyle=T.a;rr(-pw/2,-ph/2,pw,ph,ph/2);X.fill();
+  X.shadowColor='transparent';X.fillStyle=T.dark;X.textAlign='center';X.textBaseline='middle';X.direction=isAr(lab)?'rtl':'ltr';X.fillText(lab,0,4);X.restore()}
+ for(let k=0;k<3;k++){const ph2=((lt*1.6+k/3)%1);if(lt<1)break;X.globalAlpha=Math.sin(ph2*Math.PI)*.9;X.fillStyle=T.b;[[-1],[1]].forEach(([sg])=>{const x=960+sg*(pw/2+150-ph2*90);X.beginPath();X.moveTo(x+sg*22,py-26);X.lineTo(x-sg*10,py);X.lineTo(x+sg*22,py+26);X.lineTo(x+sg*8,py);X.closePath();X.fill()})}X.globalAlpha=1},
+outro(sc,lt){const cx=960,cy=400,ap=eob(cl(lt/.7));
+ X.save();X.translate(cx,cy);X.rotate(lt*.15);X.fillStyle=hexA(T.a,.07);for(let k=0;k<12;k++){X.rotate(Math.PI/6);X.beginPath();X.moveTo(0,0);X.lineTo(-90,-1300);X.lineTo(90,-1300);X.closePath();X.fill()}X.restore();
+ if(ap>0){X.save();X.translate(cx,cy);X.scale(ap,ap);X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=40;X.fillStyle='#ffffff';X.beginPath();X.arc(0,0,160,0,7);X.fill();X.shadowColor='transparent';
+  X.strokeStyle=T.a;X.lineWidth=12;X.lineCap='round';X.beginPath();X.arc(0,0,190,-Math.PI/2,-Math.PI/2+6.283*eo(cl((lt-.3)/1)));X.stroke();
+  if(LOGO&&LOGO.complete&&LOGO.naturalWidth){const k=Math.min(220/LOGO.naturalWidth,220/LOGO.naturalHeight);X.drawImage(LOGO,-LOGO.naturalWidth*k/2,-LOGO.naturalHeight*k/2,LOGO.naturalWidth*k,LOGO.naturalHeight*k)}
+  else{X.font='150px '+FE;X.textAlign='center';X.textBaseline='middle';X.direction='ltr';X.fillText(sc.emoji||'🏫',0,8)}X.restore()}
+ kin(sc.headline||O.school||'',cx,690,{size:96,max:1600,lt,delay:.45,accent:sc.accent});
+ if(sc.headline2)kin(sc.headline2,cx,775,{size:44,wt:700,max:1500,lt,delay:.7,step:.03,color:T.soft,rtl:false});
+ kin(sc.sub||'',cx,sc.headline2?850:800,{size:52,wt:700,max:1500,lt,delay:.85,step:.04,color:T.soft});
+ for(let k=0;k<14;k++){const a=k*2.4+lt*.4,r=420+80*Math.sin(k+lt),tw=Math.sin(lt*3+k)*.5+.5;X.globalAlpha=tw*ap;X.fillStyle=k%2?T.a:T.b;X.save();X.translate(cx+Math.cos(a)*r*1.6,cy+Math.sin(a)*r*.75);X.rotate(lt+k);X.fillRect(-6,-6,12,12);X.restore()}X.globalAlpha=1}};
+R.timeline=R.list;
+/* ---------- cinematic explainer style ---------- */
+const CINE=O.style!=='pop';
+const CPS={site:{L:'#f5f1e8',D0:'#0a1130',D1:'#18265c',a:'#ee7b30',b:'#3fa9f5',iL:'#1b2150'},
+ sport:{L:'#f2eee8',D0:'#0b0b0f',D1:'#2b0d13',a:'#ff4136',b:'#ffc61a',iL:'#17171d'},
+ calm:{L:'#f3efe2',D0:'#05231c',D1:'#0f4a3c',a:'#d4a23a',b:'#5cc4a4',iL:'#0f3a30'},
+ fun:{L:'#fbf1e8',D0:'#1d0e4a',D1:'#4a1a70',a:'#ff8a1e',b:'#ff5fa8',iL:'#2b1458'},
+ sea:{L:'#edf5f7',D0:'#031d35',D1:'#0b4a72',a:'#ff8b3d',b:'#2bb8e0',iL:'#08324f'},
+ light:{L:'#fff8ee',D0:'#1d1b3a',D1:'#2f2c62',a:'#ff6a3d',b:'#2f6bff',iL:'#1d1b3a'}};
+const CP=CPS[O.theme]||CPS.site;
+const TL={a:CP.a,b:CP.b,ink:CP.iL,soft:hexA(CP.iL,.74),dark:'#ffffff',card:hexA(CP.iL,.06)},TDk={a:CP.a,b:CP.b,ink:'#ffffff',soft:'rgba(255,255,255,.8)',dark:CP.D0,card:'rgba(255,255,255,.08)'};
+const NZ=Array.from({length:700},()=>({x:rnd()*W,y:rnd()*H,s:1+rnd()*2.4,c:'rgba(110,80,40,'+(.04+rnd()*.07).toFixed(3)+')'}));
+const NET=Array.from({length:8},(_,k)=>{const a=k/8*6.283+rnd()*.5,r=.45+rnd()*.55;return {x:Math.cos(a)*r,y:Math.sin(a)*r,ph:rnd()*6}});NET.push({x:0,y:0,ph:0});
+const NEDGE=[[8,0],[8,2],[8,4],[8,6],[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],[1,8],[5,8],[3,8]];
+const LBL={hook:['الافتتاحية','Opening'],info:['فكرة','Idea'],date:['الموعد','Date'],place:['المكان','Venue'],list:['التفاصيل','Details'],number:['بالأرقام','In numbers'],timeline:['البرنامج','Schedule'],cta:['شارك الآن','Join now'],outro:['الختام','Closing']};
+const dk=i=>{const t=SC[i].type;return t==='cta'||t==='outro'?true:t==='hook'?false:i%2===1};
+const TS=AR?1820:100,isD=()=>T===TDk,items=s=>(Array.isArray(s.items)?s.items:[]).filter(Boolean);
+function bgC(d,t){if(d){const g=X.createRadialGradient(W*.68,H*.28,80,W*.5,H*.5,W*.85);g.addColorStop(0,CP.D1);g.addColorStop(1,CP.D0);X.fillStyle=g;X.fillRect(0,0,W,H);
+  PT.forEach(p=>{X.globalAlpha=.12+.5*Math.pow(Math.sin(t*1.1+p.ph),2);X.fillStyle='#ffffff';X.beginPath();X.arc(p.x,(p.y+t*5)%H,p.r*.5,0,7);X.fill()});X.globalAlpha=1}
+ else{X.fillStyle=CP.L;X.fillRect(0,0,W,H);NZ.forEach(p=>{X.fillStyle=p.c;X.fillRect(p.x,p.y,p.s,p.s)});
+  const g=X.createRadialGradient(W/2,H/2,320,W/2,H/2,W*.78);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(1,'rgba(120,90,50,.13)');X.fillStyle=g;X.fillRect(0,0,W,H)}}
+function txt(s,x,y,size,wt,col,al,max){s=String(s||'');X.font=wt+' '+size+'px '+FA;while(max&&size>18&&X.measureText(s).width>max){size-=2;X.font=wt+' '+size+'px '+FA}
+ X.fillStyle=col;X.textAlign=al;X.textBaseline='middle';X.direction=isAr(s)?'rtl':'ltr';X.fillText(s,x,y)}
+function chipC(i,s,lt){const p=eo(cl(lt/.5));if(p<=0)return;const lab=s.label||LBL[s.type]&&LBL[s.type][AR?0:1]||'';X.font='700 30px '+FA;const tw=Math.min(700,X.measureText(lab).width),w=tw+112,h=60,x=AR?W-64-w:64,y=46;
+ X.save();X.globalAlpha=p;X.translate((1-p)*(AR?50:-50),0);X.fillStyle=isD()?'rgba(255,255,255,.1)':hexA(CP.iL,.9);X.strokeStyle=isD()?'rgba(255,255,255,.2)':'transparent';X.lineWidth=2;rr(x,y,w,h,30);X.fill();X.stroke();
+ const nx=AR?x+w-32:x+32;X.fillStyle=CP.a;X.beginPath();X.arc(nx,y+h/2,19,0,7);X.fill();txt(String(i+1),nx,y+h/2+1,24,800,CP.D0,'center');
+ txt(lab,AR?nx-34:nx+34,y+h/2+1,30,700,'#ffffff',AR?'right':'left',700);X.restore()}
+function titleC(s,lt){const hs=String(s.headline).length>26?70:84,nl=nLines(s.headline,hs,900,1500),hH=nl*hs*1.22,cy=140+hH/2;
+ kin(s.headline,TS,cy,{size:hs,max:1500,align:ALN,lt,delay:.15,step:.06,accent:s.accent});let y=cy+hH/2;
+ if(s.headline2){kin(s.headline2,TS,y+26,{size:40,wt:700,max:1400,align:ALN,lt,delay:.4,step:.03,color:T.soft,rtl:false});y+=56}
+ const uw=200*eo(cl((lt-.45)/.5));if(uw>1){X.fillStyle=T.a;rr(AR?TS-uw:TS,y+10,uw,9,5);X.fill()}return y+34}
+function cardC(x,y,w,h,p,hl){if(p<=0)return;X.save();X.globalAlpha=p;X.translate(0,(1-p)*36);if(!isD()){X.shadowColor='rgba(60,40,10,.13)';X.shadowBlur=44;X.shadowOffsetY=16}
+ X.fillStyle=isD()?'rgba(255,255,255,.06)':'#ffffff';rr(x,y,w,h,28);X.fill();X.shadowColor='transparent';X.strokeStyle=hl||(isD()?hexA(CP.b,.45):hexA(CP.iL,.08));X.lineWidth=3;rr(x,y,w,h,28);X.stroke();X.restore()}
+function netC(cx,cy,r,lt,d){X.save();X.lineCap='round';NEDGE.forEach(([a,b],k)=>{const p=eo(cl((lt-d-k*.05)/.45));if(p<=0)return;const A1=NET[a],B1=NET[b],ax=cx+(A1.x+.03*Math.sin(lt+A1.ph))*r,ay=cy+(A1.y+.03*Math.cos(lt+A1.ph))*r,bx=cx+(B1.x+.03*Math.sin(lt+B1.ph))*r,by=cy+(B1.y+.03*Math.cos(lt+B1.ph))*r;
+  X.strokeStyle=hexA(T.b,.7);X.lineWidth=3;X.beginPath();X.moveTo(ax,ay);X.lineTo(lerp(ax,bx,p),lerp(ay,by,p));X.stroke()});
+ NET.forEach((n,k)=>{const p=eob(cl((lt-d-.2-k*.05)/.4));if(p<=0)return;X.fillStyle=k===8?T.a:T.b;X.beginPath();X.arc(cx+(n.x+.03*Math.sin(lt+n.ph))*r,cy+(n.y+.03*Math.cos(lt+n.ph))*r,(k===8?14:10)*p,0,7);X.fill()});X.restore()}
+function hub(cx,cy,r,s,lt,d){const p=eob(cl((lt-d)/.55));if(p<=0)return;X.save();X.translate(cx,cy);X.scale(p,p);X.fillStyle=isD()?CP.D1:'#ffffff';X.shadowColor='rgba(0,0,0,.2)';X.shadowBlur=36;X.beginPath();X.arc(0,0,r,0,7);X.fill();
+ X.shadowColor='transparent';X.strokeStyle=T.a;X.lineWidth=6;X.beginPath();X.arc(0,0,r+12,-Math.PI/2,-Math.PI/2+6.283*eo(cl((lt-d-.2)/.8)));X.stroke();X.restore();emo(s.emoji,cx,cy,r*1.05,lt,d+.1)}
+function pill(x,y,w,h,t,p,ic){if(p<=0)return;X.save();X.globalAlpha=p;X.translate((1-p)*(AR?60:-60),0);X.fillStyle=isD()?'rgba(255,255,255,.05)':hexA(CP.iL,.035);X.strokeStyle=hexA(T.b,.6);X.lineWidth=2.5;rr(x,y,w,h,18);X.fill();X.stroke();
+ const cx=AR?x+w-42:x+42;if(ic){X.fillStyle='#000';X.font='40px '+FE;X.textAlign='center';X.textBaseline='middle';X.direction='ltr';X.fillText(ic,cx,y+h/2+2)}
+ else{X.fillStyle=T.a;X.beginPath();X.arc(cx,y+h/2,20,0,7);X.fill();X.strokeStyle=CP.D0;X.lineWidth=5;X.lineCap='round';X.lineJoin='round';X.beginPath();X.moveTo(cx-9,y+h/2+1);X.lineTo(cx-2,y+h/2+8);X.lineTo(cx+10,y+h/2-7);X.stroke()}
+ txt(t,AR?x+w-84:x+84,y+h/2+2,38,700,T.ink,AR?'right':'left',w-120);X.restore()}
+const C={
+hook(s,lt){const kx=AR?560:1360,ky=560,sx=AR?60:W-60,fx=AR?kx-300:kx+300;X.save();X.lineCap='round';
+ for(let k=0;k<9;k++){const y0=ky+(k-4)*48,p=eo(cl((lt-.05-k*.05)/1.1));if(p<=0)continue;X.strokeStyle=k%2?hexA(T.ink,.5):hexA(T.a,.85);X.lineWidth=k%2?3:5;X.beginPath();
+  for(let j=0;j<=Math.round(40*p);j++){const u=j/40,x=lerp(sx,kx,u),y=lerp(y0,ky+(k-4)*8,eio(u));j?X.lineTo(x,y):X.moveTo(x,y)}X.stroke();X.fillStyle=T.ink;X.beginPath();X.arc(sx,y0,6*p,0,7);X.fill();
+  const q2=eo(cl((lt-.7-k*.04)/1));if(q2>0){const y1=ky+(k-4)*58;X.strokeStyle=hexA(T.a,.75);X.lineWidth=4;X.beginPath();for(let j=0;j<=Math.round(30*q2);j++){const u=j/30,x=lerp(kx,fx,u),y=lerp(ky+(k-4)*8,y1,eio(u));j?X.lineTo(x,y):X.moveTo(x,y)}X.stroke()}}
+ X.restore();hub(kx,ky,105,s,lt,.55);
+ const hs=Math.min(118,headSize(s.headline)+10),hH=nLines(s.headline,hs,900,860)*hs*1.22;let y=470;kin(s.headline,TS,y,{size:hs,max:860,align:ALN,lt,delay:.3,accent:s.accent});y+=hH/2;
+ if(s.headline2){kin(s.headline2,TS,y+30,{size:42,wt:700,max:860,align:ALN,lt,delay:.6,step:.03,color:T.soft,rtl:false});y+=64}
+ const uw=220*eo(cl((lt-.7)/.5));if(uw>1){X.fillStyle=T.a;rr(AR?TS-uw:TS,y+12,uw,10,5);X.fill()}y+=58;
+ if(s.sub){const p=eo(cl((lt-1)/.5));if(p>0){X.font='700 40px '+FA;const tw=Math.min(780,X.measureText(s.sub).width),pw=tw+80,ph=90,x=AR?TS-pw:TS;X.save();X.globalAlpha=p;X.translate((1-p)*(AR?40:-40),0);X.fillStyle=CP.iL;rr(x,y,pw,ph,20);X.fill();txt(s.sub,x+pw/2,y+ph/2+2,40,700,'#ffffff','center',780);X.restore()}}},
+info(s,lt){const y0=titleC(s,lt),cx=AR?520:1400,cy=Math.max(610,y0+250);netC(cx,cy,270,lt,.3);hub(cx,cy,115,s,lt,.45);
+ const body=s.sub||'';if(!body)return;const hh=Math.max(240,nLines(body,52,700,660)*52*1.4+120),x=AR?TS-800:TS,y=cy-hh/2;cardC(x,y,800,hh,eo(cl((lt-.5)/.5)));
+ const bp=eo(cl((lt-.7)/.4));if(bp>0){X.fillStyle=T.a;rr(AR?x+800-14:x+4,y+30,10,(hh-60)*bp,5);X.fill()}
+ kin(body,AR?TS-60:TS+60,cy,{size:52,wt:700,max:660,align:ALN,lt,delay:.85,step:.04,color:T.ink})},
+list(s,lt,L){const y0=titleC(s,lt),it=items(s).slice(0,4),n=Math.max(1,it.length),cx=AR?500:1420,cy=620;netC(cx,cy,260,lt,.25);hub(cx,cy,105,s,lt,.4);
+ const top=Math.max(320,y0+10),hd=s.sub?92:30,h=hd+n*106+24,x=AR?TS-830:TS;cardC(x,top,830,h,eo(cl((lt-.3)/.5)));
+ if(s.sub)txt(s.sub,AR?TS-48:TS+48,top+52,40,800,isD()?CP.b:CP.a,AR?'right':'left',730);
+ const step=Math.max(.45,(L*.68-.7)/n);it.forEach((t,k)=>{pill(x+38,top+hd+k*106,754,84,t,eo(cl((lt-.8-k*step)/.45)))})},
+date(s,lt){titleC(s,lt);calV(s,lt);const parts=String(s.sub||'').split(/\s*[·•|]\s*/).filter(Boolean),ic=['📅','⏰','📍'];if(!parts.length)return;
+ const x=AR?TS-760:TS,y=470-((parts.length-1)*55);cardC(x,y-40,760,parts.length*110+60,eo(cl((lt-.4)/.5)));parts.slice(0,3).forEach((t,k)=>pill(x+36,y+k*110,688,86,t,eo(cl((lt-.8-k*.35)/.45)),ic[k]))},
+place(s,lt){titleC(s,lt);mapV(s,lt);if(!s.sub)return;const x=AR?TS-760:TS;cardC(x,430,760,230,eo(cl((lt-.4)/.5)));pill(x+36,502,688,86,s.sub,eo(cl((lt-.9)/.45)),'📍')},
+number(s,lt){titleC(s,lt);ringV(s,lt);if(!s.sub)return;const hh=Math.max(220,nLines(s.sub,50,700,640)*50*1.4+110),x=AR?TS-780:TS,cy=560;cardC(x,cy-hh/2,780,hh,eo(cl((lt-.5)/.5)));
+ kin(s.sub,AR?TS-60:TS+60,cy,{size:50,wt:700,max:640,align:ALN,lt,delay:.8,step:.04,color:T.ink})},
+timeline(s,lt,L){titleC(s,lt);const it=items(s).slice(0,5),n=Math.max(1,it.length),ly=640,x0=AR?W-250:250,x1=AR?250:W-250,step=Math.max(.5,(L*.7-.8)/n),cw=Math.min(330,Math.abs(x1-x0)/Math.max(1,n-1)-30);
+ X.lineCap='round';X.strokeStyle=hexA(T.ink,.15);X.lineWidth=12;X.beginPath();X.moveTo(x0,ly);X.lineTo(x1,ly);X.stroke();
+ const lp=eo(cl((lt-.4)/(step*Math.max(1,n-1)+.6)));X.strokeStyle=T.a;X.beginPath();X.moveTo(x0,ly);X.lineTo(lerp(x0,x1,lp),ly);X.stroke();
+ it.forEach((t,k)=>{const xk=n===1?(x0+x1)/2:lerp(x0,x1,k/(n-1)),ti=.6+k*step,p=eob(cl((lt-ti)/.5));if(p<=0)return;const up=k%2===0,cy=up?ly-190:ly+70,cp=eo(cl((lt-ti-.1)/.45));
+  X.strokeStyle=hexA(T.b,.7);X.lineWidth=3;X.beginPath();X.moveTo(xk,ly+(up?-30:30));X.lineTo(xk,up?cy+120:cy);X.globalAlpha=cp;X.stroke();X.globalAlpha=1;
+  X.fillStyle=T.a;X.beginPath();X.arc(xk,ly,26*p,0,7);X.fill();X.fillStyle=isD()?CP.D0:'#ffffff';X.beginPath();X.arc(xk,ly,10*p,0,7);X.fill();
+  cardC(xk-cw/2,cy,cw,120,cp,hexA(T.b,.55));kin(t,xk,cy+60,{size:34,wt:700,max:cw-36,align:'center',lt:lt-ti,delay:.15,step:.02,color:T.ink,lh:1.15})})},
+cta(s,lt,L){R.cta(s,lt,L)},outro(s,lt,L){R.outro(s,lt,L)}};
+function sceneC(i,t){const s=SC[i],lt=t-ST[i],Ln=SEG[i].b-SEG[i].a,d=dk(i);T=d?TDk:TL;bgC(d,t);X.save();const z=1+.03*cl(lt/Ln);X.translate(W/2,H/2);X.scale(z,z);X.translate(-W/2,-H/2);
+ (C[s.type]||C.info)(s,lt,Ln,i);X.restore();X.shadowBlur=0;X.shadowColor='transparent';X.globalAlpha=1;chipC(i,s,lt)}
+function frameC(t){X.setTransform(1,0,0,1,0,0);X.globalAlpha=1;X.shadowBlur=0;X.shadowColor='transparent';if(!N){T=TDk;bgC(true,t);return}
+ let i=0;while(i<N-1&&t>=ST[i+1])i++;const d=t-ST[i],TD=Math.min(.8,(SEG[i].b-SEG[i].a)*.3);
+ if(i>0&&d<TD){sceneC(i-1,t);const e=eio(d/TD),ex=AR?W*(1-e):W*e;X.save();X.beginPath();if(AR)X.rect(ex,0,W-ex,H);else X.rect(0,0,ex,H);X.clip();sceneC(i,t);X.restore();
+  X.save();X.shadowColor='rgba(0,0,0,.35)';X.shadowBlur=34;X.fillStyle=CP.a;X.fillRect(ex-36,0,72,H);X.restore()}
+ else sceneC(i,t);
+ T=dk(i)?TDk:TL;corner(SC[i]);if(CC)cap(t,i);
+ if(t<.35){X.fillStyle='rgba(0,0,0,'+(1-t/.35)+')';X.fillRect(0,0,W,H)}const te=DUR-t;if(te<.6){X.fillStyle='rgba(0,0,0,'+cl(1-te/.6)*.92+')';X.fillRect(0,0,W,H)}}
+/* ---------- frame ---------- */
+function bg(t){const g=X.createLinearGradient(0,0,W,H);g.addColorStop(0,T.bg0);g.addColorStop(1,T.bg1);X.fillStyle=g;X.fillRect(0,0,W,H);
+ [[T.a,.17,0],[T.b,.22,2.1],[T.a,.1,4.2]].forEach(([c,al,ph],k)=>{const x=W*(.5+.4*Math.sin(t*.13+ph)),y=H*(.5+.36*Math.cos(t*.11+ph*1.3)),r=520+80*Math.sin(t*.3+k),rg=X.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,hexA(c,al));rg.addColorStop(1,hexA(c,0));X.fillStyle=rg;X.fillRect(0,0,W,H)});
+ X.save();X.globalAlpha=.055;X.strokeStyle=T.ink;X.lineWidth=1;const off=(t*14)%80;X.beginPath();for(let x=off-80;x<W;x+=80){X.moveTo(x,0);X.lineTo(x,H)}for(let y=off*.5-80;y<H;y+=80){X.moveTo(0,y);X.lineTo(W,y)}X.stroke();X.restore();
+ PT.forEach(p=>{const y=((p.y-t*p.s)%H+H)%H,x=p.x+Math.sin(t*.6+p.ph)*22;X.globalAlpha=.2+.4*Math.pow(Math.sin(t*1.8+p.ph),2);X.fillStyle=p.c?T.a:T.b;X.beginPath();X.arc(x,y,p.r,0,7);X.fill()});X.globalAlpha=1}
+function corner(sc){if(!LOGO||!LOGO.complete||!LOGO.naturalWidth||sc.type==='outro')return;const s=110,x=AR?50:W-50-s,y=40;X.save();X.globalAlpha=.95;X.fillStyle='#ffffff';rr(x,y,s,s,26);X.fill();
+ const k=Math.min((s-20)/LOGO.naturalWidth,(s-20)/LOGO.naturalHeight);X.drawImage(LOGO,x+s/2-LOGO.naturalWidth*k/2,y+s/2-LOGO.naturalHeight*k/2,LOGO.naturalWidth*k,LOGO.naturalHeight*k);X.restore()}
+function cap(t,i){const S=SEG[i];if(!S||!S.words.length||t<S.a+.05||t>S.b-.2)return;const ws=S.words;let cw=-1;ws.forEach((w,k)=>{if(t>=w.a)cw=k});
+ const C=8,ci=Math.floor(Math.max(0,cw)/C),ch=ws.slice(ci*C,ci*C+C);X.save();X.font='700 46px '+FA;X.textBaseline='middle';X.textAlign='center';const sp=14,wd=ch.map(w=>X.measureText(w.w).width),tw=wd.reduce((a,b)=>a+b,0)+sp*(ch.length-1),bw=Math.min(1820,tw+90),y=H-92;
+ X.fillStyle='rgba(8,6,30,.74)';rr(960-bw/2,y-48,bw,96,48);X.fill();let xr=960+tw/2,xl=960-tw/2;
+ ch.forEach((w,j)=>{const k=ci*C+j,xc=AR?xr-wd[j]/2:xl+wd[j]/2;if(AR)xr-=wd[j]+sp;else xl+=wd[j]+sp;X.direction=isAr(w.w)?'rtl':'ltr';X.fillStyle=k===cw?T.a:k<cw?'#ffffff':'rgba(255,255,255,.5)';X.fillText(w.w,xc,y+2)});X.restore()}
+function wipe(d,hw){const u=(d+hw)/(2*hw);[[T.b,.1],[T.a,0]].forEach(([c,lag])=>{const e=eio(cl(u-lag)),cxp=lerp(-1520,3440,e),cx=AR?W-cxp:cxp,w2=1260,sk=AR?-260:260;
+ X.fillStyle=c;X.beginPath();X.moveTo(cx-w2+sk,0);X.lineTo(cx+w2+sk,0);X.lineTo(cx+w2-sk,H);X.lineTo(cx-w2-sk,H);X.closePath();X.fill()})}
+function frame(t){if(CINE)return frameC(t);T=T0;X.setTransform(1,0,0,1,0,0);X.globalAlpha=1;X.shadowBlur=0;X.shadowColor='transparent';bg(t);if(!N)return;
+ let i=0;while(i<N-1&&t>=ST[i+1])i++;const s=SC[i],lt=t-ST[i],Ln=SEG[i].b-SEG[i].a;
+ X.save();const z=1+.035*cl(lt/Ln);X.translate(W/2,H/2);X.scale(z,z);X.translate(-W/2,-H/2);(R[s.type]||R.info)(s,lt,Ln);X.restore();
+ X.shadowBlur=0;X.shadowColor='transparent';X.globalAlpha=1;corner(s);if(CC)cap(t,i);
+ for(let k=1;k<N;k++){const hw=Math.min(.42,(ST[k]-ST[k-1])/3),d=t-ST[k];if(Math.abs(d)<hw)wipe(d,hw)}
+ if(t<.35){X.fillStyle='rgba(0,0,0,'+(1-t/.35)+')';X.fillRect(0,0,W,H)}const te=DUR-t;if(te<.6){X.fillStyle='rgba(0,0,0,'+cl(1-te/.6)*.92+')';X.fillRect(0,0,W,H)}}
+/* ---------- player ---------- */
+let A=null;if(O.audio){A=new Audio();A.preload='auto';A.src=O.audio}
+let playing=false,base=0,t0=0,raf=0,dirty=true,alive=true,rec=null,AC=null,dest=null;
+const now=()=>A?A.currentTime:(playing?base+(performance.now()-t0)/1000:base);
+function msg(s,red,ms){MSG.textContent=s;MSG.className='mg-msg'+(red?' r':'');MSG.hidden=!s;if(ms)setTimeout(()=>{if(MSG.textContent===s)MSG.hidden=true},ms)}
+function ui(t){t=t===undefined?now():t;PP.textContent=playing?'❚❚':'▶';PP.title=playing?L10.pause:L10.play;BIG.hidden=playing||!!rec||!PO.hidden;{let ci=0;while(ci<N-1&&t>=ST[ci+1])ci++;[...SN.children].forEach((b,k)=>b.classList.toggle('on',k===ci))}TM.textContent=fmt(Math.min(t,DUR))+' / '+fmt(DUR);if(document.activeElement!==RG)RG.value=Math.round(Math.min(t,DUR)/DUR*1000);q('.mg-cc').classList.toggle('on',CC)}
+function play(){PO.hidden=true;if(now()>=DUR-.05)seek(0);playing=true;if(A){A.play().catch(()=>{playing=false;ui()})}else t0=performance.now();ui()}
+function pause(){if(!A)base=now();else A.pause();playing=false;dirty=true;ui()}
+function seek(x){x=cl(x,0,DUR);if(A)A.currentTime=x;else{base=x;t0=performance.now()}dirty=true}
+function finish(){if(rec&&rec.state==='recording')setTimeout(()=>{try{rec.stop()}catch(e){}},300)}
+function loop(){if(!alive)return;const t=now();if(playing||dirty){frame(Math.min(t,DUR));dirty=false;ui(t)}if(playing&&t>=DUR){pause();finish()}raf=requestAnimationFrame(loop)}
+if(A)A.addEventListener('ended',()=>{if(playing){playing=false;dirty=true;ui();finish()}});
+const MT=()=>!window.MediaRecorder?'':['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'].find(m=>MediaRecorder.isTypeSupported(m))||'';
+async function record(){if(!window.MediaRecorder||!cv.captureStream){msg(L10.nosup,true,5000);return}
+ try{let tr=cv.captureStream(30).getVideoTracks();
+  if(A){if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();const src=AC.createMediaElementSource(A);dest=AC.createMediaStreamDestination();src.connect(AC.destination);src.connect(dest)}await AC.resume();tr=tr.concat(dest.stream.getAudioTracks())}
+  const mt=MT(),chunks=[];rec=new MediaRecorder(new MediaStream(tr),mt?{mimeType:mt,videoBitsPerSecond:8e6}:{videoBitsPerSecond:8e6});
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  rec.onstop=()=>{const type=(rec&&rec.mimeType)||mt||'video/webm',b=new Blob(chunks,{type}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=(O.name||'motion')+(/mp4/.test(type)?'.mp4':'.webm');document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);rec=null;MG.classList.remove('busy');msg(L10.done,false,3000);ui()};
+  PO.hidden=true;pause();seek(0);frame(0);rec.start(500);MG.classList.add('busy');msg(L10.rec,true);ui();setTimeout(play,250)}
+ catch(e){rec=null;MG.classList.remove('busy');msg(L10.nosup+' ('+String(e.message||e).slice(0,60)+')',true,6000)}}
+PP.onclick=()=>playing?pause():play();BIG.onclick=play;q('.mg-rp').onclick=()=>{seek(0);play()};
+RG.oninput=()=>seek(RG.value/1000*DUR);
+q('.mg-cc').onclick=()=>{CC=!CC;dirty=true;ui()};
+q('.mg-fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():MG.requestFullscreen&&MG.requestFullscreen()};
+q('.mg-ex').onclick=record;
+MG.addEventListener('keydown',e=>{if(e.code==='Space'&&!rec&&e.target===MG){e.preventDefault();playing?pause():play()}});
+const tl=q('.mg-tl');for(let k=1;k<N;k++){const d=document.createElement('i');d.className='mg-tk';d.style.left='calc('+(ST[k]/DUR*100)+'% - 1px)';tl.appendChild(d)}
+if(document.fonts){['900 100px Cairo','700 50px Cairo','800 50px Cairo'].forEach(f=>document.fonts.load(f).then(()=>{dirty=true}).catch(()=>{}));document.fonts.ready.then(()=>{dirty=true})}
+const esc2=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),pc=CPS[O.theme]||CPS.site;
+const PO=document.createElement('div');PO.className='mg-po';PO.style.background='radial-gradient(circle at 70% 25%,'+pc.D1+','+pc.D0+')';
+PO.innerHTML='<span class="mg-po-chip" style="background:'+hexA(pc.a,.16)+';color:'+pc.a+';border-color:'+hexA(pc.a,.5)+'">'+esc2(L10.chip)+'</span><h2 dir="auto">'+esc2(D.title||O.school||'')+'</h2>'+(O.school&&D.title?'<p dir="auto">'+esc2(O.school)+'</p>':'')+'<button type="button" style="background:'+pc.a+'">▶ '+esc2(L10.show)+'</button><small>'+N+' '+L10.scenes+' · '+fmt(DUR)+' · '+(A?L10.voice:L10.novoice)+'</small>';
+if(O.poster===false)PO.hidden=true;q('.mg-stage').appendChild(PO);PO.querySelector('button').onclick=play;
+const SN=document.createElement('div');SN.className='mg-sn';SC.forEach((s,k)=>{const b=document.createElement('button');b.type='button';b.textContent=k+1;b.title=s.headline||'';b.onclick=()=>{PO.hidden=true;seek(ST[k]+.02);ui()};SN.appendChild(b)});q('.mg-bar').insertBefore(SN,q('.mg-cc'));
+frame(0);ui(0);raf=requestAnimationFrame(loop);
+return {destroy(){alive=false;cancelAnimationFrame(raf);try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}if(A){A.pause();A.removeAttribute('src');A.load()}if(AC)AC.close().catch(()=>{})},
+ play,pause,seek,frame,get t(){return now()},dur:DUR,times:ST.slice(),get playing(){return playing}};
+}
+
+/* ==========================================================================
+   PAGE
+   ========================================================================== */
+const $=i=>document.getElementById(i),V=i=>($(i).value||'').trim(),C=i=>$(i).checked;
+let UI='ar',CUR=0;
+const tr=a=>a[UI=='ar'?0:1];
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const toast=m=>{const t=$('tt');t.textContent=m;t.className='toast on';clearTimeout(toast.h);toast.h=setTimeout(()=>t.className='toast',2200)};
+const TYPES=[['trip','رحلة مدرسية','School trip','🚌','sea'],['contest','مسابقة','Competition','🏆','fun'],['sport','تدريب رياضي','Sports training','🥋','sport'],['exam','موعد الاختبارات','Exam timetable','📝','site'],['event','حفل أو فعالية','Celebration or event','🎉','fun'],['parents','اجتماع أولياء الأمور','Parents meeting','👨‍👩‍👧','calm'],['register','تسجيل في نشاط','Activity registration','📋','site'],['honor','تهنئة وتكريم','Congratulations and honors','🎖️','calm'],['aware','توعية وإرشاد','Awareness message','💡','light'],['other','إعلان آخر','Other announcement','✨','site']];
+const TPH={trip:['رحلة علمية إلى مركز العلوم','A science trip to the science centre'],contest:['مسابقة القارئ المبدع','The Creative Reader competition'],sport:['تدريب الكاراتيه للمبتدئين','Karate training for beginners'],exam:['جدول اختبارات نهاية الفصل الأول','End-of-term exam timetable'],event:['حفل اليوم الوطني','National Day celebration'],parents:['لقاء أولياء الأمور الأول','The first parents meeting'],register:['التسجيل في نادي الروبوت','Robotics club registration'],honor:['تكريم المتفوقين','Honouring top achievers'],aware:['أسبوع التوعية بالسلامة المرورية','Road safety awareness week'],other:['','']};
+const MSG={need:['اكتب عنوان الفعالية أولًا، أو اختر إرفاق ملف بالتفاصيل','Please enter the event title first, or choose to attach a file with the details'],cp:['تم النسخ · Copied','Copied · تم النسخ'],bad:['تعذّرت قراءة JSON: تأكد أنك نسخت ردّ الروبوت كاملًا','Could not read the JSON: make sure you copied the whole chatbot reply'],ok:['تمت قراءة السيناريو: ','Script read: '],sc:[' مشاهد',' scenes'],nodata:['اقرأ السيناريو أولًا في الخطوة 2','Read a script in step 2 first']};
+let TY='trip',THEME_TOUCHED=false,LOGO_URL='',DATA=null,AUD=null,MODE='smart',MANUAL=null,CUSTOM=null,PLAYER=null;
+
+/* ---------- step 1 ---------- */
+function syncOth(){const o=V('oth'),t=TYPES.find(x=>x[0]==TY);if(!o||TYPES.some(x=>x[1]===o||x[2]===o))$('oth').value=TY=='other'?'':tr([t[1],t[2]])}
+function paintTypes(){$('types').innerHTML=TYPES.map(t=>`<label class="chip"><input type="radio" name="ty" value="${t[0]}" ${t[0]==TY?'checked':''}><i>${t[3]}</i>${tr([t[1],t[2]])}</label>`).join('');
+ document.querySelectorAll('#types input').forEach(r=>r.onchange=()=>{TY=r.value;const tt=TYPES.find(x=>x[0]==TY);$('oth').value=TY=='other'?'':tr([tt[1],tt[2]]);$('oth').focus();if(TY=='other')$('oth').select();if(!THEME_TOUCHED)$('theme').value=TYPES.find(x=>x[0]==TY)[4];$('ti').placeholder=tr(TPH[TY]);});
+ $('ti').placeholder=tr(TPH[TY]);syncOth()}
+$('theme').addEventListener('change',()=>{THEME_TOUCHED=true});
+let DU_TOUCHED=false;$('du').addEventListener('change',()=>{DU_TOUCHED=true});
+$('src').addEventListener('change',()=>{const f=V('src')=='file';$('srcNote').hidden=!f;if(f&&!DU_TOUCHED)$('du').value='auto'});
+$('logo').onchange=e=>{const x=e.target.files[0],p=$('pvl');if(!x){LOGO_URL='';p.className='pv';return}const r=new FileReader();r.onload=()=>{LOGO_URL=r.result;p.innerHTML=`<img src="${r.result}" alt=""><span>${esc(x.name)}</span>`;p.className='pv on';if(CUR==3)renderPlayer()};r.readAsDataURL(x)};
+const selTxt=(id,L)=>{const o=$(id).selectedOptions[0];return L=='ar'?(o.dataset.ar||o.textContent):(o.dataset.en||o.textContent)};
+const lines=id=>V(id).split('\n').map(s=>s.trim()).filter(Boolean);
+function F(){const t=TYPES.find(x=>x[0]==TY),lg=V('lg'),du=V('du')=='auto'?0:+V('du'),o=V('oth'),cu=o&&o!==t[1]&&o!==t[2];return {ty:TY,tyAr:cu?o:t[1],tyEn:cu?o:t[2],ti:V('ti'),org:V('org'),dt:V('dt'),tm:V('tm'),pl:V('pl'),au:V('au'),de:lines('de'),rq:lines('rq'),rg:V('rg'),ct:V('ct'),lg,du,tn:+V('tn'),vo:V('vo'),
+ src:V('src'),scn:{15:4,30:6,45:7,60:8}[du]||6,words:Math.round(du*(lg=='en'?2.5:2.1)),logo:!!LOGO_URL}}
+
+/* ---------- prompts ---------- */
+const H={ar:['## الدور (Role)','## السياق (Context)','## المهمة (Task)','## الصيغة (Format)'],en:['## Role','## Context','## Task','## Format']};
+const P4=(L,r,c,t,f)=>`${H[L][0]}\n${r}\n\n${H[L][1]}\n${c}\n\n${H[L][2]}\n${t}\n\n${H[L][3]}\n${f}`;
+function ctxLines(d,L){const a=L=='ar',f=d.src=='file',rows=a?[['نوع الإعلان',d.tyAr+(f?' (إن خالفه الملف فاعتمد ما في الملف)':'')],['عنوان الفعالية',d.ti],['الجهة المنظِّمة',d.org],['التاريخ',d.dt],['الوقت',d.tm],['المكان',d.pl],['الفئة المستهدفة',d.au],['التفاصيل',d.de.join('؛ ')],['المطلوب من المشاركين',d.rq.join('؛ ')],['التسجيل أو التواصل',d.rg],['عبارة الختام',d.ct]]
+ :[['Announcement type',d.tyEn+(f?' (if the file says otherwise, follow the file)':'')],['Event title',d.ti],['Organizer',d.org],['Date',d.dt],['Time',d.tm],['Place',d.pl],['Audience',d.au],['Highlights',d.de.join('; ')],['What participants need',d.rq.join('; ')],['Registration or contact',d.rg],['Closing line',d.ct]];
+ return rows.filter(x=>x[1]).map(x=>`- ${x[0]}: ${x[1]}`).join('\n')}
+function schema(d){const auto=!d.du,file=d.src=='file';return '{"title":"",'+(auto?'"seconds":0,':'')+(file?'"facts":[""],':'')+'"lang":"'+(d.lg=='en'?'en':'ar')+'","scenes":[{"type":"hook","label":"","emoji":"","headline":"","accent":"",'+(d.lg=='both'?'"headline2":"",':'')+'"sub":"","items":[],"big":"","narration":""}]}'}
+const numL=xs=>xs.filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join('\n');
+function scriptPrompt(d,L){const a=L=='ar',tone=selTxt('tn',L),en=d.lg=='en',both=d.lg=='both',file=d.src=='file',auto=!d.du,ctx=ctxLines(d,L);
+ const lang=a?{ar:'العربية الفصحى المبسّطة',en:'الإنجليزية',both:'نصوص الشاشة بالعربية مع ترجمة إنجليزية قصيرة، والتعليق الصوتي بالعربية'}[d.lg]:{ar:'simplified Modern Standard Arabic',en:'English',both:'on-screen text in Arabic with a short English translation; Arabic voice-over'}[d.lg];
+ if(a){const dur=auto?`تلقائية بحسب كمية المعلومات المهمة، بين ٢٠ و٩٠ ثانية (نحو ${en?'كلمتين ونصف':'كلمتين'} منطوقتين لكل ثانية)`:`${d.du} ثانية تقريبًا (نحو ${d.words} كلمة منطوقة)`;
+  return P4(L,`أنت فريق إبداعي في شخص واحد:${file?'\n- محلل وثائق يستخرج الحقائق من الملفات بدقة، دون زيادة أو نقصان.':''}
+- كاتب إعلانات مدرسية محترف، يكتب عبارات قصيرة جذابة تناسب ${d.au||'الطلاب وأولياء الأمور'}.
+- كاتب سيناريو Motion Graphics، يقسّم الإعلان إلى مشاهد بصرية متتابعة.
+- مخرج تعليق صوتي، يكتب نصًّا سهل النطق يُقرأ بصوت واحد${auto?'':` في ${d.du} ثانية تقريبًا`}.
+- مدقق لغوي دقيق في الإملاء والنحو.`,
+  (file?'- مرفق مع هذه الرسالة ملف بتفاصيل الفعالية (PDF أو صورة أو مستند)، وهو المصدر الأساسي للمعلومات.\n':'')+(ctx?ctx+'\n':'')+(file&&ctx?'- البيانات المكتوبة هنا تتقدّم على ما في الملف عند التعارض.\n':'')+`- مدة الإعلان: ${dur}
+- النبرة: ${tone}
+- لغة النص: ${lang}
+- ما لم يُذكر ${file?'في الملف أو في هذه البيانات':'في هذه البيانات'} فلا تذكره.`,
+  (file?`أولًا: اقرأ الملف المرفق كاملًا، واستخرج كل معلومة تهم الجمهور: اسم الفعالية، والجهة، والتاريخ، والوقت، والمكان، والفئة المستهدفة، والمزايا، والمتطلبات، وطريقة التسجيل أو التواصل، والأرقام المهمة. ثم اختر للإعلان أهمها، واترك التفاصيل الثانوية التي تُطيل الفيديو بلا فائدة. وإن تعذّرت قراءة جزء من الملف فلا تخمّنه.
+ثانيًا: `:'')+`اكتب سيناريو إعلان متحرك من ${auto?'٥ إلى ١٢ مشهدًا بحسب المحتوى':`${d.scn} مشاهد (يجوز ±1 بحسب البيانات المتوفرة)`}.
+أنواع المشاهد المتاحة (type):
+- hook: افتتاحية تشد الانتباه، وهي المشهد الأول دائمًا.
+- info: فكرة أو معلومة عامة عن الفعالية.
+- date: الموعد؛ big = رقم اليوم بالأرقام، وsub = الشهر والوقت.
+- place: المكان؛ sub = اسم المكان.
+- list: تفاصيل أو متطلبات؛ items من ٢ إلى ٤ بنود، كل بند ٤ كلمات كحد أقصى.
+- number: رقم حقيقي مذكور (عدد المقاعد، قيمة الجائزة، عدد الأيام…)؛ big = الرقم مع وحدة قصيرة.
+- timeline: جدول أو تسلسل زمني (برنامج الرحلة، أيام الاختبارات، مراحل المسابقة)؛ items من ٢ إلى ٥ بنود، كل بند ٤ كلمات كحد أقصى، مثل «الأحد: لغتي الجميلة».
+- cta: دعوة إلى التسجيل أو الحضور؛ sub = نص زر قصير (٣ كلمات كحد أقصى).
+- outro: الختام باسم الجهة المنظِّمة، وهو المشهد الأخير دائمًا.
+حقول الكائن الرئيسي: title عنوان الإعلان${auto?'، وseconds المدة المقدّرة بالثواني':''}${file?'، وfacts قائمة مختصرة بالمعلومات التي استخرجتها من الملف، كل معلومة في عنصر (للمراجعة فقط، لا تظهر في الفيديو)':''}.
+حقول كل مشهد:
+- label: اسم قصير للمشهد (كلمتان أو ثلاث) يظهر في شارة رقم المشهد أعلى الشاشة، مثل «موعد الانطلاق».
+- headline: عنوان الشاشة، ٥ كلمات كحد أقصى.
+- accent: كلمة واحدة منقولة حرفيًا من headline تُبرَز بلون مختلف.${both?'\n- headline2: ترجمة إنجليزية قصيرة لـ headline.':''}
+- sub: سطر مساند، ٨ كلمات كحد أقصى (اختياري).
+- emoji: رمز إيموجي واحد يعبّر عن المشهد.
+- narration: ما يقوله المعلّق أثناء المشهد، جملة أو جملتان قصيرتان.
+قواعد الجودة:
+${numL([
+ `استخدم ${file?'ما في الملف والبيانات المذكورة':'البيانات المذكورة'} فقط؛ لا تخترع تاريخًا أو وقتًا أو سعرًا أو رقم هاتف أو اسمًا، وإن غابت معلومة فلا تُنشئ لها مشهدًا.`,
+ `الافتتاحية: ابدأ بأسلوب يناسب نوع الإعلان، واختر واحدًا مما يلي ولا تكرر الأسلوب نفسه في كل إعلان: سؤال مشوّق، أو معلومة لافتة، أو عدّ تنازلي، أو إعلان مباشر عن الحدث، أو صورة تخيّلية قصيرة.`,
+ `لا تبدأ أي جملة بأداة نداء (يا، أيها، أيتها)، ولا تستخدم النداء في الإعلان كله إلا مرة واحدة على الأكثر، وفي غير المشهد الأول.`,
+ `نوّع بدايات جمل narration، فلا يبدأ مشهدان متتاليان بالكلمة نفسها، وتجنّب العبارات المستهلكة مثل «لا تفوّتوا الفرصة» إلا إن وردت في عبارة الختام.`,
+ `narration جمل قصيرة سهلة النطق بنبرة ${tone}، تكمّل عنوان الشاشة ولا تكرره حرفيًا، ${auto?'وطول كل مشهد يناسب ما فيه من معلومات':`ومجموع كلماتها قريب من ${d.words} كلمة`}.`,
+ `اكتب التواريخ والأوقات والأرقام في narration كما تُنطق بالكلمات${en?'':' (مثل: يومَ الخميس الخامسَ عشرَ من نوفمبر، في الساعة السابعة والنصف صباحًا)'}، واكتبها بالأرقام في headline وsub وbig.`,
+ en?'':'شكّل في narration الكلمات التي قد يخطئ القارئ الآلي في نطقها فقط، ولا تشكّل نصوص الشاشة.',
+ 'نوّع أنواع المشاهد، ولا تكرر النوع نفسه في مشهدين متتاليين.',
+ 'الإيموجي من الرموز الشائعة، دون أعلام أو رموز سياسية أو دينية.',
+ 'راجع الإملاء والنحو في كل حقل قبل الإرسال.'])}
+مهم: لا تكتب أي شرح ولا تنشئ ملفًا. ضع كائن JSON صالحًا واحدًا داخل كتلة كود (\`\`\`json) فقط، بعلامات اقتباس مستقيمة " بهذا الشكل:
+${schema(d)}`,`كائن JSON فقط، وسيحوّله الاستوديو إلى فيديو موشن جرافيك متزامن مع الصوت.`)}
+ const dur=auto?`automatic, based on how much important information there is, between 20 and 90 seconds (about ${en?'2.5':'2'} spoken words per second)`:`about ${d.du} seconds (around ${d.words} spoken words)`;
+ return P4(L,`You are a creative team in one person:${file?'\n- A document analyst who extracts facts from files accurately, adding and omitting nothing.':''}
+- A professional school copywriter who writes short, catchy lines for ${d.au||'students and parents'}.
+- A motion graphics scriptwriter who splits the announcement into consecutive visual scenes.
+- A voice-over director who writes easy-to-speak narration read by one voice${auto?'':` in about ${d.du} seconds`}.
+- A meticulous proofreader of spelling and grammar.`,
+ (file?'- A file with the event details (PDF, image or document) is attached to this message; it is the main source of information.\n':'')+(ctx?ctx+'\n':'')+(file&&ctx?'- The data written here overrides the file whenever they conflict.\n':'')+`- Length: ${dur}
+- Tone: ${tone}
+- Script language: ${lang}
+- Anything not stated ${file?'in the file or in this data':'in this data'} must not be mentioned.`,
+ (file?`First: read the whole attached file and extract every fact that matters to the audience: event name, organizer, date, time, place, audience, highlights, requirements, how to register or get in touch, and key numbers. Then pick the most important ones for the announcement and leave out secondary details that would only lengthen the video. If part of the file cannot be read, do not guess it.
+Second: `:'')+`Write an animated announcement script of ${auto?'5 to 12 scenes depending on the content':`${d.scn} scenes (±1 depending on the available data)`}.
+Available scene types (type):
+- hook: an attention-grabbing opening; always the first scene.
+- info: a general idea or fact about the event.
+- date: the date; big = the day number in digits, sub = the month and time.
+- place: the venue; sub = the place name.
+- list: details or requirements; items holds 2 to 4 entries of at most 4 words each.
+- number: a real number that is stated (seats, prize value, days left…); big = the number with a short unit.
+- timeline: a schedule or sequence (trip programme, exam days, competition stages); items holds 2 to 5 entries of at most 4 words each, e.g. "Sunday: Arabic".
+- cta: a call to register or attend; sub = a short button label (at most 3 words).
+- outro: the closing with the organizer's name; always the last scene.
+Top-level fields: title, the announcement title${auto?'; seconds, the estimated length in seconds':''}${file?'; facts, a short list of the facts you extracted from the file, one per entry (for review only, never shown in the video)':''}.
+Fields of every scene:
+- label: a short scene name (two or three words) shown in the scene-number badge at the top, e.g. "Departure time".
+- headline: on-screen title, at most 5 words.
+- accent: one word copied exactly from headline, shown in a highlight colour.${both?'\n- headline2: a short English translation of headline.':''}
+- sub: a supporting line, at most 8 words (optional).
+- emoji: one emoji that represents the scene.
+- narration: what the narrator says during the scene, one or two short sentences.
+Quality rules:
+${numL([
+ `Use only ${file?'what is in the file and the stated data':'the stated data'}; never invent a date, time, price, phone number or name, and if a fact is missing, create no scene for it.`,
+ 'The opening: start in a way that suits the announcement type, choosing one of these and not reusing the same device every time: an intriguing question, a striking fact, a countdown, a direct announcement of the event, or a short imagined picture.',
+ `Never start a sentence with a vocative${en?' such as "Hey kids" or "Dear students"':' (يا، أيها، أيتها)'}, and use direct address at most once in the whole announcement, never in the first scene.`,
+ 'Vary how narration sentences begin: no two consecutive scenes start with the same word, and avoid worn-out phrases such as "Don\'t miss out" unless they appear in the closing line.',
+ `narration uses short, easy-to-speak sentences in a ${tone} tone, complements the on-screen title without repeating it word for word, and ${auto?'gives each scene a length that fits its information':`totals close to ${d.words} words`}.`,
+ `Write dates, times and numbers in narration the way they are spoken${en?' (e.g. "Thursday the fifteenth of November, at half past seven")':''}, and in digits in headline, sub and big.`,
+ en?'':'In narration, add diacritics only to words a text-to-speech voice might mispronounce; never add them to on-screen text.',
+ 'Vary the scene types and never use the same type in two consecutive scenes.',
+ 'Use common emoji only, with no flags or political or religious symbols.',
+ 'Proofread the spelling and grammar of every field before sending.'])}
+Important: write no explanation and create no file. Put one valid JSON object inside a single code block (\`\`\`json) and nothing else, using straight double quotes ", in exactly this shape:
+${schema(d)}`,`JSON object only; the Studio turns it into a motion graphics video synced to the voice.`)}
+const VOX={m:[['Fenrir أو Puck','Fenrir or Puck'],['Charon أو Orus','Charon or Orus']],f:[['Zephyr أو Leda','Zephyr or Leda'],['Kore أو Aoede','Kore or Aoede']]};
+function styleText(d,L){const a=L=='ar',en=(DATA&&DATA.lang=='en')||d.lg=='en',tone=selTxt('tn',L);
+ return a?`اقرأ الإعلان المدرسي التالي بصوت ${d.vo=='f'?'امرأة':'رجل'} بنبرة ${tone}، ${en?'بالإنجليزية الواضحة':'بالعربية الفصحى الواضحة ومخارج حروف سليمة'}، وبسرعة طبيعية، مع وقفة واضحة نحو ثانية بين كل فقرة والتي تليها. اقرأ النص كما هو دون إضافة أي كلمة أو حذفها.`
+ :`Read the following school announcement in a ${d.vo=='f'?'female':'male'} voice with a ${tone} tone, in clear ${en?'English':'Modern Standard Arabic with precise pronunciation'}, at a natural pace, with a clear pause of about one second between paragraphs. Read the text exactly as written, without adding or skipping any word.`}
+const narr=()=>DATA.scenes.map(s=>s.narration).filter(Boolean).join('\n\n');
+
+/* ---------- cards ---------- */
+const BOTS=[['Claude','https://claude.ai/new'],['ChatGPT','https://chatgpt.com/'],['Gemini','https://gemini.google.com/app']],STUDIO_TTS=[['Google AI Studio','https://aistudio.google.com/generate-speech']];
+const store={};let kk=0;
+const fn=()=>(V('ti')||(DATA&&DATA.title)||'announcement').replace(/[\\\/:*?"<>|]+/g,'').replace(/\s+/g,'-').slice(0,40);
+function card(title,tx,rtl,bots,after){const i=++kk,e=UI=='en';store[i]=[title,tx];
+ return `<div class="blk"><div class="bh"><b>${esc(title)}</b><span class="ba"><button class="btn sm" data-c="${i}">${e?'Copy':'نسخ'}</button><button class="btn sm" data-d="${i}" data-x="txt">.txt</button><button class="btn sm" data-d="${i}" data-x="md">.md</button></span></div><pre class="${rtl?'rtl':'ltr'}">${esc(tx)}</pre><div class="bf"><span>${e?'Copy and open:':'انسخ وافتح:'}</span>${bots.map(b=>`<button class="btn sm c" data-o="${i}" data-u="${b[1]}">${b[0]}</button>`).join('')}<span>${after||(e?'then paste (Ctrl+V)':'ثم الصق (Ctrl+V)')}</span></div></div>`}
+function cp(t){const done=()=>toast(tr(MSG.cp));const legacy=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();done()};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(done,legacy);else legacy()}
+function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([(type=='text/plain'?'﻿':'')+data],{type:type+';charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-c],button[data-d],button[data-o]');if(!b)return;const d=b.dataset;
+ if(d.c)cp(store[d.c][1]);else if(d.o){cp(store[d.o][1]);window.open(d.u,'_blank','noopener')}
+ else{const [h,tx]=store[d.d],m=d.x=='md';dl(`${fn()}-${h.replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,30)}.${d.x}`,m?`# ${h}\n\n${tx}\n`:`${h}\n${'='.repeat(h.length)}\n\n${tx}\n`,m?'text/markdown':'text/plain')}});
+
+/* ---------- step 2: read script ---------- */
+const TYPESET=['hook','info','date','place','list','number','timeline','cta','outro'];
+function parse(raw){const s=raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1).replace(/[“”]/g,'"').replace(/,\s*([}\]])/g,'$1');const j=JSON.parse(s);
+ if(!Array.isArray(j.scenes)||!j.scenes.length)throw new Error('scenes');const str=v=>v==null?'':String(v).trim();
+ const sc=j.scenes.filter(x=>x&&typeof x=='object').map((x,i,all)=>{let t=str(x.type).toLowerCase();if(!TYPESET.includes(t))t=i==0?'hook':i==all.length-1?'outro':'info';
+  return {type:t,emoji:str(x.emoji),headline:str(x.headline||x.title),accent:str(x.accent),headline2:str(x.headline2),sub:str(x.sub),label:str(x.label),items:Array.isArray(x.items)?x.items.map(str).filter(Boolean).slice(0,t=='timeline'?5:4):[],big:str(x.big),narration:str(x.narration||x.voiceover||x.vo)}}).filter(x=>x.headline||x.narration);
+ if(!sc.length)throw new Error('scenes');
+ const lang=/^en/i.test(str(j.lang))?'en':(/^ar/i.test(str(j.lang))?'ar':(V('lg')=='en'?'en':'ar'));return {title:str(j.title)||V('ti'),lang,scenes:sc,facts:Array.isArray(j.facts)?j.facts.map(str).filter(Boolean):[]}}
+const TYN={hook:['افتتاحية','Hook'],info:['معلومة','Info'],date:['الموعد','Date'],place:['المكان','Place'],list:['قائمة','List'],number:['رقم','Number'],timeline:['جدول زمني','Timeline'],cta:['دعوة','Call to action'],outro:['ختام','Outro']};
+function paintScenes(){if(!DATA){$('scs').innerHTML='';return}
+ $('scs').innerHTML=(DATA.facts.length?`<div class="note warn"><b>${tr(['المعلومات التي استخرجها الذكاء الاصطناعي من الملف — راجعها قبل المتابعة:','Facts the AI extracted from the file — review them before you continue:'])}</b><ul style="margin:6px 0 0;padding-inline-start:20px">${DATA.facts.map(f=>`<li dir="auto">${esc(f)}</li>`).join('')}</ul></div>`:'')+DATA.scenes.map((s,i)=>`<div class="sc"><span class="e">${esc(s.emoji||'✨')}</span><div><small>${String(i+1).padStart(2,'0')} · ${tr(TYN[s.type])}</small><b dir="auto">${esc(s.headline)}</b></div><p dir="auto">🎙️ ${esc(s.narration)}</p></div>`).join('')}
+function readScript(raw){try{DATA=parse(raw)}catch(e){toast(tr(MSG.bad));return false}
+ MANUAL=null;CUSTOM=null;paintScenes();toast(tr(MSG.ok)+DATA.scenes.length+tr(MSG.sc));return true}
+$('rd').onclick=()=>readScript($('js').value);
+function sample(){const org=V('org')||(UI=='en'?'Our school':'مدرستنا');
+ const ar={title:'رحلة علمية إلى مركز العلوم',lang:'ar',scenes:[
+ {type:'hook',label:'رحلة علمية',emoji:'🚌',headline:'استعدّوا للمغامرة!',accent:'للمغامرة',sub:'رحلة علمية لطلاب الصف السادس',narration:'هل جرّبتَ يومًا أن تصنعَ تجربةً علميةً بيديك؟ رحلتُنا القادمةُ تحقّقُ لك ذلك.'},
+ {type:'info',label:'ماذا ينتظرنا؟',emoji:'🔬',headline:'تجارب تفاعلية مدهشة',accent:'مدهشة',sub:'نكتشف العلوم بأيدينا',narration:'سنزورُ مركزَ العلوم، ونجرّبُ بأنفسنا تجاربَ تفاعليةً مدهشة.'},
+ {type:'date',label:'موعد الانطلاق',emoji:'📅',headline:'موعدنا يوم الخميس',accent:'الخميس',big:'15',sub:'نوفمبر · 7:30 صباحًا',narration:'موعدُنا يومَ الخميس، الخامسَ عشرَ من نوفمبر، في الساعةِ السابعةِ والنصفِ صباحًا.'},
+ {type:'timeline',label:'برنامج اليوم',emoji:'🗓️',headline:'برنامج الرحلة',accent:'الرحلة',items:['7:30 الانطلاق','9:00 التجارب التفاعلية','11:00 القبة الفلكية','12:30 العودة'],narration:'ننطلقُ في السابعةِ والنصف، ثم التجاربُ التفاعلية، فالقبةُ الفلكية، ونعودُ في الثانيةَ عشرةَ والنصف.'},
+ {type:'list',label:'قبل أن تأتي',emoji:'🎒',headline:'لا تنسَ إحضار',accent:'إحضار',items:['موافقة ولي الأمر','وجبة خفيفة وماء','الزي المدرسي'],narration:'لا تنسَ إحضارَ موافقةِ وليِّ الأمر، ووجبةً خفيفةً وماء، والالتزامَ بالزيِّ المدرسي.'},
+ {type:'number',label:'المقاعد',emoji:'🎟️',headline:'المقاعد محدودة',accent:'محدودة',big:'40 مقعدًا',sub:'الأولوية للأسبق',narration:'المقاعدُ أربعونَ مقعدًا فقط، والأولويةُ للأسبق.'},
+ {type:'cta',label:'التسجيل',emoji:'✋',headline:'سجّل اسمك الآن',accent:'الآن',sub:'لدى رائد النشاط',narration:'سجِّلِ اسمَك الآن لدى رائدِ النشاط.'},
+ {type:'outro',label:'الختام',emoji:'🏫',headline:org,sub:'نتعلّم ونستمتع',narration:'نتعلّمُ… ونستمتع.'}]};
+ const en={title:'A science trip to the science centre',lang:'en',scenes:[
+ {type:'hook',label:'Science trip',emoji:'🚌',headline:'Get ready for adventure!',accent:'adventure',sub:'A science trip for Grade 6',narration:'Have you ever run a science experiment with your own hands? Our next trip makes it happen.'},
+ {type:'info',label:'What awaits',emoji:'🔬',headline:'Amazing hands-on experiments',accent:'Amazing',sub:'Discover science with your own hands',narration:'We will visit the science centre and try amazing interactive experiments ourselves.'},
+ {type:'date',label:'Departure',emoji:'📅',headline:'See you on Thursday',accent:'Thursday',big:'15',sub:'November · 7:30 am',narration:'We meet on Thursday the fifteenth of November, at half past seven in the morning.'},
+ {type:'timeline',label:'The day',emoji:'🗓️',headline:'Trip programme',accent:'programme',items:['7:30 Departure','9:00 Hands-on lab','11:00 Planetarium','12:30 Return'],narration:'We leave at seven thirty, then the hands-on lab, the planetarium, and we are back at twelve thirty.'},
+ {type:'list',label:'Before you come',emoji:'🎒',headline:'Remember to bring',accent:'bring',items:['Parent consent form','A snack and water','Your school uniform'],narration:'Remember to bring your parent consent form, a snack and water, and wear your school uniform.'},
+ {type:'number',label:'Seats',emoji:'🎟️',headline:'Seats are limited',accent:'limited',big:'40 seats',sub:'First come, first served',narration:'There are only forty seats, so first come, first served.'},
+ {type:'cta',label:'Sign-up',emoji:'✋',headline:'Sign up today',accent:'today',sub:'With the activities lead',narration:'Sign up today with the activities lead.'},
+ {type:'outro',label:'Closing',emoji:'🏫',headline:org,sub:'Learning is fun',narration:'Learning is fun!'}]};
+ $('js').value=JSON.stringify(V('lg')=='en'?en:ar,null,1);readScript($('js').value)}
+$('smp').onclick=sample;
+
+/* ---------- step 3: audio ---------- */
+function paintTTS(){const has=!!DATA;$('noData').hidden=has;$('ttsBox').hidden=!has;if(!has){$('tts').innerHTML='';return}
+ const d=F(),v=VOX[d.vo][d.tn==1||d.tn==2?1:0];$('vsug').textContent=tr(['اختر صوتًا '+(d.vo=='f'?'نسائيًا':'رجاليًا')+' يناسب النبرة، مثل: '+v[0]+'.','Pick a '+(d.vo=='f'?'female':'male')+' voice that fits the tone, such as '+v[1]+'.']);
+ const after=tr(['ثم الصق في الخانة المناسبة','then paste into the matching box']);
+ $('tts').innerHTML=card(tr(['تعليمات الأسلوب · عربي','Style instructions · Arabic']),styleText(d,'ar'),true,STUDIO_TTS,after)+card(tr(['تعليمات الأسلوب · English','Style instructions · English']),styleText(d,'en'),false,STUDIO_TTS,after)+card(tr(['نص التعليق الصوتي','Voice-over script']),narr(),DATA.lang!='en',STUDIO_TTS,after)}
+async function analyze(blob){const ab=await blob.arrayBuffer(),AC=new(window.AudioContext||window.webkitAudioContext)();try{const b=await AC.decodeAudioData(ab),ch=b.getChannelData(0),hop=Math.max(1,Math.round(b.sampleRate*.02)),env=[];
+ for(let i=0;i+hop<=ch.length;i+=hop){let s=0,n=0;for(let j=i;j<i+hop;j+=4){s+=ch[j]*ch[j];n++}env.push(Math.sqrt(s/n))}return {dur:b.duration,env,fr:hop/b.sampleRate}}finally{AC.close().catch(()=>{})}}
+function metaDur(url){return new Promise(r=>{const a=new Audio();a.preload='metadata';a.onloadedmetadata=()=>{if(isFinite(a.duration))r(a.duration);else{a.currentTime=1e7;a.ontimeupdate=()=>{a.ontimeupdate=null;r(a.duration)}}};a.onerror=()=>r(0);a.src=url})}
+/* Google AI Studio (Gemini TTS) can save raw 16-bit PCM without a WAV header, or a WAV whose size fields are wrong.
+   Repair both cases so the browser can decode the file. */
+function wavHead(len,sr,ch,bits){const h=new DataView(new ArrayBuffer(44)),w=(o,s)=>[...s].forEach((c,i)=>h.setUint8(o+i,c.charCodeAt(0)));
+ w(0,'RIFF');h.setUint32(4,36+len,true);w(8,'WAVE');w(12,'fmt ');h.setUint32(16,16,true);h.setUint16(20,1,true);h.setUint16(22,ch,true);h.setUint32(24,sr,true);h.setUint32(28,sr*ch*bits/8,true);h.setUint16(32,ch*bits/8,true);h.setUint16(34,bits,true);w(36,'data');h.setUint32(40,len,true);return h.buffer}
+async function repairAudio(blob){const b=await blob.arrayBuffer(),u=new Uint8Array(b),tag=(o,s)=>[...s].every((c,i)=>u[o+i]===c.charCodeAt(0));
+ if(u.length<16)return {blob,fixed:''};
+ if(tag(0,'RIFF')&&tag(8,'WAVE')){const v=new DataView(b);let o=12,fixed=false;
+  while(o+8<=u.length){const id=String.fromCharCode(u[o],u[o+1],u[o+2],u[o+3]),sz=v.getUint32(o+4,true);
+   if(id==='data'){const real=u.length-o-8;if(sz===0||sz>real){v.setUint32(o+4,real-(real%2),true);fixed=true}break}
+   if(sz>u.length)break;o+=8+sz+(sz%2)}
+  if(v.getUint32(4,true)!==u.length-8){v.setUint32(4,u.length-8,true);fixed=true}
+  return {blob:fixed?new Blob([b],{type:'audio/wav'}):blob,fixed:fixed?'wav':''}}
+ const known=tag(0,'ID3')||(u[0]===0xFF&&(u[1]&0xE0)===0xE0)||tag(0,'OggS')||tag(0,'fLaC')||tag(4,'ftyp')||(u[0]===0x1A&&u[1]===0x45&&u[2]===0xDF&&u[3]===0xA3)||tag(0,'FORM');
+ if(known)return {blob,fixed:''};
+ const len=u.length-(u.length%2);return {blob:new Blob([wavHead(len,24000,1,16),b.slice(0,len)],{type:'audio/wav'}),fixed:'pcm'}}
+async function setAudio(blob,name){try{const r=await repairAudio(blob);blob=r.blob;if(r.fixed)toast(tr(['أُصلح ترويس ملف WAV تلقائيًا','The WAV header was repaired automatically']))}catch(e){}
+ if(AUD&&AUD.url)URL.revokeObjectURL(AUD.url);const url=URL.createObjectURL(blob);AUD={blob,name,url,dur:0,an:null};
+ $('audInfo').innerHTML=`<span>⏳ ${tr(['جارٍ تحليل الصوت…','Analysing the audio…'])}</span>`;
+ try{AUD.an=await analyze(blob);AUD.dur=AUD.an.dur}catch(e){AUD.dur=await metaDur(url)}
+ if(!(AUD.dur>0)){toast(tr(['تعذّرت قراءة الملف الصوتي؛ جرّب تحويله إلى MP3','The audio file could not be read; try converting it to MP3']));AUD=null;$('audInfo').innerHTML='';return}
+ MODE=AUD.an?'smart':'words';MANUAL=null;CUSTOM=null;paintAud();if(CUR==3)renderPlayer()}
+function paintAud(){if(!AUD){$('audInfo').innerHTML=`<span>${tr(['لا يوجد صوت: ستُعرض المشاهد بتوقيت تقديري.','No audio: scenes will play on estimated timing.'])}</span>`;return}
+ const m=Math.floor(AUD.dur/60)+':'+String(Math.round(AUD.dur%60)).padStart(2,'0');$('audInfo').innerHTML=`<audio controls src="${AUD.url}"></audio><span>🎧 ${esc(AUD.name)} · ${m}</span>`}
+$('af').onchange=e=>{const f=e.target.files[0];if(f)setAudio(f,f.name)};
+$('noAud').onclick=()=>{if(AUD&&AUD.url)URL.revokeObjectURL(AUD.url);AUD=null;$('af').value='';MODE='smart';MANUAL=null;CUSTOM=null;paintAud()};
+let MR=null;
+$('mic').onclick=async()=>{if(MR&&MR.state=='recording'){MR.stop();return}
+ if(!navigator.mediaDevices||!window.MediaRecorder){toast(tr(['متصفحك لا يدعم التسجيل','Your browser cannot record']));return}
+ try{const s=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];MR=new MediaRecorder(s);MR.ondataavailable=e=>e.data.size&&ch.push(e.data);
+  MR.onstop=()=>{s.getTracks().forEach(t=>t.stop());$('micDot').hidden=true;$('micT').textContent=tr(['● تسجيل','● Record']);setAudio(new Blob(ch,{type:MR.mimeType||'audio/webm'}),tr(['تسجيلي','my-recording'])+'.webm')};
+  MR.start();$('micDot').hidden=false;$('micT').textContent=tr(['■ إيقاف التسجيل','■ Stop recording'])}catch(e){toast(tr(['لم يُسمح بالوصول إلى الميكروفون','Microphone access was not allowed']))}};
+
+/* ---------- step 4: sync + player ---------- */
+const wts=()=>DATA.scenes.map(s=>s.narration.length+12);
+function speechSpan(){const an=AUD&&AUD.an;if(!an)return [0,AUD?AUD.dur:est()];const s=[...an.env].sort((a,b)=>a-b),thr=Math.max(.006,(s[Math.floor(s.length*.95)]||0)*.1);
+ let a=0,b=an.env.length-1;while(a<b&&an.env[a]<thr)a++;while(b>a&&an.env[b]<thr)b--;return [a*an.fr,(b+1)*an.fr]}
+function est(){const w=DATA.scenes.reduce((a,s)=>a+s.narration.split(/\s+/).filter(Boolean).length,0);return Math.max(8,w/(DATA.lang=='en'?2.5:2.1)+DATA.scenes.length*.7)}
+function propTimes(){const n=DATA.scenes.length,w=wts(),tot=w.reduce((a,b)=>a+b,0),[s0,s1]=speechSpan();let acc=0;const out=[0];for(let i=0;i<n-1;i++){acc+=w[i];out.push(s0+acc/tot*(s1-s0)-.15)}return out}
+function smartTimes(){const an=AUD.an,n=DATA.scenes.length,env=an.env,fr=an.fr,s=[...env].sort((a,b)=>a-b),thr=Math.max(.006,(s[Math.floor(s.length*.95)]||0)*.1);
+ const runs=[];let st=-1;for(let i=0;i<=env.length;i++){const sil=i<env.length&&env[i]<thr;if(sil&&st<0)st=i;if(!sil&&st>=0){runs.push({a:st*fr,b:i*fr});st=-1}}
+ const [s0,s1]=speechSpan(),cand=runs.filter(r=>r.a>s0+.05&&r.b<s1-.05&&r.b-r.a>=.18),w=wts(),tot=w.reduce((a,b)=>a+b,0),seg=(s1-s0)/n,out=[0];
+ let acc=0,ci=0,prev=0,hit=0;for(let i=0;i<n-1;i++){acc+=w[i];const e=s0+acc/tot*(s1-s0);let best=null,bs=-1e9,bj=-1;
+  for(let j=ci;j<cand.length;j++){const r=cand[j],m=(r.a+r.b)/2;if(m<=prev+.4)continue;if(m>e+seg*.65)break;if(m<e-seg*.65)continue;const sc=(r.b-r.a)*2-Math.abs(m-e)/seg;if(sc>bs){bs=sc;best=r;bj=j}}
+  let t;if(best){t=Math.max((best.a+best.b)/2,best.b-.22);ci=bj+1;hit++}else t=Math.max(e-.15,prev+.5);out.push(t);prev=t}
+ return {times:out,hit,pauses:cand.length}}
+function fixTimes(t,dur){const n=t.length,o=t.slice(0,n).map(Number);o[0]=0;for(let i=1;i<n;i++){if(!isFinite(o[i])||o[i]<=o[i-1]+.4)o[i]=o[i-1]+.4}for(let i=n-1;i>0;i--){const lim=dur-.6*(n-i);if(o[i]>lim)o[i]=Math.max(o[i-1]+.2,lim)}return o.map(v=>Math.round(v*100)/100)}
+function computeTimes(){const dur=AUD?AUD.dur:est();let t,note;
+ if(MODE=='custom'&&CUSTOM&&CUSTOM.length==DATA.scenes.length){t=CUSTOM;note=tr(['توقيت معدّل يدويًا. اختر وضع مزامنة لإعادة الحساب.','Custom timing. Pick a sync mode to recalculate.'])}
+ else if(MODE=='tap'&&MANUAL){t=MANUAL;note=tr(['توقيت مسجّل بالضغط اليدوي.','Timing recorded by tapping.'])}
+ else if(MODE=='smart'&&AUD&&AUD.an){const r=smartTimes();t=r.times;note=tr([`وقفات الصوت المكتشفة: ${r.pauses}. الانتقالات التي وقعت على وقفة حقيقية: ${r.hit} من ${DATA.scenes.length-1}. لأفضل نتيجة اطلب من أداة الصوت وقفة نحو ثانية بين الفقرات.`,`${r.pauses} pauses found in the audio; ${r.hit} of ${DATA.scenes.length-1} transitions landed on a real pause. For the best result, ask the voice tool for a one-second pause between paragraphs.`])}
+ else{t=propTimes();note=AUD?tr(['المشاهد موزّعة على الصوت بحسب طول تعليق كل مشهد.','Scenes are spread over the audio by the length of each narration.']):tr(['لا يوجد صوت؛ التوقيت تقديري بحسب طول التعليق. ارفع الصوت في الخطوة 3 للمزامنة.','No audio; timing is estimated from the narration length. Upload audio in step 3 to sync.'])}
+ return {dur,times:fixTimes(t,dur),note}}
+function renderPlayer(){if(!DATA){$('stage').innerHTML=`<p class="note warn">${tr(MSG.nodata)}</p>`;$('times').innerHTML='';$('pro').innerHTML='';return}
+ document.querySelectorAll('#sync button').forEach(b=>{b.classList.toggle('on',b.dataset.m==(AUD?MODE:'words'));b.disabled=!AUD&&b.dataset.m!='words'});
+ const {dur,times,note}=computeTimes();$('syncNote').textContent=note;
+ if(PLAYER)PLAYER.destroy();
+ PLAYER=STUDIO($('stage'),DATA,{style:V('sty'),theme:V('theme'),cc:C('cc'),audio:AUD?AUD.url:'',dur,times,logo:LOGO_URL,school:V('org'),ui:UI,name:fn()});
+ $('times').innerHTML=times.map((v,i)=>`<div class="f"><label for="tm${i}">${String(i+1).padStart(2,'0')} · ${esc(DATA.scenes[i].headline.slice(0,22))}</label><input type="number" id="tm${i}" step="0.1" min="0" value="${v}" ${i?'':'readonly'} data-i="${i}"></div>`).join('');
+ paintPro(dur,times)}
+let rT=0;$('times').addEventListener('input',()=>{clearTimeout(rT);rT=setTimeout(()=>{CUSTOM=[...document.querySelectorAll('#times input')].map(x=>+x.value);MODE='custom';renderPlayer()},600)});
+$('theme').addEventListener('change',()=>CUR==3&&renderPlayer());$('sty').addEventListener('change',()=>CUR==3&&renderPlayer());$('cc').addEventListener('change',()=>CUR==3&&renderPlayer());
+document.querySelectorAll('#sync button').forEach(b=>b.onclick=()=>{if(b.dataset.m=='tap'){openTap();return}MODE=b.dataset.m;CUSTOM=null;renderPlayer()});
+/* tap sync */
+let TAP=null;
+function tapLabel(){const n=DATA.scenes.length,k=TAP?TAP.marks.length:1;$('tapNow').innerHTML=k>=n?tr(['اكتملت المشاهد.','All scenes marked.']):tr(['اضغط «المشهد التالي» لحظة بدء تعليق المشهد ','Press “Next scene” the moment the narration of scene '])+`<b>${k+1} · ${esc(DATA.scenes[k].headline)}</b>`+tr(['',' begins.'])}
+function openTap(){if(!AUD){toast(tr(['ارفع ملف الصوت أولًا','Upload the audio first']));return}if(PLAYER)PLAYER.pause();$('tap').hidden=false;$('tapN').disabled=true;TAP=null;$('tapNow').textContent=tr(['استمع إلى الصوت كاملًا، واضغط الزر الكبير عند بداية كل مشهد جديد.','Listen to the whole audio and press the big button at the start of each new scene.'])}
+function closeTap(apply){if(TAP){TAP.a.pause();TAP.a.removeAttribute('src')}if(apply&&TAP){const n=DATA.scenes.length,m=TAP.marks.slice();if(m.length<n){const last=m[m.length-1],rest=n-m.length,span=AUD.dur-last;for(let i=1;i<=rest;i++)m.push(last+span*i/(rest+1))}MANUAL=m;MODE='tap';CUSTOM=null}
+ TAP=null;$('tap').hidden=true;document.removeEventListener('keydown',tapKey,true);if(apply)renderPlayer()}
+function tapMark(){if(!TAP)return;TAP.marks.push(Math.max(0,TAP.a.currentTime-.12));tapLabel();if(TAP.marks.length>=DATA.scenes.length)setTimeout(()=>closeTap(true),300)}
+function tapKey(e){if(e.code=='Space'||e.code=='Enter'){e.preventDefault();e.stopPropagation();tapMark()}if(e.code=='Escape')closeTap(false)}
+$('tapGo').onclick=()=>{const a=new Audio(AUD.url);TAP={a,marks:[0]};a.onended=()=>closeTap(true);a.play();$('tapN').disabled=false;$('tapN').focus();tapLabel();document.addEventListener('keydown',tapKey,true)};
+$('tapN').onclick=tapMark;$('tapX').onclick=()=>closeTap(false);
+/* pro prompt */
+const THD={site:['كحلي داكن مع سماوي وليموني','dark navy with cyan and lime'],sport:['رياضي: أسود وأحمر وأصفر','sporty black, red and yellow'],calm:['رسمي: أخضر داكن وذهبي','formal dark green and gold'],fun:['احتفالي: بنفسجي ووردي وبرتقالي','festive purple, pink and orange'],sea:['بحري: أزرق عميق وتركوازي','deep sea blue and turquoise'],light:['فاتح دافئ: كريمي وبرتقالي وأزرق','warm light cream, orange and blue']};
+function proPrompt(dur,times,L){const a=L=='ar',n=DATA.scenes.length,an=AUD?AUD.name:'narration.wav',th=THD[V('theme')][a?0:1]+(V('sty')=='pop'?'':(a?'، بأسلوب سينمائي توضيحي: خلفيات ورقية فاتحة وأخرى داكنة بالتناوب، وشارة برقم المشهد واسمه أعلى الشاشة، وعناوين ثنائية اللون، وبطاقات ورسوم تُبنى تدريجيًا، وانتقال بشريط لوني يكشف المشهد التالي':', in a cinematic explainer style: alternating light paper and dark backgrounds, a badge with the scene number and name at the top, two-tone titles, cards and diagrams that build up step by step, and a colour-bar wipe that reveals the next scene'));
+ const tab=DATA.scenes.map((s,i)=>{const b=i<n-1?times[i+1]:dur;return a?`${i+1}) ${s.type} | ${times[i].toFixed(1)}–${b.toFixed(1)} ث | الشاشة: «${s.headline}»${s.sub?' / «'+s.sub+'»':''}${s.items.length?' / بنود: '+s.items.join('، '):''}${s.big?' / الرقم: '+s.big:''} | التعليق: «${s.narration}» | ${s.emoji}`
+  :`${i+1}) ${s.type} | ${times[i].toFixed(1)}–${b.toFixed(1)} s | on screen: "${s.headline}"${s.sub?' / "'+s.sub+'"':''}${s.items.length?' / items: '+s.items.join(', '):''}${s.big?' / number: '+s.big:''} | narration: "${s.narration}" | ${s.emoji}`}).join('\n');
+ const org=V('org');
+ if(a)return P4(L,`أنت مخرج إبداعي وخبير Motion Graphics ومطوّر JavaScript متخصص في الإعلانات المتحركة السينمائية والتوضيحية.`,`- الإعلان: ${DATA.title||V('ti')}${org?' — '+org:''}
+- ملف التعليق الصوتي مرفق${AUD?` (${an}، مدته ${dur.toFixed(1)} ثانية)`:''}، وهو الساعة الرئيسية للتوقيت.
+- الهوية البصرية: ${th}.${LOGO_URL?'\n- شعار الجهة مرفق كصورة؛ استخدمه كما هو دون إعادة رسمه.':''}
+- لغة الشاشة: ${DATA.lang=='en'?'الإنجليزية':'العربية'}.
+- السيناريو والتوقيت (لا تغيّر النصوص ولا الأزمنة):
+${tab}`,`ابنِ إعلان Motion Graphics احترافيًا في ملف HTML واحد يعمل مباشرة في المتصفح:
+1) التزامن: يبدأ كل مشهد عند زمنه المحدد بالضبط، ويُحسب الزمن من currentTime لعنصر الصوت، لا من مؤقت مستقل.
+2) الإخراج: لكل مشهد لقطة افتتاحية جاذبة، ثم دخول تدريجي للعناصر بحركة ذات معنى، وتطور بصري مستمر، وانتقال سينمائي إلى المشهد التالي. اختر ما يخدم الفكرة فقط من: Kinetic Typography، الأشكال المتحركة، الجسيمات، Morphing، Parallax، حركة كاميرا افتراضية. حوّل كل رسالة إلى استعارة بصرية، ولا تكتفِ بنص يظهر ويختفي.
+3) النص: عناوين قصيرة مقروءة، والعربية من اليمين إلى اليسار بخط Cairo أو Tajawal وحروف متصلة صحيحة، مع ترجمة سفلية (Captions) تُبرز الكلمة المنطوقة وزر لإخفائها.
+4) التقنية: مسرح 1920×1080 بنسبة 16:9 يتكيّف مع الشاشة دون تشويه، ورسم على Canvas أو SVG مع requestAnimationFrame، ويجوز GSAP من CDN، مع Easing وطبقات عمق مناسبة.
+5) الصوت: زر «تحميل ملف الصوت» (input type=file)، لأن الملف لا يُضمَّن تلقائيًا، مع محاولة تحميل ${an} من المجلد نفسه إن وُجد.
+6) التحكم: Play وPause وReplay وشريط زمني قابل للسحب.
+7) التصدير: زر يسجّل الفيديو مع الصوت بـ MediaRecorder (canvas.captureStream مع MediaStreamDestination) وينزّله بصيغة MP4 إن دعمها المتصفح، وإلا WebM.
+8) الجودة: كود كامل غير مختصر، بلا وميض ولا تقطيع ولا تداخل نصوص، ولا تُضف معلومات أو تعليقًا صوتيًا غير موجود في السيناريو.`,`قبل الكود: Storyboard مختصر في جدول (المشهد | الزمن | الفكرة البصرية | الحركة). ثم الكود كاملًا في كتلة واحدة دون توقف. أريد نتيجة تبدو من إنتاج استوديو متخصص في Motion Design، لا عرض PowerPoint متحركًا.`);
+ return P4(L,`You are a creative director, a motion graphics expert and a JavaScript developer specialised in cinematic and explanatory animated announcements.`,`- Announcement: ${DATA.title||V('ti')}${org?' — '+org:''}
+- The voice-over file is attached${AUD?` (${an}, ${dur.toFixed(1)} seconds)`:''}; it is the master clock for all timing.
+- Visual identity: ${th}.${LOGO_URL?'\n- The organizer logo is attached as an image; use it as is, without redrawing it.':''}
+- On-screen language: ${DATA.lang=='en'?'English':'Arabic'}.
+- Script and timing (do not change any text or time):
+${tab}`,`Build a professional motion graphics announcement in a single HTML file that runs directly in the browser:
+1) Sync: every scene starts exactly at its stated time, read from the audio element's currentTime, never from an independent timer.
+2) Direction: each scene opens on an eye-catching shot, brings elements in gradually with meaningful motion, keeps evolving visually, and hands over to the next scene with a cinematic transition. Choose only what serves the idea from: kinetic typography, animated shapes, particles, morphing, parallax, virtual camera moves. Turn each message into a visual metaphor; never just show text appearing and disappearing.
+3) Text: short, readable titles; Arabic right-to-left in Cairo or Tajawal with correctly joined letters; captions that highlight the spoken word, with a button to hide them.
+4) Tech: a 1920×1080 16:9 stage that scales to the screen without distortion, drawn on Canvas or SVG with requestAnimationFrame; GSAP from a CDN is allowed, with suitable easing and depth layers.
+5) Audio: a "Load audio file" button (input type=file), since the file is not embedded automatically, plus an attempt to load ${an} from the same folder if present.
+6) Controls: Play, Pause, Replay and a draggable timeline.
+7) Export: a button that records the video with its audio using MediaRecorder (canvas.captureStream plus a MediaStreamDestination) and downloads it as MP4 when the browser supports it, otherwise WebM.
+8) Quality: complete, unabridged code with no flicker, stutter or overlapping text, and no information or narration that is not in the script.`,`Before the code: a short storyboard table (scene | time | visual idea | motion). Then the full code in one block, without stopping. I want a result that looks like it came from a specialised motion design studio, not an animated PowerPoint.`)}
+function paintPro(dur,times){$('pro').innerHTML=card(tr(['برومت الاستوديو · عربي','Studio prompt · Arabic']),proPrompt(dur,times,'ar'),true,BOTS)+card(tr(['برومت الاستوديو · English','Studio prompt · English']),proPrompt(dur,times,'en'),false,BOTS)}
+/* export html */
+const rdURL=b=>new Promise(r=>{if(!b)return r('');const x=new FileReader();x.onload=()=>r(x.result);x.onerror=()=>r('');x.readAsDataURL(b)});
+const J=o=>JSON.stringify(o).replace(/</g,'\\u003c');
+$('exH').onclick=async()=>{if(!DATA){toast(tr(MSG.nodata));return}const {dur,times}=computeTimes(),ttl=DATA.title||V('ti')||'Motion';
+ const O={style:V('sty'),theme:V('theme'),cc:C('cc'),audio:AUD?await rdURL(AUD.blob):'',dur,times,logo:LOGO_URL,school:V('org'),ui:DATA.lang=='en'?'en':'ar',name:fn()};
+ const html=`<!DOCTYPE html><html lang="${DATA.lang=='en'?'en':'ar'}" dir="${DATA.lang=='en'?'ltr':'rtl'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(ttl)}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet"><style>body{margin:0;min-height:100vh;background:#08052a;color:#fff;font-family:Cairo,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}h1{font-size:22px;margin:0 0 14px;color:#8bdd28;text-align:center}#host{width:min(1200px,100%)}</style></head><body><h1>${esc(ttl)}</h1><div id="host"></div><script>(${STUDIO.toString()})(document.getElementById('host'),${J(DATA)},${J(O)})<\/script></body></html>`;
+ dl(fn()+'-motion.html',html,'text/html');toast(tr(['تم تنزيل الملف التشغيلي','Playable file downloaded']))};
+
+/* ---------- navigation ---------- */
+const EB=[['الخطوة 1 — بيانات الإعلان','Step 1 — Announcement details'],['الخطوة 2 — السيناريو','Step 2 — The script'],['الخطوة 3 — التعليق الصوتي','Step 3 — Voice-over'],['الخطوة 4 — الموشن والتصدير','Step 4 — Motion & export']];
+function paintPrompts(){const d=F();$('pr').innerHTML=card(tr(['برومت السيناريو · عربي','Script prompt · Arabic']),scriptPrompt(d,'ar'),true,BOTS)+card(tr(['برومت السيناريو · English','Script prompt · English']),scriptPrompt(d,'en'),false,BOTS)}
+function go(i){if(i>0&&!V('ti')&&V('src')!='file'){toast(tr(MSG.need));i=0}
+ if(CUR==3&&i!=3&&PLAYER)PLAYER.pause();if(TAP)closeTap(false);
+ [0,1,2,3].forEach(j=>{$('p'+j).hidden=j!=i;document.querySelector(`.step[data-go="${j}"]`).classList.toggle('on',j==i)});CUR=i;$('eb').textContent=tr(EB[i]);
+ if(i==1)paintPrompts();if(i==2){paintTTS();paintAud()}if(i==3)renderPlayer();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+
+/* ---------- interface language ---------- */
+document.querySelectorAll('[data-en]').forEach(e=>e.dataset.ar=e.textContent);
+document.querySelectorAll('[data-en-ph]').forEach(e=>e.dataset.arPh=e.getAttribute('placeholder'));
+function setUI(l){UI=l;const r=document.documentElement;r.lang=l;r.dir=l=='ar'?'rtl':'ltr';
+ document.querySelectorAll('[data-en]').forEach(e=>e.textContent=l=='en'?e.dataset.en:e.dataset.ar);
+ document.querySelectorAll('[data-en-ph]').forEach(e=>e.setAttribute('placeholder',l=='en'?e.dataset.enPh:e.dataset.arPh));
+ $('ui').textContent=l=='ar'?'English':'العربية';$('eb').textContent=tr(EB[CUR]);$('micT').textContent=tr(['● تسجيل','● Record']);
+ document.title=l=='ar'?'Motion Studio · استوديو الموشن جرافيك':'Motion Studio · Motion Graphics Announcements';
+ paintTypes();paintScenes();if(CUR==1)paintPrompts();if(CUR==2){paintTTS();paintAud()}if(CUR==3)renderPlayer();
+ try{localStorage.setItem('ms-lang',l)}catch(e){}}
+$('ui').onclick=()=>setUI(UI=='ar'?'en':'ar');
+paintTypes();
+try{if(localStorage.getItem('ms-lang')=='en')setUI('en')}catch(e){}
+</script>
+</body>
+</html>
